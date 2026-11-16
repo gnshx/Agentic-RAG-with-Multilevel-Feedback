@@ -16,3 +16,4 @@ The benchmark data was generated via `eval/prepare_data.py`:
 
 ## 3. Real Neural Benchmark (`eval/run_real_llm_benchmark.py`)
 To complement the 500-question architectural control-flow simulation, a 15-question benchmark with authentic Wikipedia context is evaluated against live open-source neural weights (`qwen2.5:0.5b` via Ollama) to record authentic wall-clock inference latencies (300–500 ms) and token F1 distributions.
+
