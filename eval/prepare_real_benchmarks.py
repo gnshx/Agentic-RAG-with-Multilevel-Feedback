@@ -2,7 +2,6 @@ import json
 import os
 import hashlib
 from typing import Dict, Any, List, Tuple
-from datasets import load_dataset
 
 def generate_doc_id(title: str, text: str) -> str:
     """Generate a deterministic, collision-resistant document ID based on title and content."""
@@ -25,6 +24,14 @@ def build_real_benchmarks(
     Extracts real HotpotQA and 2WikiMultiHopQA validation benchmarks
     and constructs a unified, verified real Wikipedia corpus.
     """
+    try:
+        from datasets import load_dataset
+    except ImportError:
+        raise ImportError(
+            "Hugging Face 'datasets' package is required to download real benchmark splits. "
+            "Please install it with: pip install datasets"
+        )
+
     print("=== Extracting Genuine HotpotQA & 2WikiMultiHopQA Benchmarks ===")
     os.makedirs(output_dir, exist_ok=True)
 
