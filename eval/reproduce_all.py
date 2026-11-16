@@ -90,7 +90,7 @@ def main():
     )
     run_command_logged(
         f"{sys.executable} eval/human_evaluation.py",
-        "Multi-Annotator Human Agreement Evaluation (100 Blind Samples by 4 IIT Bhilai Members)"
+        "Simulated Multi-Agent Consensus Evaluation (100 Synthetic Rater Samples)"
     )
     run_command_logged(
         f"{sys.executable} eval/selective_answering.py",

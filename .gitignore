@@ -32,6 +32,11 @@ token.json
 .DS_Store
 Thumbs.db
 
+# Node & Frontend dependencies
+node_modules/
+package-lock.json
+package.json
+
 # Submission artifacts
 FeedbackRAG_Submission/
 FeedbackRAG_Submission.zip

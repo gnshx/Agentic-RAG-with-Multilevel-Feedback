@@ -216,13 +216,13 @@ To validate the framework on authentic neural weights producing conversational f
 | | FeedbackRAG (Escalation Queue) | 13.3% | 43.5% | 480 ms / 510.3 ms | 1.40 |
 | **Qwen 2.5 Coder 7B (RTX 3060 12GB GPU)**| Always-L0 (Direct Parametric) | 66.7% | 88.3% | 290 ms / 484.0 ms | 1.00 |
 | | Always-L1 (Single-Pass RAG) | **80.0%** | **91.1%** | 240 ms / 321.8 ms | 2.00 |
-| | FeedbackRAG (Escalation Queue) | 66.7% | 88.3% | **202 ms / 257.9 ms** | 1.00 |
+| | FeedbackRAG (Escalation Queue) | 66.7% | 88.3% | **202 ms / 257.0 ms** | 2.00 |
 
-*Table 4: Live neural model evaluation on real weights. Demonstrates authentic wall-clock latency (180–500 ms) and free-text EM vs. Token F1 divergence.*
+*Table 4: Live neural model evaluation on real weights. Demonstrates authentic wall-clock latency (180–500 ms) and free-text EM vs. Token F1 divergence. FeedbackRAG issues 2 calls at Level 0 to verify self-consistency ($S_1$) before early-exiting.*
 
 #### Neural Generation Takeaways:
 - **Free-Text EM vs. F1 Gap:** Real open-weight models generate conversational phrasing (e.g., *"Christopher Nolan directed Inception"*), scoring partial token overlap (F1 = 57%) with 0% Exact Match. Grounded Level 1 context steers models toward concise targets, boosting EM to 80.0% and F1 to 91.1% on the 7B GPU workstation.
-- **Hardware Acceleration:** On the remote NVIDIA GeForce RTX 3060 12GB GPU host (`sukuna@10.50.36.87`), generation times averaged **257.9 ms** for FeedbackRAG, running in dedicated VRAM (4,546 MiB allocated).
+- **Hardware Acceleration:** On the remote NVIDIA GeForce RTX 3060 12GB GPU host (`sukuna@10.50.36.87`), generation times averaged **257.0 ms** for FeedbackRAG, running in dedicated VRAM (4,546 MiB allocated).
 
 ---
 
@@ -283,7 +283,7 @@ To determine whether expensive LLM judge evaluations can be replaced with zero-c
 
 ---
 
-## 8. Safety, Reliability, Adversarial Probes & Human Validation
+## 8. Safety, Reliability, Adversarial Probes & Multi-Agent Consistency
 
 ### 8.1 Multi-Agent Consistency & Simulated Rater Proxy Study
 

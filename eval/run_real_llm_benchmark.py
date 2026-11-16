@@ -188,23 +188,32 @@ def run_real_evaluation():
         pred_l0 = call_llm(l0_prompt, max_tokens=15)
         calls = 1
 
-        # Check Signal: Is the direct answer confident and non-empty?
-        # We test self-consistency or knowledge certainty
+        # Genuine Runtime Signal S1 (Self-Consistency / Confidence) without Gold Labels
         norm_l0 = normalize_answer(pred_l0)
-        norm_gold = normalize_answer(item["gold"])
-
-        # Escalation condition: If L0 answer is vague, missing, or fails simple check -> escalate to L1
-        escalate_to_l1 = (len(norm_l0.split()) == 0 or "i cannot" in norm_l0 or "unknown" in norm_l0 or norm_l0 not in norm_gold and norm_gold not in norm_l0)
         
-        if not escalate_to_l1:
-            # Terminate at Level 0
+        # Check for refusal / uncertainty tokens
+        uncertainty_phrases = ["cannot", "unknown", "do not know", "not sure", "sorry", "unclear", "no information"]
+        is_uncertain = any(phrase in norm_l0 for phrase in uncertainty_phrases)
+        is_malformed = (len(norm_l0.split()) == 0 or len(norm_l0.split()) > 15)
+
+        # Quick sample perturbation check (S1 consistency check at runtime)
+        perturbed_prompt = f"State the factual answer directly in 1-3 words:\nQuestion: {item['q']}\nAnswer:"
+        pred_l0_alt = call_llm(perturbed_prompt, max_tokens=15)
+        calls += 1
+        norm_alt = normalize_answer(pred_l0_alt)
+
+        # Agreement between 2 zero-shot samples (S1 Self-Consistency)
+        consistency_match = (norm_l0 == norm_alt or norm_l0 in norm_alt or norm_alt in norm_l0) and not is_uncertain and not is_malformed
+
+        if consistency_match:
+            # High parametric confidence -> Early exit at Level 0
             final_pred = pred_l0
             resolved_level = 0
         else:
-            # Escalate to Level 1 (Single-pass RAG)
+            # Low consistency / uncertainty -> Escalate to Level 1 (Single-pass RAG)
             l1_prompt = f"Answer concisely in 1-4 words using only the context:\nContext: {item['context']}\nQuestion: {item['q']}\nAnswer:"
             final_pred = call_llm(l1_prompt, max_tokens=15)
-            calls += 2
+            calls += 2  # 1 retrieval + 1 generation
             resolved_level = 1
 
         dt = (time.time() - t0) * 1000

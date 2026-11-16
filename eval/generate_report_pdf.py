@@ -2,7 +2,61 @@ import os
 import sys
 import subprocess
 import re
+import json
 from markdown_it import MarkdownIt
+
+def render_math_with_katex(display_blocks, inline_blocks):
+    """
+    Batch pre-renders LaTeX math blocks into static KaTeX HTML using Node.js.
+    Guarantees 100% offline rendering with zero headless Chrome timing delays.
+    """
+    items = []
+    for m in display_blocks:
+        items.append({"math": m, "display": True})
+    for m in inline_blocks:
+        items.append({"math": m, "display": False})
+
+    node_script = """
+    const katex = require('katex');
+    const fs = require('fs');
+    try {
+        const input = JSON.parse(fs.readFileSync(0, 'utf-8'));
+        const output = input.map(item => {
+            try {
+                return katex.renderToString(item.math, {
+                    displayMode: item.display,
+                    throwOnError: false
+                });
+            } catch (err) {
+                return item.math;
+            }
+        });
+        process.stdout.write(JSON.stringify(output));
+    } catch (e) {
+        process.exit(1);
+    }
+    """
+    try:
+        proc = subprocess.run(
+            ["node", "-e", node_script],
+            input=json.dumps(items),
+            text=True,
+            capture_output=True
+        )
+        if proc.returncode == 0:
+            rendered = json.loads(proc.stdout)
+            num_disp = len(display_blocks)
+            disp_rendered = rendered[:num_disp]
+            inline_rendered = rendered[num_disp:]
+            return disp_rendered, inline_rendered
+    except Exception as e:
+        print(f"[WARN] Node KaTeX pre-rendering failed: {e}")
+
+    # Fallback
+    return (
+        [f"$${m}$$" for m in display_blocks],
+        [f"${m}$" for m in inline_blocks]
+    )
 
 def build_pdf():
     print("=== Generating Clean, Publication-Grade 10-Page REPORT.pdf ===")
@@ -37,14 +91,32 @@ def build_pdf():
 
     md_text = re.sub(r'\$([^\$\n]+?)\$', save_inline_math, md_text)
 
-    # Step 4: Replace architecture image syntax with clean responsive image container
+    # Step 4: Batch pre-render all math with KaTeX via Node.js
+    rendered_disp, rendered_inline = render_math_with_katex(display_math_blocks, inline_math_blocks)
+
+    # Single-render helper for figures and captions
+    def render_single_math(latex_str, display=False):
+        try:
+            proc = subprocess.run(
+                ["node", "-e", f"const katex = require('katex'); process.stdout.write(katex.renderToString({json.dumps(latex_str)}, {{displayMode: {'true' if display else 'false'}, throwOnError: false}}));"],
+                text=True, capture_output=True
+            )
+            if proc.returncode == 0:
+                return proc.stdout
+        except Exception:
+            pass
+        return latex_str
+
+    math_s1_s4 = render_single_math(r"S_1 \dots S_4", display=False)
+
+    # Step 5: Replace architecture image syntax with clean responsive image container
     abs_svg_path = os.path.abspath("results/plots/mlfq_architecture.svg")
     assert os.path.exists(abs_svg_path), f"Missing {abs_svg_path}"
 
     architecture_html = f'''
     <div class="architecture-figure">
         <img src="file://{abs_svg_path}" class="architecture-img" alt="FeedbackRAG MLFQ Architecture Diagram" />
-        <p class="caption"><b>Figure 1:</b> FeedbackRAG Multilevel Feedback Queue (MLFQ) operational state machine. Every query enters at Level 0 and escalates only when verified runtime signals ($S_1 \\dots S_4$) indicate deficiency.</p>
+        <p class="caption"><b>Figure 1:</b> FeedbackRAG Multilevel Feedback Queue (MLFQ) operational state machine. Every query enters at Level 0 and escalates only when verified runtime signals ({math_s1_s4}) indicate deficiency.</p>
     </div>
     '''
     md_text = re.sub(
@@ -54,27 +126,27 @@ def build_pdf():
         flags=re.DOTALL
     )
 
-    # Step 5: Render Markdown to HTML via MarkdownIt
+    # Step 6: Render Markdown to HTML via MarkdownIt
     md = MarkdownIt('commonmark', {'breaks': True, 'html': True}).enable('table')
     html_content = md.render(md_text)
 
-    # Step 6: Restore architecture figure placeholder
+    # Step 7: Restore architecture figure placeholder
     html_content = html_content.replace('<!-- ARCHITECTURE_FIGURE_PLACEHOLDER -->', architecture_html)
 
-    # Step 7: Restore display math and inline math
-    for idx, math_content in enumerate(display_math_blocks):
-        html_content = html_content.replace(f'XXDISPLAYMATH{idx}XX', f'$${math_content}$$')
-    for idx, math_content in enumerate(inline_math_blocks):
-        html_content = html_content.replace(f'XXINLINEMATH{idx}XX', f'${math_content}$')
+    # Step 8: Restore pre-rendered static KaTeX math
+    for idx, math_html in enumerate(rendered_disp):
+        html_content = html_content.replace(f'XXDISPLAYMATH{idx}XX', math_html)
+    for idx, math_html in enumerate(rendered_inline):
+        html_content = html_content.replace(f'XXINLINEMATH{idx}XX', math_html)
 
-    # Step 8: Restore currency tokens with safe HTML spans
+    # Step 9: Restore currency tokens with safe HTML spans
     html_content = html_content.replace('XXCURRENCYSIGNXX', '<span class="currency">&#36;</span>')
 
-    # Step 9: Convert relative plot image sources to absolute file:// URLs
+    # Step 10: Convert relative plot image sources to absolute file:// URLs
     abs_plots_dir = os.path.abspath("results/plots")
     html_content = html_content.replace('src="results/plots/', f'src="file://{abs_plots_dir}/')
 
-    # Step 10: Precise section page-breaks for a perfectly proportioned 10-page academic report
+    # Step 11: Precise section page-breaks for a perfectly proportioned 10-page academic report
     page_break_targets = [
         "<h2>2. System Architecture: The MLFQ Paradigm</h2>",
         "<h2>3. Detailed Specifications of the 4 Processing Tiers</h2>",
@@ -82,7 +154,7 @@ def build_pdf():
         "<h3>5.3 Risk-Controlled Escalation via Split Conformal Prediction</h3>",
         "<h3>6.2 Regime B: Live Neural Model Validation",
         "<h2>7. Feedback Signal Ablation Study &amp; Cost-Saving Heuristics</h2>",
-        "<h2>8. Safety, Reliability, Adversarial Probes &amp; Human Validation</h2>",
+        "<h2>8. Safety, Reliability, Adversarial Probes &amp; Multi-Agent Consistency</h2>",
         "<h3>8.3 Adversarial Attack Probing",
         "<h2>10. Limitations &amp; Scientific Scope</h2>",
     ]
@@ -93,22 +165,17 @@ def build_pdf():
                 html_content = html_content.replace(target, repl)
                 break
 
-    # Step 11: Build full HTML document with KaTeX and print-perfect CSS
+    # Local KaTeX CSS path for 100% offline self-contained font styling
+    abs_katex_css = os.path.abspath("node_modules/katex/dist/katex.min.css")
+    assert os.path.exists(abs_katex_css), f"Missing {abs_katex_css}"
+
+    # Step 12: Build full HTML document with local KaTeX CSS and print-perfect CSS
     html_template = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>FeedbackRAG Research Report</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
-            onload="renderMathInElement(document.body, {{
-                delimiters: [
-                    {{left: '$$', right: '$$', display: true}},
-                    {{left: '$', right: '$', display: false}}
-                ],
-                ignoredClasses: ['katex-ignore', 'currency']
-            }});"></script>
+    <link rel="stylesheet" href="file://{abs_katex_css}">
     <style>
         @page {{
             size: A4 portrait;
