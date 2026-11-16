@@ -49,7 +49,7 @@ def main():
     sample_dir = os.path.join(os.path.dirname(__file__), "data", "sample_docs")
     chunks = loader.load_directory(sample_dir)
 
-    vector_store = LocalVectorStore()
+    vector_store = LocalVectorStore(db_path=settings.database_path)
     if chunks:
         vector_store.add_documents(chunks)
         console.print(f"[green]✓[/green] Loaded and indexed {len(chunks)} local document chunks.")

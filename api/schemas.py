@@ -4,6 +4,7 @@ from typing import List, Dict, Any, Optional
 class QueryRequest(BaseModel):
     query: str = Field(..., min_length=2, max_length=1000, description="The user question to process")
     session_id: Optional[str] = Field(default="session_local", description="Session identifier for multi-turn tracking")
+    mode: Optional[str] = Field(default="agentic_workflow", description="Execution mode: 'agentic_workflow', 'thresholds', or 'learned'")
 
 class ExecutionStepSchema(BaseModel):
     timestamp: str

@@ -36,7 +36,10 @@ def run_controller(
     cfg: Dict[str, Any],
     llm: LLM,
     policy: Optional[LearnedEscalationPolicy] = None,
-    mode: str = "thresholds"
+    mode: str = "thresholds",
+    golden_cache: Optional[Any] = None,
+    registry: Optional[Any] = None,
+    session_id: str = "default_session"
 ) -> Dict[str, Any]:
     """
     Multilevel Feedback Controller (MLFQ pattern):
@@ -45,6 +48,7 @@ def run_controller(
     Supports either:
     1. 'thresholds': Rule-based signal gating with configured tau thresholds
     2. 'learned': Machine-learned escalation policy predicting escalation utility
+    Integrates Level 3 System Memory (GoldenCache and FeedbackRegistry) when provided.
     Enforces budget guard and logs tokens, dollars, and latencies.
     """
     cost_tracker = CostTracker()
@@ -65,7 +69,10 @@ def run_controller(
         "cost_usd": 0.0,
         "trace": [],
         "status": "ok",
-        "mode": mode
+        "mode": mode,
+        "cached_answer": False,
+        "golden_cache_hit_id": None,
+        "system_log_id": None
     }
 
     start_calls = getattr(llm, "logical_calls", llm.calls)
@@ -74,6 +81,42 @@ def run_controller(
     start_ctokens = getattr(llm, "total_completion_tokens", 0)
     t0 = time.time()
     max_calls = cfg.get("budget", {}).get("max_calls_per_query", 20)
+
+    # Level 3 System Memory Check: Golden Exemplar Cache short-circuit
+    if golden_cache is not None:
+        threshold = cfg.get("golden_cache", {}).get("threshold", 0.90)
+        hit = golden_cache.lookup(question, threshold=threshold)
+        if hit:
+            gid, cached_answer, sim = hit
+            state["cached_answer"] = True
+            state["golden_cache_hit_id"] = gid
+            state["answer"] = cached_answer
+            state["level"] = 3
+            state["signals"] = {"S1": 1.0, "S2": 1.0, "S3": 1.0, "S4": 1.0}
+            state["latency"] = round(time.time() - t0, 4)
+            state["trace"].append({
+                "level": 3,
+                "signals": {"similarity": round(float(sim), 4)},
+                "calls_used_level": 0,
+                "total_calls_so_far": 0,
+                "cost_usd_level": 0.0,
+                "level_latency": state["latency"],
+                "decision": {"action": "golden_cache_hit", "cache_id": gid, "similarity": round(float(sim), 4)},
+                "answer_preview": cached_answer[:100]
+            })
+            if registry is not None:
+                try:
+                    log_id = registry.log_inference({
+                        "query": question, "current_query": question, "session_id": session_id,
+                        "retrieved_docs": [], "graded_docs": [], "retrieval_retries": 0,
+                        "generation_retries": 0, "generation": cached_answer,
+                        "groundedness_score": 1.0, "completeness_score": 1.0,
+                        "is_grounded": True, "is_complete": True, "execution_trace": state["trace"]
+                    })
+                    state["system_log_id"] = log_id
+                except Exception as e:
+                    print(f"[Warning] Failed to log golden cache hit: {e}")
+            return state
 
     while True:
         current_lvl = state["level"]
@@ -148,6 +191,40 @@ def run_controller(
     state["completion_tokens"] = getattr(llm, "total_completion_tokens", 0) - start_ctokens
     state["total_tokens"] = state["prompt_tokens"] + state["completion_tokens"]
     state["cost_usd"] = round(getattr(llm, "total_cost_usd", 0.0) - start_cost, 6)
+
+    # Level 3 System Audit Logging
+    if registry is not None:
+        try:
+            doc_chunks = []
+            for d in state.get("docs", []):
+                doc_chunks.append({
+                    "id": str(d.get("id", d.get("title", "doc"))),
+                    "content": str(d.get("text", d.get("content", ""))),
+                    "source": str(d.get("source", "corpus")),
+                    "score": float(d.get("score", 0.0)),
+                    "dynamic_weight": float(d.get("dynamic_weight", 0.0)),
+                    "metadata": {}
+                })
+            s3 = state.get("signals", {}).get("S3", 0.95)
+            s4 = state.get("signals", {}).get("S4", 0.90)
+            log_id = registry.log_inference({
+                "query": question,
+                "current_query": question,
+                "session_id": session_id,
+                "retrieved_docs": doc_chunks,
+                "graded_docs": doc_chunks,
+                "retrieval_retries": state.get("calls", 0),
+                "generation_retries": 0,
+                "generation": state.get("answer", ""),
+                "groundedness_score": float(s3),
+                "completeness_score": float(s4),
+                "is_grounded": float(s3) >= 0.70,
+                "is_complete": float(s4) >= 0.70,
+                "execution_trace": state.get("trace", [])
+            })
+            state["system_log_id"] = log_id
+        except Exception as e:
+            print(f"[Warning] Failed to log inference in registry: {e}")
 
     return state
 

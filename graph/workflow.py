@@ -52,7 +52,7 @@ class AgenticRAGWorkflow:
         registry: Optional[FeedbackRegistry] = None,
         golden_cache: Optional[GoldenCache] = None
     ):
-        self.vector_store = vector_store or LocalVectorStore()
+        self.vector_store = vector_store or LocalVectorStore(db_path=settings.database_path)
         self.registry = registry or FeedbackRegistry()
         self.golden_cache = golden_cache or GoldenCache(self.registry)
 

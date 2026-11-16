@@ -42,6 +42,12 @@ def test_query_and_feedback_flow():
         q_repeat_data = q_res_repeat.json()
         assert q_repeat_data["cached_answer"] is True
 
+        # Clean up exemplar from shared test db to guarantee idempotency across test runs
+        from api.app import registry
+        with registry._get_connection() as conn:
+            conn.cursor().execute("DELETE FROM golden_cache WHERE query = ?", (q_payload["query"],))
+            conn.commit()
+
 def test_diagnostics_endpoint():
     with TestClient(app) as c:
         res = c.get("/api/diagnostics")

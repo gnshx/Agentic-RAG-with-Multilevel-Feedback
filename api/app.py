@@ -11,7 +11,7 @@ from api.schemas import (
 )
 
 # Shared global state
-vector_store = LocalVectorStore()
+vector_store = LocalVectorStore(db_path=settings.database_path)
 registry = FeedbackRegistry()
 golden_cache = GoldenCache(registry)
 workflow: AgenticRAGWorkflow = None
@@ -54,6 +54,84 @@ def health_check():
 
 @app.post("/api/query", response_model=QueryResponse)
 def execute_query(req: QueryRequest):
+    if req.mode in ("thresholds", "learned"):
+        import yaml
+        import json
+        from datetime import datetime, timezone
+        from src.llm import get_llm_instance
+        from src.retriever import HybridRetriever
+        from src.planner import QueryPlanner
+        from src.generator import Generator
+        from src.levels import run_level_0, run_level_1, run_level_2, run_level_3
+        from src.controller import run_controller
+        from src.learned_policy import LearnedEscalationPolicy
+
+        cfg = {}
+        if os.path.exists("config.yaml"):
+            with open("config.yaml", "r", encoding="utf-8") as f:
+                cfg = yaml.safe_load(f)
+        corpus = []
+        if os.path.exists("data/corpus.json"):
+            with open("data/corpus.json", "r", encoding="utf-8") as f:
+                corpus = json.load(f)
+        llm = get_llm_instance(cfg)
+        retriever = HybridRetriever(corpus=corpus)
+        planner = QueryPlanner(llm=llm)
+        generator = Generator(llm=llm)
+        policy = LearnedEscalationPolicy.load("results/learned_policy.pkl") if os.path.exists("results/learned_policy.pkl") else None
+
+        levels_map = {
+            0: lambda s: run_level_0(s, llm, cfg),
+            1: lambda s: run_level_1(s, llm, retriever, generator, cfg),
+            2: lambda s: run_level_2(s, llm, retriever, planner, generator, cfg),
+            3: lambda s: run_level_3(s, llm, retriever, generator, cfg)
+        }
+        res = run_controller(
+            question=req.query,
+            levels=levels_map,
+            cfg=cfg,
+            llm=llm,
+            policy=policy,
+            mode=req.mode,
+            golden_cache=golden_cache,
+            registry=registry,
+            session_id=req.session_id or "default"
+        )
+        doc_chunks = []
+        for d in res.get("docs", []):
+            doc_chunks.append({
+                "id": str(d.get("id", d.get("title", "doc"))),
+                "content": str(d.get("text", d.get("content", ""))),
+                "source": str(d.get("source", "corpus")),
+                "score": float(d.get("score", 0.0)),
+                "dynamic_weight": float(d.get("dynamic_weight", 0.0)),
+                "metadata": {}
+            })
+        execution_trace = []
+        for step in res.get("trace", []):
+            execution_trace.append({
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "level": f"Level {step.get('level', 0)}",
+                "node": f"run_level_{step.get('level', 0)}",
+                "action": step.get("decision", {}).get("action", "step"),
+                "details": step
+            })
+        return QueryResponse(
+            query=res["question"],
+            current_query=res["question"],
+            generation=res["answer"],
+            cached_answer=res.get("cached_answer", False),
+            is_grounded=res.get("signals", {}).get("S3", 1.0) >= 0.70,
+            is_complete=res.get("signals", {}).get("S4", 1.0) >= 0.70,
+            groundedness_score=float(res.get("signals", {}).get("S3", 1.0)),
+            completeness_score=float(res.get("signals", {}).get("S4", 1.0)),
+            retrieval_retries=res.get("calls", 0),
+            generation_retries=0,
+            system_log_id=res.get("system_log_id"),
+            graded_docs=doc_chunks,
+            execution_trace=execution_trace
+        )
+
     if not workflow:
         raise HTTPException(status_code=500, detail="Workflow engine not initialized.")
 
