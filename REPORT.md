@@ -56,43 +56,8 @@ FeedbackRAG adapts this principle to generative AI:
 - **Feedback signals represent runtime preemption/escalation checks:** If a response passes quality checks at Level $L$, the system **short-circuits and returns early**. If any signal fails, the query is escalated to Level $L+1$ with accumulated state.
 - **A learned policy or threshold gate governs escalation:** Transitions are decided based on objective runtime observations without human intervention.
 
-```
-+--------------------------------------------------------------------------------------------------+
-|                                    FeedbackRAG MLFQ Control Flow                                 |
-+--------------------------------------------------------------------------------------------------+
-  User Question q
-        |
-        v
-  [ LEVEL 0: Direct Parametric LLM ] ---> 3 samples at T=0.7
-        |
-        +---> Evaluator: S1 (Self-Consistency) >= tau_0?
-                 |
-                 |-- (PASS: High consensus) ---> [ EARLY EXIT: Return Direct Answer ]
-                 |                                (Calls: 3 | Cost: $0.000030)
-                 v (FAIL: Parametric uncertainty)
-  [ LEVEL 1: Single-Pass Hybrid RAG ] ---> BM25 + Dense RRF Fusion (k=5) -> Generate Answer
-        |
-        +---> Evaluator: S2 (Retrieval Grade) >= tau_1_ret AND S3 (Groundedness) >= tau_1_gnd?
-                 |
-                 |-- (PASS: Context relevant & grounded) ---> [ EARLY EXIT: Return L1 + Citations ]
-                 |                                             (Calls: ~3 | Cost: $0.000093)
-                 v (FAIL: Context missing or hallucinated)
-  [ LEVEL 2: Iterative Multi-Hop RAG ] ---> Sub-query Decomposition + Bridge Reranker
-        |
-        +---> Evaluator: S3 (Groundedness) >= tau_2_gnd AND S4 (Completeness) >= tau_2_comp?
-                 |
-                 |-- (PASS: All sub-questions answered) ---> [ EARLY EXIT: Return L2 + Multi-Hop Trace ]
-                 |                                            (Calls: 4 | Cost: $0.000085)
-                 v (FAIL: Reasoning gap or partial answer)
-  [ LEVEL 3: Full Agentic Synthesis ] ---> Broadened k=10 + 3 Drafts x Critic-Revise + Majority Vote
-        |
-        v
-  [ TERMINAL EXIT: Return Verified Majority Consensus Answer ]
-  (Calls: ~10.60 | Cost: $0.000458)
-
-  [ HARD BUDGET GUARD: Cumulative Calls >= 15 -> Terminate with best candidate ]
-+--------------------------------------------------------------------------------------------------+
-```
+![FeedbackRAG MLFQ Architecture](results/plots/mlfq_architecture.svg)
+*Figure 1: FeedbackRAG Multilevel Feedback Queue (MLFQ) operational state machine. Every query enters at Level 0 and escalates only when verified runtime signals ($S_1 \dots S_4$) indicate deficiency.*
 
 ---
 
@@ -309,3 +274,19 @@ On both the 500-question control-flow benchmark and live neural GPU benchmarks, 
 4. Jeong, S., et al. (2024). *Adaptive-RAG: Determining When and How to Retrieve for Large Language Models*. NAACL 2024.
 5. Yang, Z., et al. (2018). *HotpotQA: A Dataset for Diverse, Explainable Multi-hop Question Answering*. EMNLP 2018.
 6. Ho, X., et al. (2020). *2WikiMultiHopQA: A Multi-hop Question Answering Dataset with Explanation Paths*. COLING 2020.
+
+---
+
+## 13. Appendix: Calibrated System Parameters & Hyperparameters
+
+| Operational Parameter | Governing Component | Calibrated Default | Operational Description |
+| :--- | :--- | :---: | :--- |
+| $\tau_0$ (Self-Consistency Threshold) | Level 0 Gate | 0.50 | Mode entity agreement among 3 samples required for direct early exit |
+| $\tau_{1,\text{ret}}$ (Retrieval Relevance) | Level 1 Gate | 0.40 | Minimum fraction of top-$k$ passages passing relevance verification |
+| $\tau_{1,\text{gnd}}$ (Claim Groundedness) | Level 1 Gate | 0.70 | Minimum fraction of generated claims directly supported by passages |
+| $\tau_{2,\text{gnd}}$ (Multi-Hop Groundedness) | Level 2 Gate | 0.75 | Stricter claim verification applied across decomposed evidence |
+| $\tau_{2,\text{comp}}$ (Sub-Query Completeness) | Level 2 Gate | 0.60 | Fraction of decomposed sub-questions answered in candidate text |
+| $k_1, b$ (Okapi BM25 Parameters) | Retrieval Engine | $k_1=1.5, b=0.75$ | Term frequency saturation and document length normalization weights |
+| $k_{\text{rrf}}$ (RRF Smoothing Constant) | Hybrid Fusion Engine | 60 | Standard constant balancing dense and sparse ranking reciprocal sums |
+| Max Call Budget ($\text{Budget}_{\text{max}}$) | MLFQ Hard Guard | 15 calls | Circuit breaker preventing unbounded agent loops and quota runaway |
+| GBDT Estimators & Depth | Learned Policy | 50 trees, depth 3 | Calibrated gradient boosting configuration preventing over-fitting on dev |
