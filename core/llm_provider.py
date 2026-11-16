@@ -129,9 +129,10 @@ class LocalMockLLM(BaseLLM):
 
 class OllamaLLM(BaseLLM):
     """Local Ollama client using HTTP interface."""
-    def __init__(self, base_url: str, model: str):
+    def __init__(self, base_url: str, model: str, allow_fallback: bool = False):
         self.base_url = base_url.rstrip("/")
         self.model = model
+        self.allow_fallback = allow_fallback
 
     def invoke(self, prompt: str, system_prompt: Optional[str] = None) -> LLMResponse:
         url = f"{self.base_url}/api/generate"
@@ -148,16 +149,21 @@ class OllamaLLM(BaseLLM):
                 res = json.loads(response.read().decode("utf-8"))
                 return LLMResponse(content=res.get("response", ""), raw=res)
         except Exception as e:
-            # Fail gracefully to local mock if Ollama unreachable
-            print(f"[Warning] Ollama connection failed ({e}). Falling back to LocalMockLLM.")
-            return LocalMockLLM().invoke(prompt, system_prompt)
+            if self.allow_fallback:
+                print(f"[Warning] Ollama connection failed ({e}). Falling back to LocalMockLLM.")
+                return LocalMockLLM().invoke(prompt, system_prompt)
+            raise RuntimeError(
+                f"Ollama invocation failed at {self.base_url} with model '{self.model}': {e}. "
+                "Ensure Ollama is running or switch 'llm_provider' to 'local_mock' in config/settings."
+            ) from e
 
 class OpenAICompatibleLLM(BaseLLM):
     """OpenAI compatible HTTP client."""
-    def __init__(self, api_base: str, api_key: str, model: str = "gpt-4o-mini"):
+    def __init__(self, api_base: str, api_key: str, model: str = "gpt-4o-mini", allow_fallback: bool = False):
         self.api_base = api_base.rstrip("/")
         self.api_key = api_key
         self.model = model
+        self.allow_fallback = allow_fallback
 
     def invoke(self, prompt: str, system_prompt: Optional[str] = None) -> LLMResponse:
         url = f"{self.api_base}/chat/completions"
@@ -183,14 +189,19 @@ class OpenAICompatibleLLM(BaseLLM):
                 content = res["choices"][0]["message"]["content"]
                 return LLMResponse(content=content, raw=res)
         except Exception as e:
-            print(f"[Warning] OpenAI API connection failed ({e}). Falling back to LocalMockLLM.")
-            return LocalMockLLM().invoke(prompt, system_prompt)
+            if self.allow_fallback:
+                print(f"[Warning] OpenAI API connection failed ({e}). Falling back to LocalMockLLM.")
+                return LocalMockLLM().invoke(prompt, system_prompt)
+            raise RuntimeError(
+                f"OpenAI-compatible LLM invocation failed at {self.api_base} with model '{self.model}': {e}. "
+                "Verify API endpoint and credentials or switch 'llm_provider' to 'local_mock' in config/settings."
+            ) from e
 
-def get_llm() -> BaseLLM:
+def get_llm(allow_fallback: bool = False) -> BaseLLM:
     """Factory method to get the configured LLM provider."""
     provider = settings.llm_provider.lower().strip()
     if provider == "ollama":
-        return OllamaLLM(base_url=settings.ollama_base_url, model=settings.ollama_model)
+        return OllamaLLM(base_url=settings.ollama_base_url, model=settings.ollama_model, allow_fallback=allow_fallback)
     elif provider == "openai_compatible" and settings.openai_api_key:
-        return OpenAICompatibleLLM(api_base=settings.openai_api_base, api_key=settings.openai_api_key)
+        return OpenAICompatibleLLM(api_base=settings.openai_api_base, api_key=settings.openai_api_key, allow_fallback=allow_fallback)
     return LocalMockLLM()
