@@ -1,0 +1,681 @@
+{
+  "best_config": {
+    "budget": {
+      "max_calls_per_query": 20
+    },
+    "levels": {
+      "L0": {
+        "tau": 0.5
+      },
+      "L1": {
+        "tau_retrieval": 0.4,
+        "tau_ground": 0.6
+      },
+      "L2": {
+        "tau_ground": 0.7,
+        "tau_complete": 0.7
+      },
+      "L3": {
+        "drafts": 3,
+        "max_revisions": 2
+      }
+    }
+  },
+  "test_performance": {
+    "em": 86.8,
+    "f1": 86.8,
+    "avg_calls": 8.94
+  },
+  "all_sweep_points": [
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.4,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 88.0,
+      "dev_f1": 88.0,
+      "dev_calls": 8.85,
+      "f1_per_call": 9.944
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.6,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.8,
+        "L2_tau_ground": 0.9,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.7,
+        "L2_tau_complete": 0.9
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.7
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    },
+    {
+      "thresholds": {
+        "L0_tau": 0.5,
+        "L1_tau_retrieval": 0.5,
+        "L1_tau_ground": 0.9,
+        "L2_tau_ground": 0.8,
+        "L2_tau_complete": 0.8
+      },
+      "dev_em": 82.0,
+      "dev_f1": 82.0,
+      "dev_calls": 11.07,
+      "f1_per_call": 7.407
+    }
+  ]
+}

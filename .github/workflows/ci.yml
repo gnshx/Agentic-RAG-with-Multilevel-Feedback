@@ -1,0 +1,62 @@
+name: FeedbackRAG CI
+
+on:
+  push:
+    branches: [ main, feature/** ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Unit & Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+
+      - name: Generate dynamic test secrets & environment
+        run: |
+          # Enforce dynamic key generation for CI testing (Zero hardcoded secrets protocol)
+          TEST_SECRET=$(openssl rand -hex 32)
+          echo "TEST_API_KEY=${TEST_SECRET}" >> $GITHUB_ENV
+          echo "CI=true" >> $GITHUB_ENV
+
+      - name: Verify data integrity
+        run: |
+          python -c "
+          import json
+          with open('data/dev.json') as f: dev = json.load(f)
+          with open('data/test.json') as f: test = json.load(f)
+          with open('data/corpus.json') as f: corpus = json.load(f)
+          assert len(dev) == 100, f'Expected 100 dev items, got {len(dev)}'
+          assert len(test) == 500, f'Expected 500 test items, got {len(test)}'
+          assert len(corpus) >= 40, f'Corpus too small: {len(corpus)}'
+          print(f'Data integrity check passed: {len(dev)} dev, {len(test)} test, {len(corpus)} corpus chunks.')
+          "
+
+      - name: Run Pytest suite
+        run: |
+          pytest -v --tb=short
+
+      - name: Verify Learned Policy Model Artifact
+        run: |
+          python -c "
+          import pickle
+          with open('results/learned_policy.pkl', 'rb') as f:
+              bundle = pickle.load(f)
+          assert 'model' in bundle and 'scaler' in bundle and 'feature_names' in bundle
+          print('Learned policy artifact verified with features:', bundle['feature_names'])
+          "

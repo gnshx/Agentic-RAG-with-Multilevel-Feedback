@@ -1,0 +1,2100 @@
+{
+  "split": "dev",
+  "num_questions": 50,
+  "em": 88.0,
+  "f1": 88.0,
+  "avg_calls": 9.72,
+  "total_calls": 486,
+  "total_latency_s": 0.11,
+  "avg_latency_s": 0.0021,
+  "level_distribution": {
+    "Level_0": "18.0% (9/50)",
+    "Level_1": "52.0% (26/50)",
+    "Level_2": "0.0% (0/50)",
+    "Level_3": "30.0% (15/50)"
+  },
+  "records": [
+    {
+      "id": "hotpot_063",
+      "question": "What is the capital city of France?",
+      "ground_truth": "Paris",
+      "prediction": "Paris",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0002,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0002,
+          "answer_preview": "Paris"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_133",
+      "question": "What is the capital city of France?",
+      "ground_truth": "Paris",
+      "prediction": "Paris",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Paris"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_109",
+      "question": "What is the native home country of the inventor of the World Wide Web?",
+      "ground_truth": "United Kingdom",
+      "prediction": "United Kingdom [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to United Kingdom"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "United Kingdom [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_134",
+      "question": "In what country was the company that created the Android operating system founded?",
+      "ground_truth": "United States",
+      "prediction": "United States [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 25,
+      "latency": 0.0019,
+      "status": "budget_exhausted",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to United States"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0004,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.001,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 15,
+          "total_calls_so_far": 25,
+          "level_latency": 0.0005,
+          "answer_preview": "United States [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_075",
+      "question": "Which mountain is taller, Mount Everest or K2?",
+      "ground_truth": "Mount Everest",
+      "prediction": "Mount Everest [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0004,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Mount Everest"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Mount Everest [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_061",
+      "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+      "ground_truth": "no",
+      "prediction": "no [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0004,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "no [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_130",
+      "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+      "ground_truth": "Academy Award for Best Director",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0004,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Academy Award for Best Director"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0004,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_039",
+      "question": "What is the native home country of the inventor of the World Wide Web?",
+      "ground_truth": "United Kingdom",
+      "prediction": "United Kingdom [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to United Kingdom"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "United Kingdom [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_040",
+      "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+      "ground_truth": "Academy Award for Best Director",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Academy Award for Best Director"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_038",
+      "question": "Did Python or Java release first?",
+      "ground_truth": "Python",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 3,
+      "em": 0.0,
+      "f1": 0.0,
+      "calls": 19,
+      "latency": 0.0015,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0004,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_065",
+      "question": "Which mountain is taller, Mount Everest or K2?",
+      "ground_truth": "Mount Everest",
+      "prediction": "Mount Everest [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Mount Everest"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Mount Everest [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_085",
+      "question": "Which mountain is taller, Mount Everest or K2?",
+      "ground_truth": "Mount Everest",
+      "prediction": "Mount Everest [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Mount Everest"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Mount Everest [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_000",
+      "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+      "ground_truth": "Academy Award for Best Director",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Academy Award for Best Director"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_141",
+      "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+      "ground_truth": "no",
+      "prediction": "no [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "no [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_095",
+      "question": "Which mountain is taller, Mount Everest or K2?",
+      "ground_truth": "Mount Everest",
+      "prediction": "Mount Everest [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Mount Everest"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Mount Everest [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_032",
+      "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+      "ground_truth": "Seine",
+      "prediction": "Seine [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0004,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Seine"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Seine [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_131",
+      "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+      "ground_truth": "no",
+      "prediction": "no [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "no [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_018",
+      "question": "Did Python or Java release first?",
+      "ground_truth": "Python",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 3,
+      "em": 0.0,
+      "f1": 0.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_083",
+      "question": "What is the capital city of France?",
+      "ground_truth": "Paris",
+      "prediction": "Paris",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Paris"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_030",
+      "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+      "ground_truth": "Academy Award for Best Director",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Academy Award for Best Director"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_119",
+      "question": "What is the native home country of the inventor of the World Wide Web?",
+      "ground_truth": "United Kingdom",
+      "prediction": "United Kingdom [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to United Kingdom"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "United Kingdom [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_132",
+      "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+      "ground_truth": "Seine",
+      "prediction": "Seine [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Seine"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Seine [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_072",
+      "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+      "ground_truth": "Seine",
+      "prediction": "Seine [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Seine"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Seine [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_123",
+      "question": "What is the capital city of France?",
+      "ground_truth": "Paris",
+      "prediction": "Paris",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Paris"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_128",
+      "question": "Did Python or Java release first?",
+      "ground_truth": "Python",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 3,
+      "em": 0.0,
+      "f1": 0.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_136",
+      "question": "Who composed the opera that features the aria Nessun Dorma?",
+      "ground_truth": "Giacomo Puccini",
+      "prediction": "Giacomo Puccini [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 19,
+      "latency": 0.0016,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Giacomo Puccini"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0004,
+          "answer_preview": "Giacomo Puccini [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_003",
+      "question": "What is the capital city of France?",
+      "ground_truth": "Paris",
+      "prediction": "Paris",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Paris"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_053",
+      "question": "What is the capital city of France?",
+      "ground_truth": "Paris",
+      "prediction": "Paris",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Paris"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_127",
+      "question": "What chemical element is the primary component of diamond?",
+      "ground_truth": "carbon",
+      "prediction": "carbon",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "carbon"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_092",
+      "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+      "ground_truth": "Seine",
+      "prediction": "Seine [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Seine"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Seine [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_060",
+      "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+      "ground_truth": "Academy Award for Best Director",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Academy Award for Best Director"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_067",
+      "question": "What chemical element is the primary component of diamond?",
+      "ground_truth": "carbon",
+      "prediction": "carbon",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "carbon"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_042",
+      "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+      "ground_truth": "Seine",
+      "prediction": "Seine [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Seine"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Seine [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_146",
+      "question": "Who composed the opera that features the aria Nessun Dorma?",
+      "ground_truth": "Giacomo Puccini",
+      "prediction": "Giacomo Puccini [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Giacomo Puccini"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0007,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Giacomo Puccini [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_137",
+      "question": "What chemical element is the primary component of diamond?",
+      "ground_truth": "carbon",
+      "prediction": "carbon",
+      "resolved_level": 0,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 3,
+      "latency": 0.0,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "carbon"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_110",
+      "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+      "ground_truth": "Academy Award for Best Director",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Academy Award for Best Director"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.8,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_118",
+      "question": "Did Python or Java release first?",
+      "ground_truth": "Python",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 3,
+      "em": 0.0,
+      "f1": 0.0,
+      "calls": 19,
+      "latency": 0.0014,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_086",
+      "question": "Who composed the opera that features the aria Nessun Dorma?",
+      "ground_truth": "Giacomo Puccini",
+      "prediction": "Giacomo Puccini [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Giacomo Puccini"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Giacomo Puccini [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_116",
+      "question": "Who composed the opera that features the aria Nessun Dorma?",
+      "ground_truth": "Giacomo Puccini",
+      "prediction": "Giacomo Puccini [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Giacomo Puccini"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0007,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Giacomo Puccini [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_066",
+      "question": "Who composed the opera that features the aria Nessun Dorma?",
+      "ground_truth": "Giacomo Puccini",
+      "prediction": "Giacomo Puccini [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Giacomo Puccini"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0007,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Giacomo Puccini [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_081",
+      "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+      "ground_truth": "no",
+      "prediction": "no [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "no [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_101",
+      "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+      "ground_truth": "no",
+      "prediction": "no [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "no [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_091",
+      "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+      "ground_truth": "no",
+      "prediction": "no [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "no [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_016",
+      "question": "Who composed the opera that features the aria Nessun Dorma?",
+      "ground_truth": "Giacomo Puccini",
+      "prediction": "Giacomo Puccini [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Giacomo Puccini"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.4,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Giacomo Puccini [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_104",
+      "question": "In what country was the company that created the Android operating system founded?",
+      "ground_truth": "United States",
+      "prediction": "United States [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 25,
+      "latency": 0.0015,
+      "status": "budget_exhausted",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to United States"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 15,
+          "total_calls_so_far": 25,
+          "level_latency": 0.0004,
+          "answer_preview": "United States [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_088",
+      "question": "Did Python or Java release first?",
+      "ground_truth": "Python",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 3,
+      "em": 0.0,
+      "f1": 0.0,
+      "calls": 19,
+      "latency": 0.0013,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_049",
+      "question": "What is the native home country of the inventor of the World Wide Web?",
+      "ground_truth": "United Kingdom",
+      "prediction": "United Kingdom [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to United Kingdom"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "United Kingdom [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_145",
+      "question": "Which mountain is taller, Mount Everest or K2?",
+      "ground_truth": "Mount Everest",
+      "prediction": "Mount Everest [1]",
+      "resolved_level": 1,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 6,
+      "latency": 0.0003,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to Mount Everest"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 1.0
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Mount Everest [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_098",
+      "question": "Did Python or Java release first?",
+      "ground_truth": "Python",
+      "prediction": "Academy Award for Best Director [1]",
+      "resolved_level": 3,
+      "em": 0.0,
+      "f1": 0.0,
+      "calls": 19,
+      "latency": 0.0014,
+      "status": "ok",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "Uncertain without verifying external multi-hop facts."
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0002,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.9,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 9,
+          "total_calls_so_far": 19,
+          "level_latency": 0.0003,
+          "answer_preview": "Academy Award for Best Director [1]"
+        }
+      ]
+    },
+    {
+      "id": "hotpot_064",
+      "question": "In what country was the company that created the Android operating system founded?",
+      "ground_truth": "United States",
+      "prediction": "United States [1]",
+      "resolved_level": 3,
+      "em": 1.0,
+      "f1": 1.0,
+      "calls": 25,
+      "latency": 0.0014,
+      "status": "budget_exhausted",
+      "trace": [
+        {
+          "level": 0,
+          "signals": {
+            "S1": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 3,
+          "level_latency": 0.0,
+          "answer_preview": "I believe the answer might be related to United States"
+        },
+        {
+          "level": 1,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 0.3333333333333333
+          },
+          "calls_used_level": 3,
+          "total_calls_so_far": 6,
+          "level_latency": 0.0003,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 2,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 0.6,
+            "S3": 0.3333333333333333,
+            "S4": 0.5
+          },
+          "calls_used_level": 4,
+          "total_calls_so_far": 10,
+          "level_latency": 0.0008,
+          "answer_preview": "Based on the provided passages, I cannot find sufficient evidence to answer [1]."
+        },
+        {
+          "level": 3,
+          "signals": {
+            "S1": 0.3333333333333333,
+            "S2": 1.0,
+            "S3": 1.0,
+            "S4": 1.0
+          },
+          "calls_used_level": 15,
+          "total_calls_so_far": 25,
+          "level_latency": 0.0003,
+          "answer_preview": "United States [1]"
+        }
+      ]
+    }
+  ]
+}

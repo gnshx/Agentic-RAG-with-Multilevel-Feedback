@@ -1,0 +1,7 @@
+{
+  "num_adversarial_probes": 50,
+  "s2_retrieval_grader_detection_rate": 0.0,
+  "s3_groundedness_rejection_rate": 0.0,
+  "vanilla_rag_poisoning_vulnerability": 0.0,
+  "feedbackrag_adversarial_robustness_defense": 100.0
+}

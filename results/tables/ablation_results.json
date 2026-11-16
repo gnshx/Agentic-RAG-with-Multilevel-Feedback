@@ -1,0 +1,40 @@
+[
+  {
+    "dropped_signal": "None (Full FeedbackRAG)",
+    "em": 80.2,
+    "f1": 80.2,
+    "avg_calls": 11.26
+  },
+  {
+    "dropped_signal": "S1",
+    "em": 80.2,
+    "f1": 80.2,
+    "avg_calls": 11.66,
+    "delta_f1": 0.0,
+    "delta_calls": 0.4
+  },
+  {
+    "dropped_signal": "S2",
+    "em": 86.8,
+    "f1": 86.8,
+    "avg_calls": 8.41,
+    "delta_f1": 6.6,
+    "delta_calls": -2.85
+  },
+  {
+    "dropped_signal": "S3",
+    "em": 66.8,
+    "f1": 66.8,
+    "avg_calls": 8.45,
+    "delta_f1": -13.4,
+    "delta_calls": -2.81
+  },
+  {
+    "dropped_signal": "S4",
+    "em": 80.2,
+    "f1": 80.2,
+    "avg_calls": 11.26,
+    "delta_f1": 0.0,
+    "delta_calls": 0.0
+  }
+]

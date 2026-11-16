@@ -1,0 +1,10 @@
+{
+  "num_hand_labeled_samples": 50,
+  "cohens_kappa_retrieval_grade": 0.0,
+  "cohens_kappa_groundedness": 0.0,
+  "human_llm_agreement_retrieval": 68.0,
+  "human_llm_agreement_groundedness": 52.0,
+  "cross_judge_agreement_retrieval": 68.0,
+  "cross_judge_agreement_groundedness": 68.0,
+  "self_preference_bias_delta": 0.32
+}

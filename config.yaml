@@ -1,0 +1,32 @@
+llm:
+  provider: "local_mock" # Options: "local_mock", "ollama", "openai_compatible", "gemini"
+  model: "llama3.2:latest"
+  temperature: 0.0
+  timeout_s: 30
+  max_retries: 3
+  cache_path: "results/llm_cache.json"
+
+retrieval:
+  k: 5
+  k_broad: 10
+  fusion: "rrf" # Reciprocal Rank Fusion
+
+levels:
+  L0:
+    samples: 3
+    tau: 0.67
+  L1:
+    tau_retrieval: 0.5
+    tau_ground: 0.8
+  L2:
+    tau_ground: 0.8
+    tau_complete: 0.8
+  L3:
+    drafts: 3
+    max_revisions: 2
+
+budget:
+  max_calls_per_query: 20
+
+seed: 42
+

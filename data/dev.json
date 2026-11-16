@@ -1,0 +1,4512 @@
+[
+  {
+    "id": "dev_0042",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Which college did the author of Philosophi\u00e6 Naturalis Principia Mathematica attend?",
+    "answer": "Trinity College, Cambridge",
+    "gold_paragraphs": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      },
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ]
+  },
+  {
+    "id": "dev_0041",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "What is the capital of the country where the creator of the Linux kernel was born?",
+    "answer": "Helsinki",
+    "gold_paragraphs": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      },
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ]
+  },
+  {
+    "id": "dev_0091",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      },
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ]
+  },
+  {
+    "id": "dev_0009",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What is the native home country of the inventor of the World Wide Web?",
+    "answer": "United Kingdom",
+    "gold_paragraphs": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      },
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ]
+  },
+  {
+    "id": "dev_0065",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Which mountain is taller, Mount Everest or K2?",
+    "answer": "Mount Everest",
+    "gold_paragraphs": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      },
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ]
+  },
+  {
+    "id": "dev_0050",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Which mountain is taller, Mount Everest or K2?",
+    "answer": "Mount Everest",
+    "gold_paragraphs": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      },
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ]
+  },
+  {
+    "id": "dev_0001",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      },
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ]
+  },
+  {
+    "id": "dev_0070",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Who is the spouse of the director of the film Inception?",
+    "answer": "Emma Thomas",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      },
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0015",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+    "answer": "Academy Award for Best Director",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      },
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0078",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What is the capital city of France?",
+    "answer": "Paris",
+    "gold_paragraphs": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      },
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ]
+  },
+  {
+    "id": "dev_0073",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "In what city was the winner of the 1921 Nobel Prize in Physics born?",
+    "answer": "Ulm",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      },
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ]
+  },
+  {
+    "id": "dev_0010",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Who is the spouse of the director of the film Inception?",
+    "answer": "Emma Thomas",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      },
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0055",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Who is the spouse of the director of the film Inception?",
+    "answer": "Emma Thomas",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      },
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0056",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "What is the capital of the country where the creator of the Linux kernel was born?",
+    "answer": "Helsinki",
+    "gold_paragraphs": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      },
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ]
+  },
+  {
+    "id": "dev_0072",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Which college did the author of Philosophi\u00e6 Naturalis Principia Mathematica attend?",
+    "answer": "Trinity College, Cambridge",
+    "gold_paragraphs": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      },
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ]
+  },
+  {
+    "id": "dev_0045",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+    "answer": "Academy Award for Best Director",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      },
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0048",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What is the capital city of France?",
+    "answer": "Paris",
+    "gold_paragraphs": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      },
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ]
+  },
+  {
+    "id": "dev_0092",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+    "answer": "Seine",
+    "gold_paragraphs": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      },
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ]
+  },
+  {
+    "id": "dev_0076",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      },
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ]
+  },
+  {
+    "id": "dev_0037",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What chemical element is the primary component of diamond?",
+    "answer": "carbon",
+    "gold_paragraphs": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      },
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ]
+  },
+  {
+    "id": "dev_0030",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+    "answer": "Academy Award for Best Director",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      },
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0021",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Who composed the opera that features the aria Nessun Dorma?",
+    "answer": "Giacomo Puccini",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      },
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ]
+  },
+  {
+    "id": "dev_0032",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+    "answer": "Seine",
+    "gold_paragraphs": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      },
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ]
+  },
+  {
+    "id": "dev_0096",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Who composed the opera that features the aria Nessun Dorma?",
+    "answer": "Giacomo Puccini",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      },
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ]
+  },
+  {
+    "id": "dev_0080",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Which mountain is taller, Mount Everest or K2?",
+    "answer": "Mount Everest",
+    "gold_paragraphs": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      },
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ]
+  },
+  {
+    "id": "dev_0049",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "In what country was the company that created the Android operating system founded?",
+    "answer": "United States",
+    "gold_paragraphs": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      },
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ]
+  },
+  {
+    "id": "dev_0083",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Did Python or Java release first?",
+    "answer": "Python",
+    "gold_paragraphs": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      },
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ]
+  },
+  {
+    "id": "dev_0026",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "What is the capital of the country where the creator of the Linux kernel was born?",
+    "answer": "Helsinki",
+    "gold_paragraphs": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      },
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ]
+  },
+  {
+    "id": "dev_0087",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Which college did the author of Philosophi\u00e6 Naturalis Principia Mathematica attend?",
+    "answer": "Trinity College, Cambridge",
+    "gold_paragraphs": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      },
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ]
+  },
+  {
+    "id": "dev_0033",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What is the capital city of France?",
+    "answer": "Paris",
+    "gold_paragraphs": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      },
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ]
+  },
+  {
+    "id": "dev_0008",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Did Python or Java release first?",
+    "answer": "Python",
+    "gold_paragraphs": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      },
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ]
+  },
+  {
+    "id": "dev_0047",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+    "answer": "Seine",
+    "gold_paragraphs": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      },
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ]
+  },
+  {
+    "id": "dev_0059",
+    "dataset": "2WikiMultiHopQA",
+    "type": "comparison",
+    "question": "Were Isaac Newton and Albert Einstein born in the same country?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      },
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ]
+  },
+  {
+    "id": "dev_0063",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What is the capital city of France?",
+    "answer": "Paris",
+    "gold_paragraphs": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      },
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ]
+  },
+  {
+    "id": "dev_0074",
+    "dataset": "2WikiMultiHopQA",
+    "type": "comparison",
+    "question": "Were Isaac Newton and Albert Einstein born in the same country?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      },
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ]
+  },
+  {
+    "id": "dev_0044",
+    "dataset": "2WikiMultiHopQA",
+    "type": "comparison",
+    "question": "Were Isaac Newton and Albert Einstein born in the same country?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      },
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ]
+  },
+  {
+    "id": "dev_0098",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Did Python or Java release first?",
+    "answer": "Python",
+    "gold_paragraphs": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      },
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ]
+  },
+  {
+    "id": "dev_0052",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What chemical element is the primary component of diamond?",
+    "answer": "carbon",
+    "gold_paragraphs": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      },
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ]
+  },
+  {
+    "id": "dev_0085",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Who is the spouse of the director of the film Inception?",
+    "answer": "Emma Thomas",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      },
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0012",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Which college did the author of Philosophi\u00e6 Naturalis Principia Mathematica attend?",
+    "answer": "Trinity College, Cambridge",
+    "gold_paragraphs": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      },
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ]
+  },
+  {
+    "id": "dev_0036",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Who composed the opera that features the aria Nessun Dorma?",
+    "answer": "Giacomo Puccini",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      },
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ]
+  },
+  {
+    "id": "dev_0023",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Did Python or Java release first?",
+    "answer": "Python",
+    "gold_paragraphs": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      },
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ]
+  },
+  {
+    "id": "dev_0039",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What is the native home country of the inventor of the World Wide Web?",
+    "answer": "United Kingdom",
+    "gold_paragraphs": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      },
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ]
+  },
+  {
+    "id": "dev_0040",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Who is the spouse of the director of the film Inception?",
+    "answer": "Emma Thomas",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      },
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0018",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What is the capital city of France?",
+    "answer": "Paris",
+    "gold_paragraphs": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      },
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ]
+  },
+  {
+    "id": "dev_0066",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Who composed the opera that features the aria Nessun Dorma?",
+    "answer": "Giacomo Puccini",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      },
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ]
+  },
+  {
+    "id": "dev_0061",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      },
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ]
+  },
+  {
+    "id": "dev_0060",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+    "answer": "Academy Award for Best Director",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      },
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0007",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What chemical element is the primary component of diamond?",
+    "answer": "carbon",
+    "gold_paragraphs": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      },
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ]
+  },
+  {
+    "id": "dev_0034",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "In what country was the company that created the Android operating system founded?",
+    "answer": "United States",
+    "gold_paragraphs": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      },
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ]
+  },
+  {
+    "id": "dev_0099",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What is the native home country of the inventor of the World Wide Web?",
+    "answer": "United Kingdom",
+    "gold_paragraphs": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      },
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ]
+  },
+  {
+    "id": "dev_0046",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      },
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ]
+  },
+  {
+    "id": "dev_0002",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+    "answer": "Seine",
+    "gold_paragraphs": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      },
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ]
+  },
+  {
+    "id": "dev_0051",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Who composed the opera that features the aria Nessun Dorma?",
+    "answer": "Giacomo Puccini",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      },
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ]
+  },
+  {
+    "id": "dev_0016",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      },
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ]
+  },
+  {
+    "id": "dev_0038",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Did Python or Java release first?",
+    "answer": "Python",
+    "gold_paragraphs": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      },
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ]
+  },
+  {
+    "id": "dev_0058",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "In what city was the winner of the 1921 Nobel Prize in Physics born?",
+    "answer": "Ulm",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      },
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ]
+  },
+  {
+    "id": "dev_0068",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Did Python or Java release first?",
+    "answer": "Python",
+    "gold_paragraphs": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      },
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ]
+  },
+  {
+    "id": "dev_0022",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What chemical element is the primary component of diamond?",
+    "answer": "carbon",
+    "gold_paragraphs": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      },
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ]
+  },
+  {
+    "id": "dev_0062",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+    "answer": "Seine",
+    "gold_paragraphs": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      },
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ]
+  },
+  {
+    "id": "dev_0024",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What is the native home country of the inventor of the World Wide Web?",
+    "answer": "United Kingdom",
+    "gold_paragraphs": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      },
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ]
+  },
+  {
+    "id": "dev_0005",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Which mountain is taller, Mount Everest or K2?",
+    "answer": "Mount Everest",
+    "gold_paragraphs": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      },
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ]
+  },
+  {
+    "id": "dev_0006",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Who composed the opera that features the aria Nessun Dorma?",
+    "answer": "Giacomo Puccini",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      },
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ]
+  },
+  {
+    "id": "dev_0067",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What chemical element is the primary component of diamond?",
+    "answer": "carbon",
+    "gold_paragraphs": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      },
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ]
+  },
+  {
+    "id": "dev_0082",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What chemical element is the primary component of diamond?",
+    "answer": "carbon",
+    "gold_paragraphs": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      },
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ]
+  },
+  {
+    "id": "dev_0019",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "In what country was the company that created the Android operating system founded?",
+    "answer": "United States",
+    "gold_paragraphs": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      },
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ]
+  },
+  {
+    "id": "dev_0079",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "In what country was the company that created the Android operating system founded?",
+    "answer": "United States",
+    "gold_paragraphs": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      },
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ]
+  },
+  {
+    "id": "dev_0043",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "In what city was the winner of the 1921 Nobel Prize in Physics born?",
+    "answer": "Ulm",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      },
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ]
+  },
+  {
+    "id": "dev_0090",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+    "answer": "Academy Award for Best Director",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      },
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0020",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Which mountain is taller, Mount Everest or K2?",
+    "answer": "Mount Everest",
+    "gold_paragraphs": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      },
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ]
+  },
+  {
+    "id": "dev_0000",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+    "answer": "Academy Award for Best Director",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      },
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0095",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Which mountain is taller, Mount Everest or K2?",
+    "answer": "Mount Everest",
+    "gold_paragraphs": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      },
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ]
+  },
+  {
+    "id": "dev_0057",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Which college did the author of Philosophi\u00e6 Naturalis Principia Mathematica attend?",
+    "answer": "Trinity College, Cambridge",
+    "gold_paragraphs": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      },
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ]
+  },
+  {
+    "id": "dev_0093",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What is the capital city of France?",
+    "answer": "Paris",
+    "gold_paragraphs": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      },
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ]
+  },
+  {
+    "id": "dev_0053",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Did Python or Java release first?",
+    "answer": "Python",
+    "gold_paragraphs": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_python_lang",
+        "title": "Python (programming language)",
+        "text": "Python is a high-level programming language released in 1991 by Guido van Rossum."
+      },
+      {
+        "id": "doc_java_lang",
+        "title": "Java (programming language)",
+        "text": "Java is a class-based, object-oriented language released by Sun Microsystems in 1995."
+      },
+      {
+        "id": "doc_c_lang",
+        "title": "C (programming language)",
+        "text": "C is a general-purpose programming language developed in 1972."
+      }
+    ]
+  },
+  {
+    "id": "dev_0089",
+    "dataset": "2WikiMultiHopQA",
+    "type": "comparison",
+    "question": "Were Isaac Newton and Albert Einstein born in the same country?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      },
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ]
+  },
+  {
+    "id": "dev_0025",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Who is the spouse of the director of the film Inception?",
+    "answer": "Emma Thomas",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc_wiki",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction film directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_nolan_spouse",
+        "title": "Christopher Nolan",
+        "text": "Christopher Edward Nolan CBE is a British-American filmmaker. He is married to film producer Emma Thomas."
+      },
+      {
+        "id": "doc_bale",
+        "title": "Christian Bale",
+        "text": "Christian Bale is an English actor who collaborated with Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0071",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "What is the capital of the country where the creator of the Linux kernel was born?",
+    "answer": "Helsinki",
+    "gold_paragraphs": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      },
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ]
+  },
+  {
+    "id": "dev_0084",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What is the native home country of the inventor of the World Wide Web?",
+    "answer": "United Kingdom",
+    "gold_paragraphs": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      },
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ]
+  },
+  {
+    "id": "dev_0077",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+    "answer": "Seine",
+    "gold_paragraphs": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      },
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ]
+  },
+  {
+    "id": "dev_0064",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "In what country was the company that created the Android operating system founded?",
+    "answer": "United States",
+    "gold_paragraphs": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      },
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ]
+  },
+  {
+    "id": "dev_0029",
+    "dataset": "2WikiMultiHopQA",
+    "type": "comparison",
+    "question": "Were Isaac Newton and Albert Einstein born in the same country?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      },
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ]
+  },
+  {
+    "id": "dev_0027",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "Which college did the author of Philosophi\u00e6 Naturalis Principia Mathematica attend?",
+    "answer": "Trinity College, Cambridge",
+    "gold_paragraphs": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_principia",
+        "title": "Philosophi\u00e6 Naturalis Principia Mathematica",
+        "text": "Principia Mathematica is a 1687 work by Sir Isaac Newton stating Newton's laws of motion."
+      },
+      {
+        "id": "doc_newton_college",
+        "title": "Isaac Newton",
+        "text": "Sir Isaac Newton was admitted to Trinity College, Cambridge, in June 1661."
+      },
+      {
+        "id": "doc_oxford",
+        "title": "University of Oxford",
+        "text": "Oxford is a collegiate research university in Oxford, England."
+      }
+    ]
+  },
+  {
+    "id": "dev_0088",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "In what city was the winner of the 1921 Nobel Prize in Physics born?",
+    "answer": "Ulm",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      },
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ]
+  },
+  {
+    "id": "dev_0097",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What chemical element is the primary component of diamond?",
+    "answer": "carbon",
+    "gold_paragraphs": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_diamond",
+        "title": "Diamond",
+        "text": "Diamond is a solid form of the element carbon with its atoms arranged in a crystal structure called diamond cubic."
+      },
+      {
+        "id": "doc_silicon",
+        "title": "Silicon",
+        "text": "Silicon is a chemical element with symbol Si and atomic number 14."
+      }
+    ]
+  },
+  {
+    "id": "dev_0004",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "In what country was the company that created the Android operating system founded?",
+    "answer": "United States",
+    "gold_paragraphs": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      },
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ]
+  },
+  {
+    "id": "dev_0054",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What is the native home country of the inventor of the World Wide Web?",
+    "answer": "United Kingdom",
+    "gold_paragraphs": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      },
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ]
+  },
+  {
+    "id": "dev_0075",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What award did the director of the film Inception win for his 2023 biographical movie?",
+    "answer": "Academy Award for Best Director",
+    "gold_paragraphs": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_inc",
+        "title": "Inception (film)",
+        "text": "Inception is a 2010 science fiction action film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_opp",
+        "title": "Oppenheimer (film)",
+        "text": "Oppenheimer is a 2023 epic biographical thriller film written, directed, and produced by Christopher Nolan. At the 96th Academy Awards, Nolan won the Academy Award for Best Director."
+      },
+      {
+        "id": "doc_memento",
+        "title": "Memento (film)",
+        "text": "Memento is a 2000 American neo-noir psychological thriller film written and directed by Christopher Nolan."
+      },
+      {
+        "id": "doc_tenet",
+        "title": "Tenet (film)",
+        "text": "Tenet is a 2020 science fiction action thriller film written and directed by Christopher Nolan."
+      }
+    ]
+  },
+  {
+    "id": "dev_0011",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "What is the capital of the country where the creator of the Linux kernel was born?",
+    "answer": "Helsinki",
+    "gold_paragraphs": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      },
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ]
+  },
+  {
+    "id": "dev_0069",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "What is the native home country of the inventor of the World Wide Web?",
+    "answer": "United Kingdom",
+    "gold_paragraphs": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_tim_bl",
+        "title": "Tim Berners-Lee",
+        "text": "Sir Timothy John Berners-Lee is an English computer scientist best known as the inventor of the World Wide Web."
+      },
+      {
+        "id": "doc_england",
+        "title": "England",
+        "text": "England is a country that is part of the United Kingdom."
+      },
+      {
+        "id": "doc_cerf",
+        "title": "Vint Cerf",
+        "text": "Vint Cerf is an American Internet pioneer who contributed to TCP/IP protocols."
+      }
+    ]
+  },
+  {
+    "id": "dev_0086",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "What is the capital of the country where the creator of the Linux kernel was born?",
+    "answer": "Helsinki",
+    "gold_paragraphs": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_linus",
+        "title": "Linus Torvalds",
+        "text": "Linus Benedict Torvalds is a software engineer who is the creator and lead developer of the Linux kernel. He was born in Finland."
+      },
+      {
+        "id": "doc_finland",
+        "title": "Finland",
+        "text": "Finland is a Nordic country in Northern Europe. Its capital and largest city is Helsinki."
+      },
+      {
+        "id": "doc_sweden",
+        "title": "Sweden",
+        "text": "Sweden is a Nordic country. Its capital is Stockholm."
+      }
+    ]
+  },
+  {
+    "id": "dev_0013",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "In what city was the winner of the 1921 Nobel Prize in Physics born?",
+    "answer": "Ulm",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      },
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ]
+  },
+  {
+    "id": "dev_0017",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Which river flows through the European capital city where the Eiffel Tower is situated?",
+    "answer": "Seine",
+    "gold_paragraphs": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_eiffel",
+        "title": "Eiffel Tower",
+        "text": "The Eiffel Tower is a wrought-iron lattice tower located on the Champ de Mars in Paris, France."
+      },
+      {
+        "id": "doc_paris",
+        "title": "Paris",
+        "text": "Paris is the capital and most populous city of France. The river Seine flows through the center of Paris."
+      },
+      {
+        "id": "doc_thames",
+        "title": "River Thames",
+        "text": "The River Thames flows through southern England including London."
+      },
+      {
+        "id": "doc_danube",
+        "title": "Danube River",
+        "text": "The Danube is the second-longest river in Europe, flowing through Vienna, Budapest, and Belgrade."
+      }
+    ]
+  },
+  {
+    "id": "dev_0028",
+    "dataset": "2WikiMultiHopQA",
+    "type": "compositional",
+    "question": "In what city was the winner of the 1921 Nobel Prize in Physics born?",
+    "answer": "Ulm",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nobel_1921",
+        "title": "Nobel Prize in Physics (1921)",
+        "text": "The 1921 Nobel Prize in Physics was awarded to Albert Einstein for his explanation of the photoelectric effect."
+      },
+      {
+        "id": "doc_einstein_birth",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, in the Kingdom of W\u00fcrttemberg in the German Empire, on 14 March 1879."
+      },
+      {
+        "id": "doc_berlin",
+        "title": "Berlin",
+        "text": "Berlin is the capital and largest city of Germany."
+      }
+    ]
+  },
+  {
+    "id": "dev_0031",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Were Alan Turing and Ada Lovelace born in the same century?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_turing",
+        "title": "Alan Turing",
+        "text": "Alan Mathison Turing OBE FRS was an English mathematician and computer scientist born on 23 June 1912."
+      },
+      {
+        "id": "doc_lovelace",
+        "title": "Ada Lovelace",
+        "text": "Augusta Ada King, Countess of Lovelace was an English mathematician and writer born on 10 December 1815."
+      },
+      {
+        "id": "doc_babbage",
+        "title": "Charles Babbage",
+        "text": "Charles Babbage KH FRS was an English polymath born in 1791."
+      },
+      {
+        "id": "doc_vonneumann",
+        "title": "John von Neumann",
+        "text": "John von Neumann was a Hungarian-American mathematician born in 1903."
+      }
+    ]
+  },
+  {
+    "id": "dev_0035",
+    "dataset": "HotpotQA",
+    "type": "comparison",
+    "question": "Which mountain is taller, Mount Everest or K2?",
+    "answer": "Mount Everest",
+    "gold_paragraphs": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_everest",
+        "title": "Mount Everest",
+        "text": "Mount Everest is Earth's highest mountain above sea level, located in the Himalayas. Its elevation is 8,848.86 m."
+      },
+      {
+        "id": "doc_k2",
+        "title": "K2",
+        "text": "K2 is the second-highest mountain on Earth after Mount Everest at 8,611 m above sea level."
+      },
+      {
+        "id": "doc_kangchenjunga",
+        "title": "Kangchenjunga",
+        "text": "Kangchenjunga is the third-highest mountain in the world, with an elevation of 8,586 m."
+      }
+    ]
+  },
+  {
+    "id": "dev_0094",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "In what country was the company that created the Android operating system founded?",
+    "answer": "United States",
+    "gold_paragraphs": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_android_inc",
+        "title": "Android, Inc.",
+        "text": "Android, Inc. was founded in Palo Alto, California, in October 2003 by Andy Rubin, Rich Miner, Nick Sears, and Chris White."
+      },
+      {
+        "id": "doc_palo_alto",
+        "title": "Palo Alto, California",
+        "text": "Palo Alto is a charter city in Santa Clara County, California, United States."
+      },
+      {
+        "id": "doc_apple",
+        "title": "Apple Inc.",
+        "text": "Apple Inc. is an American multinational corporation headquartered in Cupertino, California."
+      },
+      {
+        "id": "doc_samsung",
+        "title": "Samsung",
+        "text": "Samsung is a South Korean multinational manufacturing conglomerate."
+      }
+    ]
+  },
+  {
+    "id": "dev_0003",
+    "dataset": "HotpotQA",
+    "type": "direct_fact",
+    "question": "What is the capital city of France?",
+    "answer": "Paris",
+    "gold_paragraphs": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_paris_cap",
+        "title": "France",
+        "text": "France, officially the French Republic, is a country in Western Europe. Its capital and largest city is Paris."
+      },
+      {
+        "id": "doc_lyon",
+        "title": "Lyon",
+        "text": "Lyon is the third-largest city in France, known for cuisine."
+      },
+      {
+        "id": "doc_marseille",
+        "title": "Marseille",
+        "text": "Marseille is the second-most populous city of France, located on the Mediterranean."
+      }
+    ]
+  },
+  {
+    "id": "dev_0014",
+    "dataset": "2WikiMultiHopQA",
+    "type": "comparison",
+    "question": "Were Isaac Newton and Albert Einstein born in the same country?",
+    "answer": "no",
+    "gold_paragraphs": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_newton_birth",
+        "title": "Isaac Newton",
+        "text": "Isaac Newton was born in Woolsthorpe-by-Colsterworth, Lincolnshire, England."
+      },
+      {
+        "id": "doc_einstein_country",
+        "title": "Albert Einstein",
+        "text": "Albert Einstein was born in Ulm, Germany."
+      },
+      {
+        "id": "doc_bohr",
+        "title": "Niels Bohr",
+        "text": "Niels Bohr was a Danish physicist born in Copenhagen, Denmark."
+      }
+    ]
+  },
+  {
+    "id": "dev_0081",
+    "dataset": "HotpotQA",
+    "type": "bridge",
+    "question": "Who composed the opera that features the aria Nessun Dorma?",
+    "answer": "Giacomo Puccini",
+    "gold_paragraphs": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      }
+    ],
+    "distractor_paragraphs": [
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ],
+    "context": [
+      {
+        "id": "doc_nessun",
+        "title": "Nessun dorma",
+        "text": "Nessun dorma is an aria from the final act of the opera Turandot."
+      },
+      {
+        "id": "doc_turandot",
+        "title": "Turandot",
+        "text": "Turandot is an opera in three acts by Giacomo Puccini, completed posthumously by Franco Alfano."
+      },
+      {
+        "id": "doc_verdi",
+        "title": "Giuseppe Verdi",
+        "text": "Giuseppe Verdi was an Italian opera composer known for La traviata."
+      }
+    ]
+  }
+]
