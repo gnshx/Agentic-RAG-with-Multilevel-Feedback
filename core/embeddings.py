@@ -1,3 +1,4 @@
+import zlib
 import re
 import math
 import numpy as np
@@ -5,10 +6,12 @@ from typing import List
 
 class LocalEmbeddingEngine:
     """
-    Lightweight, fast, local embedding engine that requires no external network or
-    heavy weights, using deterministic subword-aware hashed dense projections.
-    Provides reliable, zero-latency vector embeddings locally.
+    Lightweight, fast, local embedding engine using deterministic subword-aware
+    hashed dense projections (CRC32). Guarantees 100% reproducible embeddings across
+    independent Python processes and operating system restarts.
     """
+    ENGINE_VERSION = "crc32-v1"
+
     def __init__(self, dimension: int = 128):
         self.dimension = dimension
 
@@ -30,9 +33,9 @@ class LocalEmbeddingEngine:
             return vec
 
         for token in tokens:
-            # Deterministic hash projection into embedding dimensions
-            h = hash(token)
-            idx = abs(h) % self.dimension
+            # Deterministic, process-stable hash projection into embedding dimensions
+            h = zlib.crc32(token.encode("utf-8"))
+            idx = h % self.dimension
             sign = 1.0 if (h & 1) == 0 else -1.0
             vec[idx] += sign
 

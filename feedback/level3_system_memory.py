@@ -1,6 +1,7 @@
 import sqlite3
 import json
 import uuid
+import numpy as np
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional, Tuple
 from core.embeddings import LocalEmbeddingEngine
@@ -74,6 +75,14 @@ class FeedbackRegistry:
                     answer TEXT,
                     verified_by TEXT,
                     created_at TIMESTAMP
+                )
+            """)
+            # Dynamic Document Weights table
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS document_weights (
+                    doc_id TEXT PRIMARY KEY,
+                    dynamic_weight REAL,
+                    updated_at TIMESTAMP
                 )
             """)
             conn.commit()
@@ -165,6 +174,42 @@ class GoldenCache:
     def __init__(self, registry: FeedbackRegistry, embedding_engine: Optional[LocalEmbeddingEngine] = None):
         self.registry = registry
         self.embedding_engine = embedding_engine or LocalEmbeddingEngine()
+        self._ensure_cache_consistency()
+
+    def _ensure_cache_consistency(self):
+        """
+        Validates persisted golden cache embeddings against the current deterministic engine.
+        If embeddings were stored using an older, randomized Python hash() engine or dimension mismatch,
+        re-embeds the original query text to ensure cache integrity across restarts.
+        """
+        try:
+            with self.registry._get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT id, query, query_embedding FROM golden_cache")
+                rows = cursor.fetchall()
+                for row in rows:
+                    qid = row["id"]
+                    raw_q = row["query"]
+                    try:
+                        stored_emb = np.array(json.loads(row["query_embedding"]), dtype=np.float32)
+                        current_emb = self.embedding_engine.embed_text(raw_q)
+                        if len(stored_emb) != len(current_emb):
+                            needs_update = True
+                        else:
+                            sim = self.embedding_engine.cosine_similarity(current_emb, stored_emb)
+                            needs_update = (sim < 0.999)
+                    except Exception:
+                        needs_update = True
+                        current_emb = self.embedding_engine.embed_text(raw_q)
+
+                    if needs_update:
+                        cursor.execute(
+                            "UPDATE golden_cache SET query_embedding = ? WHERE id = ?",
+                            (json.dumps(current_emb.tolist()), qid)
+                        )
+                conn.commit()
+        except Exception:
+            pass
 
     def store_exemplar(self, query: str, answer: str, verified_by: str = "human_review") -> str:
         gid = str(uuid.uuid4())
