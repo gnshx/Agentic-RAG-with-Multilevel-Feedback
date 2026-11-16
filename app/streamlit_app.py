@@ -15,6 +15,10 @@ from src.levels import run_level_0, run_level_1, run_level_2, run_level_3
 from src.controller import run_controller
 from src.learned_policy import LearnedEscalationPolicy
 from src.cost_tracker import CostTracker
+from feedback.level3_system_memory import FeedbackRegistry, GoldenCache
+from retrieval.vector_store import LocalVectorStore
+from retrieval.document_loader import ingest_document_to_stores
+from config.settings import settings
 
 st.set_page_config(
     page_title="FeedbackRAG: Multilevel Feedback Queue Agentic RAG",
@@ -63,10 +67,23 @@ def load_system():
     retriever = HybridRetriever(corpus=corpus)
     planner = QueryPlanner(llm=llm)
     generator = Generator(llm=llm)
-    policy = LearnedEscalationPolicy.load("results/learned_policy.pkl")
-    return cfg, corpus, llm, retriever, planner, generator, policy
+    policy = LearnedEscalationPolicy.load("results/learned_policy.pkl") if os.path.exists("results/learned_policy.pkl") else None
+    registry = FeedbackRegistry(db_path=settings.database_path)
+    golden_cache = GoldenCache(registry=registry)
+    vector_store = LocalVectorStore(db_path=settings.database_path)
+    if corpus and not vector_store.documents:
+        init_chunks = [{
+            "id": str(d.get("id", f"init_{i}")),
+            "content": str(d.get("text", "")),
+            "source": str(d.get("source", "initial_corpus")),
+            "score": 0.0,
+            "dynamic_weight": 0.0,
+            "metadata": {"title": d.get("title", "")}
+        } for i, d in enumerate(corpus)]
+        vector_store.add_documents(init_chunks)
+    return cfg, corpus, llm, retriever, planner, generator, policy, registry, golden_cache, vector_store
 
-cfg, corpus, llm, retriever, planner, generator, policy = load_system()
+cfg, corpus, llm, retriever, planner, generator, policy, registry, golden_cache, vector_store = load_system()
 
 levels_map = {
     0: lambda s: run_level_0(s, llm, cfg),
@@ -108,6 +125,7 @@ st.caption("IIT Bhilai • Natural Language Processing • Course Group 14")
 
 tabs = st.tabs([
     "🚀 Interactive Query Demo",
+    "📥 Ingest Custom Knowledge",
     "📊 Benchmark Results (500 Questions)",
     "📈 Pareto Frontier",
     "🔬 Credibility & Diagnostics"
@@ -139,8 +157,26 @@ with tabs[0]:
     if run_btn and user_query:
         with st.spinner("Processing through MLFQ state machine..."):
             t_start = time.time()
-            state = run_controller(user_query, levels_map, cfg, llm, policy=policy, mode=exec_mode)
+            state = run_controller(
+                user_query,
+                levels_map,
+                cfg,
+                llm,
+                policy=policy,
+                mode=exec_mode,
+                golden_cache=golden_cache,
+                registry=registry,
+                session_id="streamlit_session"
+            )
             total_time = round(time.time() - t_start, 4)
+            st.session_state["last_state"] = state
+
+    # Render results if present in session state
+    if "last_state" in st.session_state:
+        state = st.session_state["last_state"]
+
+        if state.get("cached_answer"):
+            st.success("⚡ **Served directly from Level 3 Golden Memory Cache (0 LLM Calls, Latency < 5ms)**")
 
         # Overview Metrics in Real Units
         m1, m2, m3, m4, m5 = st.columns(5)
@@ -165,7 +201,7 @@ with tabs[0]:
             calls = step["calls_used_level"]
             dec = step.get("decision", {})
 
-            with st.expander(f"Level {lvl}: {lvl_names[lvl]} — {calls} Calls (Action: {dec.get('action', 'return')})", expanded=(lvl == state["level"])):
+            with st.expander(f"Level {lvl}: {lvl_names.get(lvl, f'Level {lvl}')} — {calls} Calls (Action: {dec.get('action', 'return')})", expanded=(lvl == state["level"])):
                 c1, c2 = st.columns([1, 2])
                 with c1:
                     st.markdown("**Feedback Signals Evaluated:**")
@@ -185,10 +221,111 @@ with tabs[0]:
         if state.get("docs"):
             with st.expander("📚 Retrieved Evidence Context", expanded=False):
                 for i, d in enumerate(state["docs"]):
-                    st.markdown(f"**[{i+1}] {d.get('title', 'Unknown')}** (Fused Score: `{d.get('score', 0):.4f}`)")
-                    st.caption(d.get("text", ""))
+                    st.markdown(f"**[{i+1}] {d.get('title', 'Unknown')}** (Fused Score: `{d.get('score', 0):.4f}`, Dynamic Weight: `{d.get('dynamic_weight', 0.0):+.2f}`)")
+                    st.caption(d.get("text", d.get("content", "")))
+
+        # Level 3 Human-in-the-Loop Feedback Form
+        st.markdown("---")
+        st.subheader("📝 Level 3 Feedback: Human Audit & Dynamic Memory")
+        st.caption("Provide human ratings to dynamically reweight retrieved documents in SQLite and optionally promote this answer to the Golden Exemplar Cache.")
+
+        fb_col1, fb_col2 = st.columns([1, 2])
+        with fb_col1:
+            rating_choice = st.radio(
+                "Rate this answer:",
+                options=["👍 Helpful & Accurate (+1)", "👎 Inaccurate / Hallucinated (-1)"],
+                index=0,
+                key=f"rating_{state.get('system_log_id', 'temp')}"
+            )
+            rating_val = 1 if "👍" in rating_choice else -1
+            promote_to_golden = st.checkbox(
+                "Promote to Golden Exemplar Cache",
+                value=(rating_val > 0),
+                key=f"promote_{state.get('system_log_id', 'temp')}"
+            )
+
+        with fb_col2:
+            user_comment = st.text_input(
+                "Feedback comment (optional):",
+                placeholder="e.g., Well-grounded, but missed the secondary hop",
+                key=f"comment_{state.get('system_log_id', 'temp')}"
+            )
+            corrected_ans = st.text_input(
+                "Ground-truth correction (if inaccurate):",
+                placeholder="Provide corrected answer text to override and cache...",
+                key=f"corr_{state.get('system_log_id', 'temp')}"
+            )
+
+        if st.button("Submit Human Feedback", type="secondary", key=f"btn_fb_{state.get('system_log_id', 'temp')}"):
+            if state.get("system_log_id"):
+                registry.log_human_feedback(
+                    inference_id=state["system_log_id"],
+                    rating=rating_val,
+                    comment=user_comment or "",
+                    corrected_answer=corrected_ans if corrected_ans else None
+                )
+                delta = settings.dynamic_weight_increment * rating_val
+                reweighted = 0
+                for d in state.get("docs", []):
+                    did = str(d.get("id", d.get("title", "")))
+                    if vector_store.update_weight(did, delta):
+                        reweighted += 1
+                if promote_to_golden or (rating_val > 0 and corrected_ans):
+                    ans_to_cache = corrected_ans if corrected_ans else state["answer"]
+                    golden_cache.store_exemplar(
+                        query=state["question"],
+                        answer=ans_to_cache,
+                        verified_by="human_ui_review"
+                    )
+                st.success(f"Feedback recorded successfully! Reweighted {reweighted} contributing documents (delta: {delta:+.2f}). {'Promoted to Golden Cache.' if promote_to_golden else ''}")
 
 with tabs[1]:
+    st.subheader("📥 Ingest Custom Knowledge Documents")
+    st.markdown("Upload domain documents, research papers, or custom text to index them live into the Hybrid Retriever and Local Vector Store.")
+
+    ingest_mode = st.radio("Ingestion Mode:", ["Type / Paste Raw Text", "Upload File (.txt, .md, .json)"])
+
+    if ingest_mode == "Type / Paste Raw Text":
+        doc_title = st.text_input("Document Title:", value="Custom Knowledge Note")
+        doc_content = st.text_area("Document Content:", height=150, placeholder="Paste knowledge or facts here...")
+        if st.button("Index Text into Corpus", type="primary"):
+            if not doc_content.strip():
+                st.warning("Please enter document content before indexing.")
+            else:
+                res = ingest_document_to_stores(
+                    corpus=corpus,
+                    retriever=retriever,
+                    vector_store=vector_store,
+                    source_name="user_input",
+                    content=doc_content,
+                    title=doc_title
+                )
+                if res["added_count"] > 0:
+                    st.success(f"Successfully indexed '{doc_title}'! Added {res['added_count']} passage(s). Total corpus passages: {len(corpus)}. Total vector store passages: {len(vector_store.documents)}. You can test questions about it in the Interactive Query Demo tab.")
+                else:
+                    st.info(f"Document '{doc_title}' is already indexed (skipped {res['skipped_count']} duplicate chunk(s)). Total corpus passages: {len(corpus)}.")
+
+    else:
+        uploaded_file = st.file_uploader("Upload file:", type=["txt", "md", "json"])
+        if uploaded_file is not None and st.button("Process & Index File", type="primary"):
+            try:
+                file_text = uploaded_file.read().decode("utf-8")
+                res = ingest_document_to_stores(
+                    corpus=corpus,
+                    retriever=retriever,
+                    vector_store=vector_store,
+                    source_name=uploaded_file.name,
+                    content=file_text
+                )
+                if res["added_count"] > 0:
+                    st.success(f"Successfully parsed and indexed {res['added_count']} passages from '{uploaded_file.name}'! (Skipped {res['skipped_count']} duplicate(s)). Total corpus passages: {len(corpus)}. Total vector store passages: {len(vector_store.documents)}.")
+                else:
+                    st.info(f"All {res['skipped_count']} passages from '{uploaded_file.name}' are already indexed. No duplicates were added. Total corpus passages: {len(corpus)}.")
+            except Exception as e:
+                st.error(f"Error processing '{uploaded_file.name}': {e}")
+
+
+with tabs[2]:
     st.subheader("Comprehensive Benchmark Results (500 Multi-Hop Questions with 95% Bootstrap CIs)")
     b_path = "results/tables/baselines_results.json"
     t_path = "results/tables/feedbackrag_test_thresholds_results.json"
@@ -218,12 +355,12 @@ with tabs[1]:
     else:
         st.info("Evaluation data loading...")
 
-with tabs[2]:
+with tabs[3]:
     st.subheader("Accuracy vs. Cost Pareto Frontier")
     if os.path.exists("results/plots/pareto_frontier.png"):
         st.image("results/plots/pareto_frontier.png", caption="Pareto Trade-off: Accuracy (F1 %) vs Average LLM Calls per Query", use_container_width=True)
 
-with tabs[3]:
+with tabs[4]:
     st.subheader("Empirical Credibility & Diagnostic Suite")
     c_diag1, c_diag2 = st.columns(2)
 
