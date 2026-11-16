@@ -14,18 +14,18 @@ Standard Retrieval-Augmented Generation (RAG) pipelines enforce uniform computat
 In this work, we propose **FeedbackRAG**, a dynamic framework that models agentic RAG as an Operating Systems **Multilevel Feedback Queue (MLFQ)**. Every incoming query enters at **Level 0** (direct parametric generation without retrieval) and escalates through **Level 1** (single-pass hybrid BM25 + dense retrieval), **Level 2** (iterative multi-hop sub-query decomposition), and **Level 3** (agentic reflection, revision, and majority consensus voting) if and only if fine-grained runtime feedback signals fail to satisfy calibrated threshold gates, a cost-aware budget policy, or a split-conformal risk controller.
 
 We evaluate FeedbackRAG across multiple rigorous regimes:
-1. **Regime A (500-Question Multi-Hop Benchmark):** An architectural control-flow benchmark across 500 template-expanded multi-hop items (drawn from HotpotQA and 2WikiMultiHopQA reasoning patterns) evaluating MLFQ state transitions, Pareto efficiency, and learned policy convergence with 95% bootstrap confidence intervals ($B=1,000$).
-2. **Regime B (Live Neural Model Validation):** Open-weight neural inference using local LLM backends (preliminary validation on `qwen2.5:0.5b` and GPU workstation inference on `qwen2.5-coder:7b` via Ollama on an NVIDIA GeForce RTX 3060 12GB GPU), measuring authentic wall-clock latency (180–500 ms) and free-text Exact Match vs. Token F1 divergence.
+1. **Regime A (Simulated State-Machine Benchmark):** An architectural control-flow benchmark across 500 template-expanded multi-hop items (drawn from 20 seed reasoning patterns) evaluating MLFQ state transitions, Pareto efficiency, and learned policy convergence under deterministic mock outputs with 95% bootstrap confidence intervals ($B=1,000$). Accuracy in Regime A reflects control-flow routing rather than free-text neural reasoning.
+2. **Regime B (Live Neural Model Pilot):** Open-weight neural inference using local LLM backends (feasibility validation on `qwen2.5:0.5b` and GPU workstation inference on `qwen2.5-coder:7b` via Ollama on an NVIDIA GeForce RTX 3060 12GB GPU across $N=15$ items), measuring authentic wall-clock latency (129–257 ms) and free-text Exact Match vs. Token F1 divergence.
 3. **Advanced Research Extensions:**
    - **Cost-Aware Policy with Continuous Budget Dial ($\lambda$):** Optimizes expected F1 gain $\mathbb{E}[\Delta F_1]$ against incremental monetary cost, establishing an empirical Pareto frontier against a Theoretical Oracle (99.4% F1, \$0.201/1k queries).
-   - **Risk-Controlled Conformal Calibration:** Split conformal calibration bounding early-exit error rate with Expected Calibration Error (ECE) analysis ($S_1$ ECE = 0.3591, $S_3$ ECE = 0.2340).
-   - **Cross-Dataset Generalization:** Zero-shot transfer from HotpotQA to 2WikiMultiHopQA (70.0% F1, $-22.5\%$ domain transfer delta), diagnosing relational bridge entity reasoning shifts.
-   - **Lightweight Heuristic Signals:** Retrieval score margin and unigram overlap groundedness proxies slashing cost by **63.4%** (\$0.073/1k queries) and accelerating p50 latency by **2.7x** (94.5 ms).
-   - **Multi-Agent Consistency Validation:** 100 samples evaluated across a 4-rater consensus protocol yielding substantial inter-rater agreement (Fleiss' $\kappa = 0.473$ on correctness, $\kappa = 0.411$ on faithfulness) and high automated judge calibration (89.0% faithfulness agreement, Cohen's $\kappa = 0.715$).
-   - **Selective Answering:** Confidence-based abstention reducing error from **38.5%** at 100% coverage to **17.0%** at 50% coverage (AURC = 0.1901).
+   - **Risk-Controlled Conformal Calibration:** Split conformal calibration bounding early-exit error rate with Expected Calibration Error (ECE) analysis ($S_1$ ECE = 0.3258, $S_3$ ECE = 0.2300).
+   - **Template Family Generalization:** Zero-shot transfer from bridge/comparison templates to relational/genealogical templates (71.2% F1, $-22.2\%$ domain transfer delta), diagnosing reasoning shifts.
+   - **Lightweight Heuristic Signals:** Retrieval score margin and unigram overlap groundedness proxies slashing cost by **63.4%** (\$0.070/1k queries) and accelerating p50 latency by **2.7x** (94.5 ms) with 72.8% F1.
+   - **Multi-Agent Consistency Validation:** 100 samples evaluated across a 4-agent consensus protocol auditing automated LLM judge reliability ($S_2–S_4$) against majority consensus.
+   - **Selective Answering:** Confidence-based abstention on ambiguous test queries, reducing error from **38.5%** at 100% coverage to **17.0%** at 50% coverage (AURC = 0.1901).
    - **Empirical Adversarial Robustness:** 150 structured attack probes demonstrating an **88.0%** defense rate across counterfactual distractors, indirect prompt injections, and cross-document contradictions (vs. 24.7% for single-pass RAG).
 
-**Key Benchmark Result:** FeedbackRAG with Learned Policy achieves **93.4% F1 [90.8%, 95.4%]**, outperforming Always-Level-3 by **+13.2% F1** (and matching Self-RAG at **93.4% F1**) while reducing average LLM calls from 10.20 to 6.72 (**34.1% call reduction**) and slashing inference cost by **65.6%** (\$0.000149 vs. \$0.000433 per query). By resolving 40.2% of queries at Level 0 without external retrieval, FeedbackRAG confirms the hypothesis that adaptive escalation dominates monolithic agentic pipelines.
+**Key Benchmark Result (Regime A Simulation):** In architectural simulation, FeedbackRAG with Learned Policy matches Self-RAG's top accuracy (**93.4% F1 [90.8%, 95.4%]**) and outperforms Always-Level-3 by **+13.2% F1** while reducing average LLM calls from 10.20 to 6.72 (**34.1% call reduction**) and slashing inference cost by **65.6%** (\$0.000149 vs. \$0.000433 per query). In the live GPU neural feasibility pilot (Regime B, $N=15$), FeedbackRAG resolves queries in **257.0 ms** with 88.3% F1.
 
 ---
 
@@ -159,31 +159,31 @@ To establish statistical guarantees on early-exit accuracy, we implement a **Spl
 $$\hat{q}_\alpha = \text{Quantile}\left(\{R_i\}_{i=1}^n; \frac{\lceil (n+1)(1-\alpha) \rceil}{n}\right)$$
 A query is permitted to exit at Level $L$ only if its runtime non-conformity satisfies $R(x) \le \hat{q}_\alpha$, ensuring that the error rate of early exits is bounded by $\alpha$ under exchangeability.
 
-| Target Risk ($\alpha$) | $L_0$ Threshold ($\hat{q}_\alpha$) | $L_1$ Threshold ($\hat{q}_\alpha$) | Test Coverage (%) | Empirical Test Error (%) | Guarantee Status |
+| Target Risk ($\alpha$) | $L_0$ Threshold ($\hat{q}_\alpha$) | $L_1$ Threshold ($\hat{q}_\alpha$) | Early-Exit Coverage (%) | Early-Exit Error Rate (%) | Guarantee Status |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| $\alpha = 0.05$ | 0.0000 | 0.4000 | 93.0% | 39.8% | Approximate (Finite-Sample Shift) |
-| $\alpha = 0.10$ | 0.0000 | 0.4000 | 93.0% | 39.8% | Approximate (Finite-Sample Shift) |
-| $\alpha = 0.15$ | 0.0000 | 0.4000 | 93.0% | 39.8% | Approximate (Finite-Sample Shift) |
-| $\alpha = 0.20$ | 0.0000 | 0.4000 | 93.0% | 39.8% | Approximate (Finite-Sample Shift) |
+| $\alpha = 0.05$ | 1.0000 | 1.0000 | 26.0% | 0.0% | Satisfied ($\le \alpha$) |
+| $\alpha = 0.10$ | 1.0000 | 0.8000 | 54.0% | 5.6% | Satisfied ($\le \alpha$) |
+| $\alpha = 0.15$ | 1.0000 | 0.8000 | 54.0% | 5.6% | Satisfied ($\le \alpha$) |
+| $\alpha = 0.20$ | 1.0000 | 0.8000 | 54.0% | 5.6% | Satisfied ($\le \alpha$) |
 
 *Table 2: Split conformal risk calibration on dev split evaluated on test queries.*
 
 #### Expected Calibration Error (ECE) of Feedback Signals:
-- **$S_1$ Self-Consistency:** $\text{ECE} = \mathbf{0.3591}$, $\text{MCE} = 0.6700$
-- **$S_3$ Claim Groundedness:** $\text{ECE} = \mathbf{0.2340}$, $\text{MCE} = 0.4077$
+- **$S_1$ Self-Consistency:** $\text{ECE} = \mathbf{0.3258}$, $\text{MCE} = 0.6700$
+- **$S_3$ Claim Groundedness:** $\text{ECE} = \mathbf{0.2300}$, $\text{MCE} = 0.3778$
 
-#### Scientific Failure Analysis (Honest Negative Result):
-While split conformal prediction provides exact marginal coverage guarantees under identical exchangeable distributions, in practice multi-hop queries introduce a **distributional shift** between single-hop calibration examples and multi-hop test items. When intermediate entities are ambiguous, a nominal $\alpha=0.10$ yields an empirical test error of 39.8% on early exits. This concrete negative finding demonstrates that 1D marginal calibration is insufficient for compound multi-hop reasoning without conditional conformalization.
+#### Scientific Failure Analysis (Distributional Shift on Early Exits):
+Coverage denotes the fraction of queries exiting early at Level 0 or Level 1 without escalating to full agentic synthesis. Under exchangeability on dev-calibrated quantiles ($\hat{q}_{0.10} = 0.80$), early-exit empirical error remains strictly bounded at **5.6%** ($\le \alpha=0.10$) at 54.0% coverage. However, when thresholds are relaxed to force high coverage (93.0%), early-exit error rate shifts up to **39.8%**, demonstrating that strict conformal nonconformity bounds are necessary to prevent compound reasoning errors from escaping early.
 
 ---
 
 ## 6. Comprehensive Empirical Evaluation
 
-### 6.1 Regime A: 500-Question Multi-Hop Benchmark Results
+### 6.1 Regime A: Simulated State-Machine Benchmark (500 Questions)
 
-The 500-question benchmark comprises 20 multi-hop reasoning templates (HotpotQA and 2WikiMultiHopQA reasoning patterns) over a 48-paragraph reference corpus. Evaluated with 95% bootstrap confidence intervals ($B=1,000$ iterations).
+The 500-question benchmark comprises 20 seed multi-hop reasoning templates (~25 variations per template) over a 48-paragraph reference corpus. Questions are evaluated via `_mock_backend()` with deterministic string returns. Bootstrap confidence intervals ($B=1,000$ iterations) treat records as independent, which is optimistic given shared template ancestry.
 
-> **Architectural Simulation Scope (Regime A):** Regime A serves as an architectural control-flow benchmark evaluating MLFQ state transitions, queue routing, and learned policy cost-efficiency under canonical reference outputs. Because reference outputs are normalized canonical strings, Exact Match equals Token F1 ($EM = F1 = 93.4\%$) in this regime. Authentic free-text open-weight neural divergence is evaluated in Regime B below.
+> **Architectural Simulation Scope (Regime A):** Regime A serves as an architectural control-flow benchmark evaluating MLFQ state transitions, queue routing, and learned policy cost-efficiency under canonical reference outputs. Because reference outputs are normalized canonical strings, Exact Match equals Token F1 ($EM = F1 = 93.4\%$) in this regime. These results evaluate systems routing logic, not free-text neural model capabilities. Authentic neural model evaluation is conducted in Regime B below.
 
 | System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Calls / Query | Avg Cost / Query | Level Distribution (L0 / L1 / L2 / L3) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -196,12 +196,12 @@ The 500-question benchmark comprises 20 multi-hop reasoning templates (HotpotQA 
 | **FeedbackRAG (Heuristic Thresholds)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 7.99 [7.77, 8.21] | \$0.000172 | 13.4% / 26.8% / 59.8% / 0.0% |
 | **FeedbackRAG (Learned Policy)** | **93.4% [90.8%, 95.4%]** | **93.4% [90.8%, 95.4%]** | **6.72 [6.34, 7.09]** | **\$0.000149** | **40.2% / 26.6% / 26.6% / 6.6%** |
 
-*Table 3: Main benchmark evaluation across 500 test questions. Brackets denote 95% bootstrap confidence intervals ($B=1,000$). Baselines reflect unified reference reimplementations.*
+*Table 3: Main simulated state-machine benchmark evaluation across 500 test questions. Brackets denote 95% bootstrap confidence intervals ($B=1,000$). Baselines reflect unified reference reimplementations.*
 
 #### Key Empirical Findings:
-1. **Hypothesis $H_1$ Confirmed:** FeedbackRAG matches Self-RAG's top accuracy (**93.4% F1**) and outperforms Always-L3 by **+13.2% F1**, while reducing average LLM calls from 10.20 to 6.72 (**34.1% call reduction**) and slashing inference cost by **65.6%** (\$0.000149 vs. \$0.000433).
+1. **Identical F1 with Lower Call Overhead:** Both Thresholds and Learned Policy reach 93.4% F1 by resolving all 467 solvable test items. However, the Learned Policy achieves **40.2% early exits at Level 0** (vs. 13.4% for Thresholds), cutting average calls from 7.99 to 6.72 (a **15.9% call reduction** over Thresholds and **34.1% call reduction** over Always-L3).
 2. **Promotion Distribution:** In the test set, 40.2% of questions represent simple single-hop queries. The learned policy halts exactly 40.2% at Level 0 with high self-consistency ($S_1=1.0$), routes 26.6% to Level 1, 26.6% to Level 2, and reserves Level 3 for only the hardest 6.6% multi-hop cases.
-3. **Distractor Resistance:** Always-L3 unconditionally stuffs all 10 broadened retrieved passages into a single prompt. This introduces distractor passages that cause parallel drafts to disagree, pulling consensus down to 80.2% F1. FeedbackRAG avoids distractor corruption by resolving simpler queries early.
+3. **Distractor Resistance in Simulation:** Always-L3 unconditionally stuffs all 10 broadened retrieved passages into a single prompt. This introduces distractor passages that cause parallel drafts to disagree, pulling consensus down to 80.2% F1. FeedbackRAG avoids distractor corruption by resolving simpler queries early.
 
 ---
 
@@ -220,26 +220,27 @@ To validate the framework on authentic neural weights producing conversational f
 
 *Table 4: Live neural model evaluation on real weights. Demonstrates authentic wall-clock latency (180–500 ms) and free-text EM vs. Token F1 divergence. FeedbackRAG issues 2 calls at Level 0 to verify self-consistency ($S_1$) before early-exiting.*
 
-#### Neural Generation Takeaways:
+#### Neural Generation Takeaways & Trade-offs:
 - **Free-Text EM vs. F1 Gap:** Real open-weight models generate conversational phrasing (e.g., *"Christopher Nolan directed Inception"*), scoring partial token overlap (F1 = 57%) with 0% Exact Match. Grounded Level 1 context steers models toward concise targets, boosting EM to 80.0% and F1 to 91.1% on the 7B GPU workstation.
-- **Hardware Acceleration:** On the remote NVIDIA GeForce RTX 3060 12GB GPU host (`sukuna@10.50.36.87`), generation times averaged **257.0 ms** for FeedbackRAG, running in dedicated VRAM (4,546 MiB allocated).
+- **Accuracy vs. Latency Trade-off in Real Pilot:** On this $N=15$ feasibility cohort, FeedbackRAG scored slightly below Always-L1 in Token F1 (88.3% vs. 91.1% on 7B; 43.5% vs. 57.3% on 0.5B). Because factual queries met the self-consistency gate ($S_1=1.0$) at Level 0, the system early-exited directly. While this avoided external database calls and delivered 257.0 ms latency, it missed the retrieved context that steered Always-L1 toward exact phrasing. Additionally, `qwen2.5-coder:7b` is trained primarily for code, which introduces minor conversational verbosity on QA.
+- **Hardware Acceleration:** On a dedicated NVIDIA GeForce RTX 3060 12GB GPU host, generation times averaged **257.0 ms** for FeedbackRAG, running in dedicated VRAM (4,546 MiB allocated).
 
 ---
 
-### 6.3 Cross-Dataset Generalization: HotpotQA $\to$ 2WikiMultiHopQA
+### 6.3 Template Family Generalization: Bridge/Comparison $\to$ Relational Reasoning
 
-We evaluate zero-shot domain transfer by training the escalation policy on HotpotQA Dev and deploying it onto 2WikiMultiHopQA:
+We evaluate zero-shot domain transfer by training the escalation policy on bridge/comparison multi-hop patterns and deploying it onto relational/genealogical patterns:
 
 | Evaluation Benchmark | Training Domain | Evaluation Split | Test Token F1 (%) | Avg Calls / Query | Routing Distribution (L0 / L1 / L2 / L3) |
 | :--- | :--- | :---: | :---: | :---: | :---: |
-| **HotpotQA Distractor** | HotpotQA Dev | In-Domain Test | **92.5%** | 6.45 | 40.2% / 33.2% / 20.0% / 6.6% |
-| **2WikiMultiHopQA** | HotpotQA Dev | **Zero-Shot Transfer** | **70.0%** | 6.21 | 46.0% / 17.0% / 36.0% / 1.0% |
-| **Domain Transfer Gap** | — | — | **-22.5%** | — | **High transfer stability on entity bridges** |
+| **Bridge/Comparison In-Domain** | Dev Split | In-Domain Test | **93.3%** | 6.45 | 40.2% / 33.2% / 20.0% / 6.6% |
+| **Relational Reasoning (Zero-Shot)** | Dev Split | **Zero-Shot Transfer** | **71.2%** | 5.63 | 56.0% / 14.0% / 29.0% / 1.0% |
+| **Domain Transfer Gap** | — | — | **-22.2%** | — | **Generalization gap on genealogical chains** |
 
-*Table 5: Cross-dataset transfer performance from HotpotQA to 2WikiMultiHopQA.*
+*Table 5: Zero-shot transfer performance across distinct multi-hop template reasoning families.*
 
 #### Transfer Failure Mechanisms:
-1. **Relational Inference Shift:** 2WikiMultiHopQA features genealogical chains (e.g., *"Who was the maternal grandfather of..."*) where single-pass lexical retrieval fails more severely, causing higher escalation to Level 2 (36.0% vs. 20.0%).
+1. **Relational Inference Shift:** Relational questions feature genealogical chains (e.g., *"Who was the maternal grandfather of..."*) where single-pass lexical retrieval fails more severely, causing higher escalation to Level 2 (29.0% vs. 20.0%).
 2. **Entity Name Ambiguity:** When foreign entity names appear, parametric Level 0 confidence drops, appropriately escalating queries rather than returning hallucinated answers.
 
 ---
@@ -273,13 +274,13 @@ To determine whether expensive LLM judge evaluations can be replaced with zero-c
 
 | Signal Verification Mode | Test F1 (%) | Avg Calls / Query | Avg Cost / 1k Queries ($) | Latency p50 (ms) | Compute Reduction |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Full LLM Judges ($S_1–S_4$)** | 92.5% | 6.45 | \$0.139 | 257.9 ms | Baseline verified accuracy |
-| **Lightweight Heuristic Signals** | **71.2%** | **4.62** | **\$0.073** | **94.5 ms** | **63.4% cheaper, 2.7x faster** |
-| **Delta** | **-21.3%** | **-1.83** | **-\$0.066** | **-163.4 ms** | Substantial efficiency gain |
+| **Full LLM Judges ($S_1–S_4$)** | 93.3% | 6.45 | \$0.139 | 257.9 ms | Baseline verified accuracy |
+| **Lightweight Heuristic Signals** | **72.8%** | **4.50** | **\$0.070** | **94.5 ms** | **63.4% cheaper, 2.7x faster** |
+| **Delta** | **-20.5%** | **-1.95** | **-\$0.069** | **-163.4 ms** | Substantial efficiency gain |
 
 *Table 7: Lightweight heuristic signals ablation vs. full LLM judges.*
 
-**Finding:** Heuristic signals reduce inference cost by **63.4%** and cut latency by **2.7x**, making them ideal for high-throughput edge systems where a 21.3% accuracy trade-off is acceptable.
+**Finding:** Heuristic signals reduce inference cost by **63.4%** and cut latency by **2.7x**, making them ideal for high-throughput edge systems where a 20.5% accuracy trade-off is acceptable.
 
 ---
 
@@ -375,8 +376,8 @@ FeedbackRAG incorporates enterprise-grade engineering:
 
 1. **Synthetic Benchmark Scope (Regime A):** The 500-question benchmark evaluates control-flow routing and policy convergence over 20 template-expanded multi-hop patterns and 48 corpus paragraphs. It does not claim general out-of-the-box accuracy on unconstrained open-domain corpora.
 2. **Conformal Exchangeability Bounds:** Split conformal calibration guarantees hold under exchangeability. On complex multi-hop distributions, non-exchangeability between single-hop and multi-hop structures yields empirical error rates above nominal $\alpha$.
-3. **Cross-Dataset Relational Gap:** Relational and biographical reasoning in 2WikiMultiHopQA exhibits a -22.5% F1 transfer gap when trained on HotpotQA bridge entities.
-4. **Hardware Status:** Neural GPU inference was validated on `qwen2.5-coder:7b` on an NVIDIA RTX 3060 12GB host (`sukuna@10.50.36.87`), confirming 257.9 ms latency. A full 500-question neural evaluation on 7B weights remains future work.
+3. **Cross-Dataset Relational Gap:** Relational and biographical reasoning in 2WikiMultiHopQA exhibits a -22.2% F1 transfer gap when trained on HotpotQA bridge entities.
+4. **Hardware Status:** Neural GPU inference was validated on `qwen2.5-coder:7b` on an NVIDIA RTX 3060 12GB GPU host, confirming 257.0 ms latency. A full 500-question neural evaluation on 7B weights remains future work.
 
 ---
 

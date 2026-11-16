@@ -10,9 +10,9 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-FF4B4B.svg?logo=streamlit)](https://streamlit.io)
 
-**Author:** [NDS Ganesh](https://github.com/gnshx)  
-*Indian Institute of Technology Bhilai (IIT Bhilai)*  
-**DSL504/DS504 Natural Language Processing**
+**System Architect & Lead Developer:** [NDS Ganesh](https://github.com/gnshx)  
+*Course Project for DSL504 / DS504 Natural Language Processing, Indian Institute of Technology Bhilai (IIT Bhilai)*  
+**Group 14 Project Team:** NDS Ganesh (12341500), V Karthik (12342370), K Soma Charith Reddy (12341040), R Dheemanth (12341710)
 
 [Technical Report](REPORT.md) • [System Architecture](docs/HLD.md) • [Product Requirements](docs/PRD.md) • [Test Verification](docs/TEST_VERIFICATION.md) • [Interactive Demo](app/streamlit_app.py)
 
@@ -54,7 +54,7 @@ While fully agentic architectures (such as multi-draft revision loops, self-refl
 - **Multilevel Feedback Queue (MLFQ) for RAG:** We formalize dynamic escalation across four compute tiers ($L_0 \to L_1 \to L_2 \to L_3$), where a query only incurs additional compute if verifiable runtime signals indicate deficiency.
 - **Decoupled 4-Signal Verification Suite:** We formulate four orthogonal runtime signals ($S_1$: Self-Consistency, $S_2$: Retrieval Quality, $S_3$: Groundedness Verification, $S_4$: Multi-part Completeness) computed without requiring gold labels.
 - **Learned GBDT Escalation Policy:** We train an 11-feature gradient-boosted decision tree on dev-split observable features with strict data-leakage guards to dynamically predict whether escalating to $L+1$ yields an empirical accuracy gain.
-- **Scientific Transparency (Dual-Regime Evaluation):** We report results across both a 500-question multi-hop simulation benchmark with 95% bootstrap confidence intervals ($B=1,000$) and a live local neural model benchmark (`qwen2.5:0.5b` via Ollama) capturing real-world wall-clock latency and free-text EM vs. Token F1 divergence.
+- **Scientific Transparency (Dual-Regime Evaluation):** We explicitly separate results between **Regime A: Simulated State-Machine Benchmark** (evaluating MLFQ queue routing and GBDT policy convergence across 500 template-expanded items with 95% bootstrap CIs) and **Regime B: Live Neural Feasibility Pilot** (evaluating open-weight models `qwen2.5:0.5b` and `qwen2.5-coder:7b` on an RTX 3060 12GB GPU across $N=15$ queries, documenting authentic wall-clock latencies and conversational EM vs. F1 divergence).
 
 ---
 
@@ -157,8 +157,8 @@ The fitted pipeline artifact is serialized to `results/learned_policy.pkl` and v
 
 To prevent overclaiming, FeedbackRAG is evaluated under two clearly delineated experimental regimes:
 
-### 6.1 Regime A: 500-Question Multi-Hop Benchmark
-Evaluated on 500 template-expanded multi-hop questions derived from the **HotpotQA** and **2WikiMultiHopQA** domains with a 48-paragraph synthetic corpus. All models are executed against an offline deterministic reference simulator (`_mock_backend` in `src/llm.py`). Because the reference simulator outputs exact target strings (or disjoint strings on failure), Exact Match (EM) and Token F1 coincide for correct/incorrect predictions.
+### 6.1 Regime A: Simulated State-Machine Benchmark (500 Questions)
+Evaluated on 500 template-expanded multi-hop questions derived from 20 seed patterns (~25 questions per template) with a 48-paragraph synthetic reference corpus. All systems are executed against an offline deterministic reference simulator (`_mock_backend` in `src/llm.py`). Note that bootstrap confidence intervals ($B=1,000$) treat questions as independent, which is optimistic given shared template ancestry. Accuracy in Regime A measures control-flow routing logic and policy convergence, not free-text neural model performance.
 
 | System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Calls / Query | Avg Cost / Query | Level Promotion Distribution (L0 / L1 / L2 / L3) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -180,21 +180,25 @@ Evaluated on 500 template-expanded multi-hop questions derived from the **Hotpot
 
 ---
 
-### 6.2 Regime B: Live Local LLM Validation (Qwen 2.5 0.5B via Ollama)
+### 6.2 Regime B: Live Neural Model Feasibility Pilot
 
-To validate the architecture against real neural weights generating natural language free-text, we evaluated a live benchmark subset across 15 factual and multi-hop queries using `qwen2.5:0.5b` served locally via Ollama.
+To validate the architecture against real neural weights generating natural language free-text, we evaluated a live benchmark subset across $N=15$ factual and multi-hop queries using `qwen2.5:0.5b` (local CPU) and `qwen2.5-coder:7b` (NVIDIA GeForce RTX 3060 12GB GPU via Ollama).
 
-| Pipeline Variant | Exact Match (EM %) | Token F1 (%) | Wall-Clock Latency (p50 / avg) | Avg LLM Calls |
-| :--- | :---: | :---: | :---: | :---: |
-| **Always-L0 (Direct Parametric, No Retrieval)** | 6.7% | 32.8% | 520 ms / 560.2 ms | 1.00 |
-| **Always-L1 (Single-Pass Hybrid RAG)** | **40.0%** | **57.3%** | 490 ms / 510.3 ms | 2.00 |
-| **FeedbackRAG (Dynamic Escalation Queue)** | 13.3% | 43.5% | 480 ms / 510.3 ms | 1.40 |
+| Model & Execution Setup | Pipeline Variant | Exact Match (EM %) | Token F1 (%) | Wall-Clock Latency (p50 / avg) | Avg LLM Calls |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Qwen 2.5 0.5B (Local CPU)** | Always-L0 (Direct Parametric) | 6.7% | 32.8% | 520 ms / 560.2 ms | 1.00 |
+| | Always-L1 (Single-Pass RAG) | **40.0%** | **57.3%** | 490 ms / 510.3 ms | 2.00 |
+| | FeedbackRAG (Escalation Queue) | 13.3% | 43.5% | 480 ms / 510.3 ms | 1.40 |
+| **Qwen 2.5 Coder 7B (RTX 3060 GPU)** | Always-L0 (Direct Parametric) | 66.7% | 88.3% | 290 ms / 484.0 ms | 1.00 |
+| | Always-L1 (Single-Pass RAG) | **80.0%** | **91.1%** | 240 ms / 321.8 ms | 2.00 |
+| | FeedbackRAG (Escalation Queue) | 66.7% | 88.3% | **202 ms / 257.0 ms** | 2.00 |
 
-*Table 2: Live local neural model evaluation (Qwen 2.5 0.5B on Ollama).*
+*Table 2: Live neural model evaluation on real open-weight models across $N=15$ queries.*
 
-#### Authentic Empirical Divergence Observed:
-- **Free-Text EM vs. F1 Gap:** Real neural generation includes natural conversational formatting (e.g., *"The director of Inception is Christopher Nolan"*), yielding non-zero Token F1 (44.0%) with 0.0% Exact Match. Grounding with retrieved context enables concise fact production, raising EM to 40.0% and F1 to 57.3%.
-- **Realistic Latencies:** Real neural API calls take **320–600 ms** per call. FeedbackRAG amortizes this cost, achieving an average call count of 1.40 vs. 2.00 for Always-L1.
+#### Authentic Empirical Divergence & Trade-offs:
+- **Accuracy vs. Latency Trade-off in Pilot:** On this small 15-question pilot, FeedbackRAG scored below Always-L1 in Token F1 (43.5% vs. 57.3% on 0.5B; 88.3% vs. 91.1% on 7B). FeedbackRAG early-exited factual queries at Level 0 on high self-consistency without external retrieval. This saved latency (257.0 ms) and avoided external lookups, but missed the retrieved context that steered Always-L1 to concise exact answers. Additionally, `qwen2.5-coder:7b` is specialized for code rather than QA, resulting in conversational phrasing.
+- **Free-Text EM vs. F1 Gap:** Real neural generation includes natural conversational formatting (e.g., *"Christopher Nolan directed Inception"*), yielding non-zero Token F1 (57.1%) with 0.0% Exact Match. Grounding with retrieved context enables concise fact production, raising EM to 80.0% and F1 to 91.1% on the 7B GPU model.
+- **Realistic GPU Acceleration:** On the dedicated RTX 3060 GPU host, FeedbackRAG achieved **257.0 ms** average generation in 4,546 MiB dedicated VRAM.
 
 ---
 
