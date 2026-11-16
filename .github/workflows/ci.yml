@@ -2,7 +2,7 @@ name: FeedbackRAG CI
 
 on:
   push:
-    branches: [ main, feature/** ]
+    branches: [ main, feature/**, fix/** ]
   pull_request:
     branches: [ main ]
 
@@ -33,6 +33,7 @@ jobs:
           TEST_SECRET=$(openssl rand -hex 32)
           echo "TEST_API_KEY=${TEST_SECRET}" >> $GITHUB_ENV
           echo "CI=true" >> $GITHUB_ENV
+          echo "PYTHONPATH=." >> $GITHUB_ENV
 
       - name: Verify data integrity
         run: |
@@ -48,16 +49,19 @@ jobs:
           "
 
       - name: Run Pytest suite
+        env:
+          PYTHONPATH: .
         run: |
-          pytest -v --tb=short
+          pytest -v --tb=short tests/
 
       - name: Verify Learned Policy Model Artifact
+        env:
+          PYTHONPATH: .
         run: |
           python -c "
           import pickle
           with open('results/learned_policy.pkl', 'rb') as f:
               bundle = pickle.load(f)
-          assert 'model' in bundle and 'scaler' in bundle and 'feature_names' in bundle
-          print('Learned policy artifact verified with features:', bundle['feature_names'])
+          assert hasattr(bundle, 'model') and hasattr(bundle, 'feature_names') and getattr(bundle, 'is_fitted', False)
+          print('Learned policy artifact verified with features:', bundle.feature_names)
           "
-
