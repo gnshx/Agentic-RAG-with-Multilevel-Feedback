@@ -1,0 +1,92 @@
+{
+  "summary": {
+    "Always-L0": {
+      "em": 0.0,
+      "f1": 0.0,
+      "avg_latency_ms": 465.3,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 0.0,
+      "f1": 0.0,
+      "avg_latency_ms": 2332.2,
+      "avg_calls": 2.0
+    },
+    "FeedbackRAG": {
+      "em": 0.0,
+      "f1": 0.0,
+      "avg_latency_ms": 897.5,
+      "avg_calls": 2.0
+    }
+  },
+  "per_question": {
+    "Always-L0": [
+      {
+        "id": "5a85eed75542996432c5713b",
+        "q": "Where did the descendants of the group of black Indians associated with the Seminole people settle?",
+        "pred": "The descendants of the group of black Indians associated with the Seminole people",
+        "gold": "Coahuila, Mexico",
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 473.07419776916504,
+        "calls": 1
+      },
+      {
+        "id": "5a774e9c55429972597f14f3",
+        "q": "David Huntsinger has worked with this gospel singer born in the month of July?",
+        "pred": "David Huntsinger has worked with the gospel singer born in July.",
+        "gold": "Larnelle Harris",
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 457.5839042663574,
+        "calls": 1
+      }
+    ],
+    "Always-L1": [
+      {
+        "id": "5a85eed75542996432c5713b",
+        "q": "Where did the descendants of the group of black Indians associated with the Seminole people settle?",
+        "pred": "El Nacimiento",
+        "gold": "Coahuila, Mexico",
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 1267.075777053833,
+        "calls": 2
+      },
+      {
+        "id": "5a774e9c55429972597f14f3",
+        "q": "David Huntsinger has worked with this gospel singer born in the month of July?",
+        "pred": "David Huntsinger has worked with Yolanda Adams, a gospel singer born",
+        "gold": "Larnelle Harris",
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 3397.351026535034,
+        "calls": 2
+      }
+    ],
+    "FeedbackRAG": [
+      {
+        "id": "5a85eed75542996432c5713b",
+        "q": "Where did the descendants of the group of black Indians associated with the Seminole people settle?",
+        "pred": "The descendants of the group of black Indians associated with the Seminole people",
+        "gold": "Coahuila, Mexico",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 913.0759239196777,
+        "calls": 2
+      },
+      {
+        "id": "5a774e9c55429972597f14f3",
+        "q": "David Huntsinger has worked with this gospel singer born in the month of July?",
+        "pred": "David Huntsinger has worked with the gospel singer born in July.",
+        "gold": "Larnelle Harris",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 881.8349838256836,
+        "calls": 2
+      }
+    ]
+  }
+}

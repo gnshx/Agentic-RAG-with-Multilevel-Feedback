@@ -2,11 +2,13 @@ import json
 import time
 import os
 import sys
+import argparse
 import urllib.request
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from eval.metrics import em, f1, normalize_answer
+from src.retriever import HybridRetriever
 
 def get_ollama_endpoint():
     # Detect if GPU tunnel on port 11435 is active, else fallback to 11434
@@ -16,7 +18,7 @@ def get_ollama_endpoint():
             with urllib.request.urlopen(req, timeout=1.5) as res:
                 data = json.loads(res.read().decode())
                 models = [m.get("name", "") for m in data.get("models", [])]
-                for pm in [preferred_model, "qwen2.5-coder:7b", "gemma2:2b", "qwen2.5-coder:3b"]:
+                for pm in [preferred_model, "qwen2.5-coder:7b", "gemma2:2b", "qwen2.5-coder:3b", "qwen2.5:0.5b"]:
                     if pm in models:
                         return f"http://localhost:{port}/api/generate", pm
                 if models:
@@ -48,11 +50,8 @@ def make_fast_ollama():
             return f"Error: {e}"
     return call_ollama
 
-def run_real_evaluation():
-    call_llm = make_fast_ollama()
-
-    # 15 real factual and multi-hop benchmark items
-    items = [
+def get_targeted_items() -> List[Dict[str, Any]]:
+    return [
         {
             "id": "real_01",
             "q": "What is the capital city of France?",
@@ -145,7 +144,34 @@ def run_real_evaluation():
         }
     ]
 
-    print(f"Running Real LLM Evaluation with Qwen 2.5 0.5B across {len(items)} queries...\n")
+def run_real_evaluation(
+    use_retrieval: bool = False,
+    dataset: str = "targeted",
+    limit: Optional[int] = None,
+    output_path: Optional[str] = None
+):
+    call_llm = make_fast_ollama()
+
+    retriever = None
+    if use_retrieval:
+        corpus_file = "data/real_corpus.json" if dataset == "real_test" else "data/corpus.json"
+        if os.path.exists(corpus_file):
+            with open(corpus_file, "r", encoding="utf-8") as f:
+                corpus = json.load(f)
+            retriever = HybridRetriever(corpus=corpus)
+            print(f"[*] Initialized live HybridRetriever over '{corpus_file}' ({len(corpus)} documents)")
+
+    if dataset == "real_test" and os.path.exists("data/real_test.json"):
+        with open("data/real_test.json", "r", encoding="utf-8") as f:
+            raw_items = json.load(f)
+        items = [{"id": it["id"], "q": it["question"], "gold": it["answer"]} for it in raw_items]
+    else:
+        items = get_targeted_items()
+
+    if limit is not None:
+        items = items[:limit]
+
+    print(f"Running Real LLM Evaluation with {len(items)} queries (Live Retrieval: {use_retrieval})...\n")
 
     results = {"Always-L0": [], "Always-L1": [], "FeedbackRAG": []}
 
@@ -164,10 +190,16 @@ def run_real_evaluation():
         })
         print(f"[{item['id']}] Q: {item['q'][:35]}... -> Pred: '{pred}' | Gold: '{item['gold']}' | EM={score_em} F1={round(score_f1, 2)} ({round(dt)}ms)")
 
-    # 2. Always-L1: Single-Pass RAG (Direct context provided)
-    print("\n--- 2. Evaluating Always-L1 (Single-Pass RAG with Context) ---")
+    # 2. Always-L1: Single-Pass RAG
+    print("\n--- 2. Evaluating Always-L1 (Single-Pass RAG) ---")
     for item in items:
-        prompt = f"Answer concisely in 1-4 words using only the context:\nContext: {item['context']}\nQuestion: {item['q']}\nAnswer:"
+        if use_retrieval and retriever:
+            docs = retriever.search(item["q"], k=3)
+            ctx = " ".join([d.get("text", "") for d in docs])
+        else:
+            ctx = item.get("context", "")
+
+        prompt = f"Answer concisely in 1-4 words using only the context:\nContext: {ctx}\nQuestion: {item['q']}\nAnswer:"
         t0 = time.time()
         pred = call_llm(prompt, max_tokens=15)
         dt = (time.time() - t0) * 1000
@@ -182,38 +214,36 @@ def run_real_evaluation():
     # 3. FeedbackRAG: MLFQ Escalation Logic
     print("\n--- 3. Evaluating FeedbackRAG (Escalation Queue) ---")
     for item in items:
-        # Start at Level 0: Direct LLM
         t0 = time.time()
         l0_prompt = f"Answer concisely in 1-4 words:\nQuestion: {item['q']}\nAnswer:"
         pred_l0 = call_llm(l0_prompt, max_tokens=15)
         calls = 1
 
-        # Genuine Runtime Signal S1 (Self-Consistency / Confidence) without Gold Labels
         norm_l0 = normalize_answer(pred_l0)
-        
-        # Check for refusal / uncertainty tokens
         uncertainty_phrases = ["cannot", "unknown", "do not know", "not sure", "sorry", "unclear", "no information"]
         is_uncertain = any(phrase in norm_l0 for phrase in uncertainty_phrases)
         is_malformed = (len(norm_l0.split()) == 0 or len(norm_l0.split()) > 15)
 
-        # Quick sample perturbation check (S1 consistency check at runtime)
         perturbed_prompt = f"State the factual answer directly in 1-3 words:\nQuestion: {item['q']}\nAnswer:"
         pred_l0_alt = call_llm(perturbed_prompt, max_tokens=15)
         calls += 1
         norm_alt = normalize_answer(pred_l0_alt)
 
-        # Agreement between 2 zero-shot samples (S1 Self-Consistency)
         consistency_match = (norm_l0 == norm_alt or norm_l0 in norm_alt or norm_alt in norm_l0) and not is_uncertain and not is_malformed
 
         if consistency_match:
-            # High parametric confidence -> Early exit at Level 0
             final_pred = pred_l0
             resolved_level = 0
         else:
-            # Low consistency / uncertainty -> Escalate to Level 1 (Single-pass RAG)
-            l1_prompt = f"Answer concisely in 1-4 words using only the context:\nContext: {item['context']}\nQuestion: {item['q']}\nAnswer:"
+            if use_retrieval and retriever:
+                docs = retriever.search(item["q"], k=3)
+                ctx = " ".join([d.get("text", "") for d in docs])
+            else:
+                ctx = item.get("context", "")
+
+            l1_prompt = f"Answer concisely in 1-4 words using only the context:\nContext: {ctx}\nQuestion: {item['q']}\nAnswer:"
             final_pred = call_llm(l1_prompt, max_tokens=15)
-            calls += 2  # 1 retrieval + 1 generation
+            calls += 2
             resolved_level = 1
 
         dt = (time.time() - t0) * 1000
@@ -239,12 +269,32 @@ def run_real_evaluation():
             "avg_calls": round(avg_calls, 2)
         }
 
-    print("\n=== Real LLM Summary Results (Qwen 2.5 0.5B) ===")
+    print("\n=== Real LLM Summary Results ===")
     print(json.dumps(summary, indent=2))
 
-    os.makedirs("results/tables", exist_ok=True)
-    with open("results/tables/real_llm_benchmark_results.json", "w") as f:
+    target_file = output_path
+    if not target_file:
+        if use_retrieval or dataset == "real_test":
+            target_file = "results/tables/real_end_to_end_benchmark_results.json"
+        else:
+            target_file = "results/tables/real_llm_benchmark_results.json"
+
+    os.makedirs(os.path.dirname(target_file), exist_ok=True)
+    with open(target_file, "w") as f:
         json.dump({"summary": summary, "per_question": results}, f, indent=2)
+    print(f"[*] Results saved to {target_file}")
 
 if __name__ == "__main__":
-    run_real_evaluation()
+    parser = argparse.ArgumentParser(description="Live Neural LLM Benchmark for FeedbackRAG")
+    parser.add_argument("--use-retrieval", action="store_true", help="Perform real BM25/Dense hybrid retrieval instead of static context")
+    parser.add_argument("--dataset", choices=["targeted", "real_test"], default="targeted", help="Benchmark dataset to run")
+    parser.add_argument("--limit", type=int, default=None, help="Max queries to evaluate")
+    parser.add_argument("--output", type=str, default=None, help="Output JSON path")
+    args = parser.parse_args()
+
+    run_real_evaluation(
+        use_retrieval=args.use_retrieval,
+        dataset=args.dataset,
+        limit=args.limit,
+        output_path=args.output
+    )
