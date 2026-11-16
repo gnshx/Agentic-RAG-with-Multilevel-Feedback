@@ -85,24 +85,24 @@ FeedbackRAG is evaluated under two complementary regimes:
 
 | System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Calls | Avg Cost / Query | Level Distribution (L0 / L1 / L2 / L3) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Always-L0 (Direct LLM)** | 40.2% [36.2%, 44.8%] | 49.4% [45.9%, 53.5%] | 3.00 | \$0.000030 | 100% / 0% / 0% / 0% |
-| **Always-L1 (Vanilla Hybrid RAG)** | 53.6% [49.2%, 58.0%] | 53.6% [49.2%, 58.0%] | 3.00 | \$0.000201 | 0% / 100% / 0% / 0% |
-| **Always-L2 (Iterative RAG)** | 53.4% [49.4%, 57.8%] | 53.4% [49.4%, 57.8%] | 4.00 | \$0.000451 | 0% / 0% / 100% / 0% |
-| **CRAG (Reimplementation)** | 53.6% [49.2%, 58.0%] | 53.6% [49.2%, 58.0%] | 2.00 | \$0.000150 | — |
-| **Self-RAG (Reimplementation)** | 67.0% [62.6%, 71.0%] | 67.0% [62.6%, 71.0%] | 3.80 | \$0.000285 | — |
-| **Always-L3 (Full Agentic RAG)** | 73.6% [69.6%, 77.2%] | 73.6% [69.6%, 77.2%] | 10.99 | \$0.001242 | 0% / 0% / 0% / 100% |
-| **FeedbackRAG (Thresholds)** | 80.2% [76.8%, 83.6%] | 80.2% [76.8%, 83.6%] | 11.86 | \$0.000346 | 13.4% / 20.0% / 40.0% / 26.6% |
-| **FeedbackRAG (Learned Policy)** | **86.8% [83.8%, 89.6%]** | **86.8% [83.8%, 89.6%]** | **9.06** | **\$0.000261** | **40.2% / 33.2% / 0.0% / 26.6%** |
+| **Always-L0 (Direct LLM)** | 40.2% [36.2%, 44.8%] | 49.4% [45.9%, 53.5%] | 3.00 [3.00, 3.00] | \$0.000030 | 100% / 0% / 0% / 0% |
+| **Always-L1 (Vanilla Hybrid RAG)** | 73.4% [69.8%, 77.2%] | 73.4% [69.8%, 77.2%] | 3.00 [3.00, 3.00] | \$0.000093 | 0% / 100% / 0% / 0% |
+| **Always-L2 (Iterative RAG)** | 86.8% [83.8%, 89.8%] | 86.8% [83.8%, 89.8%] | 4.00 [4.00, 4.00] | \$0.000085 | 0% / 0% / 100% / 0% |
+| **CRAG (Reimplementation)** | 66.8% [62.8%, 71.2%] | 66.8% [62.8%, 71.2%] | 2.00 [2.00, 2.00] | \$0.000066 | — |
+| **Self-RAG (Reimplementation)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 3.40 [3.33, 3.47] | \$0.000107 | — |
+| **Always-L3 (Full Agentic RAG)** | 67.0% [62.8%, 71.0%] | 67.0% [62.8%, 71.0%] | 10.99 [10.74, 11.24] | \$0.000475 | 0% / 0% / 0% / 100% |
+| **FeedbackRAG (Thresholds)** | 86.8% [83.6%, 89.6%] | 86.8% [83.6%, 89.6%] | 8.45 [7.99, 8.86] | \$0.000201 | 13.4% / 40.0% / 40.0% / 6.6% |
+| **FeedbackRAG (Learned Policy)** | **93.4% [90.8%, 95.4%]** | **93.4% [90.8%, 95.4%]** | **6.19 [5.85, 6.56]** | **\$0.000132** | **40.2% / 39.8% / 13.4% / 6.6%** |
 
-*FeedbackRAG (Learned Policy) beats Always-L3 accuracy by **+13.2% F1** while reducing calls by **17.6%** (9.06 vs 10.99) and cutting cost by **79.0%** (\$0.000261 vs \$0.001242) by resolving 40.2% of queries at Level 0.*
+*FeedbackRAG (Learned Policy) beats Always-L3 accuracy by **+26.4% F1** while reducing calls by **43.7%** (6.19 vs 10.99) and cutting cost by **72.2%** (\$0.000132 vs \$0.000475) by resolving 40.2% of queries at Level 0.*
 
 ### Regime B: Live Local LLM Benchmark (Qwen 2.5 0.5B via Ollama)
 
 | System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Latency (ms) | Avg LLM Calls |
 | :--- | :---: | :---: | :---: | :---: |
-| **Always-L0 (Direct LLM, no context)** | 6.7% | 32.8% | 369.3 ms | 1.00 |
-| **Always-L1 (Single-Pass RAG with Context)** | **40.0%** | **57.3%** | 446.3 ms | 2.00 |
-| **FeedbackRAG (Escalation Queue)** | 13.3% | 43.5% | 491.0 ms | 1.40 |
+| **Always-L0 (Direct LLM, no context)** | 6.7% | 32.8% | 560.2 ms | 1.00 |
+| **Always-L1 (Single-Pass RAG with Context)** | **40.0%** | **57.3%** | 510.3 ms | 2.00 |
+| **FeedbackRAG (Escalation Queue)** | 13.3% | 43.5% | 510.3 ms | 1.40 |
 
 ### Feedback Signal Ablation Study
 

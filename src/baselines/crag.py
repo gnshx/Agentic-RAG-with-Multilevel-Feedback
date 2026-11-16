@@ -34,19 +34,19 @@ class CRAGBaseline:
             active_docs = docs
         elif grade >= 0.30:
             action = "ambiguous"
-            # Corrective expansion query
+            # Corrective refinement & query expansion (CRAG paper Section 3.2)
             expanded_query = f"{question} background facts and related entities"
             fallback_docs = self.retriever.search(expanded_query, k=self.k)
-            # Combine
-            pooled = {d["id"]: d for d in docs}
+            # Filter and pool relevant context
+            pooled = {d["id"]: d for d in docs if any(term in d.get("text", "").lower() for term in question.lower().split())}
             for d in fallback_docs:
                 pooled[d["id"]] = d
-            active_docs = list(pooled.values())[:self.k]
+            active_docs = list(pooled.values())[:self.k] if pooled else docs[:2]
         else:
             action = "incorrect"
-            # Corrective fallback: broad search across corpus
-            broad_query = f"{question} core domain facts"
-            active_docs = self.retriever.search(broad_query, k=self.k * 2)
+            # Corrective fallback: discard irrelevant context and search broad core terms
+            broad_query = " ".join([w for w in question.split() if len(w) > 3])
+            active_docs = self.retriever.search(broad_query, k=self.k)
 
         # Step 3: Generation
         gen_res = self.generator.answer(question, active_docs)

@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-11-16T10:45:42Z",
+  "git_commit": "0a74c8f75d27c16f7db4e657d714b1c87a0b19ac",
+  "random_seed": 42,
+  "pricing_reference": {
+    "source": "OpenAI / Gemini lightweight standard pricing (Nov 2024)",
+    "prompt_tokens_per_1m": 0.15,
+    "completion_tokens_per_1m": 0.6
+  },
+  "datasets": {
+    "dev_items": 100,
+    "test_items": 500,
+    "corpus_paragraphs": 48,
+    "provenance": "Synthetic multi-hop benchmark generated from 20 seed templates (data/README.md)"
+  },
+  "execution_backends": {
+    "regime_a": "Deterministic reference simulator (_mock_backend in src/llm.py)",
+    "regime_b": "Qwen 2.5 0.5B via local Ollama API (eval/run_real_llm_benchmark.py)"
+  }
+}

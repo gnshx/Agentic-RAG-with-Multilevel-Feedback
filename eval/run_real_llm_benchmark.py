@@ -1,8 +1,11 @@
 import json
 import time
 import os
+import sys
 import urllib.request
 from typing import Dict, Any, List
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from eval.metrics import em, f1, normalize_answer
 
 def make_fast_ollama(model: str = "qwen2.5:0.5b"):

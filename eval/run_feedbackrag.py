@@ -91,26 +91,27 @@ def run_feedbackrag_eval(split_name: str = "test", mode: str = "thresholds", pol
         records.append(record)
         trace_logger.log_query_trace(record)
 
-        # Log by_level signals for policy training and offline threshold sweeping
-        by_level = {}
-        for lvl in range(4):
-            lvl_state = {
-                "question": q, "level": lvl, "docs": [], "subquestions": [],
-                "drafts": [], "answer": "", "citations": [], "signals": {}, "status": "ok"
-            }
-            c_before = getattr(llm, "logical_calls", llm.calls)
-            lvl_state = levels_map[lvl](lvl_state)
-            c_used = float(getattr(llm, "logical_calls", llm.calls) - c_before)
-            by_level[lvl] = {
-                "question": q,
-                "answer": lvl_state.get("answer", ""),
-                "signals": dict(lvl_state.get("signals", {})),
-                "docs": lvl_state.get("docs", []),
-                "calls": c_used,
-                "em": em(lvl_state.get("answer", ""), gold_ans),
-                "f1": f1(lvl_state.get("answer", ""), gold_ans)
-            }
-        trace_logger.log_all_level_signals(item["id"], q, by_level)
+        # Log by_level signals for policy training and offline threshold sweeping (Dev only)
+        if split_name == "dev":
+            by_level = {}
+            for lvl in range(4):
+                lvl_state = {
+                    "question": q, "level": lvl, "docs": [], "subquestions": [],
+                    "drafts": [], "answer": "", "citations": [], "signals": {}, "status": "ok"
+                }
+                c_before = getattr(llm, "logical_calls", llm.calls)
+                lvl_state = levels_map[lvl](lvl_state)
+                c_used = float(getattr(llm, "logical_calls", llm.calls) - c_before)
+                by_level[lvl] = {
+                    "question": q,
+                    "answer": lvl_state.get("answer", ""),
+                    "signals": dict(lvl_state.get("signals", {})),
+                    "docs": lvl_state.get("docs", []),
+                    "calls": c_used,
+                    "em": em(lvl_state.get("answer", ""), gold_ans),
+                    "f1": f1(lvl_state.get("answer", ""), gold_ans)
+                }
+            trace_logger.log_all_level_signals(item["id"], q, by_level)
 
     n = len(questions)
     elapsed = time.time() - t0

@@ -72,22 +72,27 @@ def run_level_2(state: Dict[str, Any], llm: LLM, retriever: HybridRetriever, pla
     for d in state.get("docs", []):
         pooled_docs[d["id"]] = d
 
-    # Retrieve per sub-question
+    # Retrieve per sub-question ensuring multi-hop representation
+    sub_hop_docs: List[Dict[str, Any]] = []
     for sub_q in subquestions:
-        sub_docs = retriever.search(sub_q, k=k)
+        sub_docs = retriever.search(sub_q, k=max(2, k // max(1, len(subquestions))))
         for d in sub_docs:
-            pooled_docs[d["id"]] = d
+            if d["id"] not in pooled_docs:
+                pooled_docs[d["id"]] = d
+                sub_hop_docs.append(d)
 
-    # Rerank top k
-    reranked = retriever.rerank(q, list(pooled_docs.values()), top_k=k)
-    state["docs"] = reranked
+    # Combine multi-hop sub-question evidence with primary pool
+    combined_docs = sub_hop_docs + [d for d in pooled_docs.values() if d not in sub_hop_docs]
+    # Keep top k with multi-hop coverage guaranteed
+    selected_docs = combined_docs[:k]
+    state["docs"] = selected_docs
 
     # Generate answer with citations
-    gen_result = generator.answer(q, reranked)
+    gen_result = generator.answer(q, selected_docs)
     state["answer"] = gen_result["answer"]
     state["citations"] = gen_result["citations"]
 
-    s3 = groundedness(llm, state["answer"], reranked)
+    s3 = groundedness(llm, state["answer"], selected_docs)
     s4 = completeness(llm, q, state["answer"])
 
     state["signals"]["S3"] = s3
