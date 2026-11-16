@@ -75,34 +75,44 @@ flowchart TD
 
 ---
 
-## 5. Main Experimental Results (500-Question Multi-Hop Benchmark)
+## 5. Experimental Results
 
-Evaluated across **500 multi-hop questions** (335 HotpotQA + 165 2WikiMultiHopQA) with a 48-paragraph unified Wikipedia corpus. 95% bootstrap confidence intervals ($B=1,000$) are reported for each metric.
+FeedbackRAG is evaluated under two complementary regimes:
+1. **Regime A (500-Question Simulated Control-Flow Benchmark):** Evaluated against an offline reference simulator on 500 template-expanded multi-hop items (HotpotQA & 2WikiMultiHopQA domains) to analyze MLFQ state machine dynamics, Pareto frontier trade-offs, and learned GBDT escalation policies.
+2. **Regime B (Live Local LLM Validation on Qwen 2.5 0.5B via Ollama):** Evaluated on open-source neural weights across 15 factual and multi-hop queries, capturing authentic inference latencies (300–500 ms) and free-text Token F1 vs. Exact Match divergence.
 
-### Benchmark Comparison
+### Regime A: 500-Question Simulation Benchmark
 
-| System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Calls | Avg Cost / Query | p50 Latency | p95 Latency |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Always-L0 (Direct LLM)** | 40.2% [36.2%, 44.8%] | 49.4% [45.9%, 53.5%] | 3.00 | \$0.000030 | 0.00 ms | 0.00 ms |
-| **Always-L1 (Vanilla Hybrid RAG)** | 53.6% [49.2%, 58.0%] | 53.6% [49.2%, 58.0%] | 3.00 | \$0.000201 | 0.00 ms | 0.00 ms |
-| **Always-L2 (Iterative RAG)** | 53.4% [49.4%, 57.8%] | 53.4% [49.4%, 57.8%] | 4.00 | \$0.000451 | 0.80 ms | 0.80 ms |
-| **CRAG (Reimplementation)** | 53.6% [49.2%, 58.0%] | 53.6% [49.2%, 58.0%] | 2.00 | \$0.000150 | 0.00 ms | 0.00 ms |
-| **Self-RAG (Reimplementation)** | 67.0% [62.6%, 71.0%] | 67.0% [62.6%, 71.0%] | 3.80 | \$0.000285 | 0.00 ms | 0.00 ms |
-| **Always-L3 (Full Agentic RAG)** | 73.6% [69.6%, 77.2%] | 73.6% [69.6%, 77.2%] | 10.99 | \$0.001242 | 1.80 ms | 1.90 ms |
-| **FeedbackRAG (Thresholds)** | 80.2% [76.8%, 83.6%] | 80.2% [76.8%, 83.6%] | 11.86 | \$0.000346 | 1.20 ms | 1.90 ms |
-| **FeedbackRAG (Learned Policy)** | **86.8% [83.8%, 89.6%]** | **86.8% [83.8%, 89.6%]** | **9.06** | **\$0.000261** | **0.80 ms** | **2.60 ms** |
+| System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Calls | Avg Cost / Query | Level Distribution (L0 / L1 / L2 / L3) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Always-L0 (Direct LLM)** | 40.2% [36.2%, 44.8%] | 49.4% [45.9%, 53.5%] | 3.00 | \$0.000030 | 100% / 0% / 0% / 0% |
+| **Always-L1 (Vanilla Hybrid RAG)** | 53.6% [49.2%, 58.0%] | 53.6% [49.2%, 58.0%] | 3.00 | \$0.000201 | 0% / 100% / 0% / 0% |
+| **Always-L2 (Iterative RAG)** | 53.4% [49.4%, 57.8%] | 53.4% [49.4%, 57.8%] | 4.00 | \$0.000451 | 0% / 0% / 100% / 0% |
+| **CRAG (Reimplementation)** | 53.6% [49.2%, 58.0%] | 53.6% [49.2%, 58.0%] | 2.00 | \$0.000150 | — |
+| **Self-RAG (Reimplementation)** | 67.0% [62.6%, 71.0%] | 67.0% [62.6%, 71.0%] | 3.80 | \$0.000285 | — |
+| **Always-L3 (Full Agentic RAG)** | 73.6% [69.6%, 77.2%] | 73.6% [69.6%, 77.2%] | 10.99 | \$0.001242 | 0% / 0% / 0% / 100% |
+| **FeedbackRAG (Thresholds)** | 80.2% [76.8%, 83.6%] | 80.2% [76.8%, 83.6%] | 11.86 | \$0.000346 | 13.4% / 20.0% / 40.0% / 26.6% |
+| **FeedbackRAG (Learned Policy)** | **86.8% [83.8%, 89.6%]** | **86.8% [83.8%, 89.6%]** | **9.06** | **\$0.000261** | **40.2% / 33.2% / 0.0% / 26.6%** |
 
-*FeedbackRAG (Learned Policy) matches and exceeds Always-L3 accuracy by **+13.2% F1** while reducing calls by **17.6%** and cost by **28.2%** ($p < 0.0001$), resolving 40.2% of queries at Level 0 and 33.2% at Level 1.*
+*FeedbackRAG (Learned Policy) beats Always-L3 accuracy by **+13.2% F1** while reducing calls by **17.6%** (9.06 vs 10.99) and cutting cost by **79.0%** (\$0.000261 vs \$0.001242) by resolving 40.2% of queries at Level 0.*
+
+### Regime B: Live Local LLM Benchmark (Qwen 2.5 0.5B via Ollama)
+
+| System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Latency (ms) | Avg LLM Calls |
+| :--- | :---: | :---: | :---: | :---: |
+| **Always-L0 (Direct LLM, no context)** | 6.7% | 32.8% | 369.3 ms | 1.00 |
+| **Always-L1 (Single-Pass RAG with Context)** | **40.0%** | **57.3%** | 446.3 ms | 2.00 |
+| **FeedbackRAG (Escalation Queue)** | 13.3% | 43.5% | 491.0 ms | 1.40 |
 
 ### Feedback Signal Ablation Study
 
 | Ablation Configuration | Test F1 (%) | $\Delta$ F1 | Avg LLM Calls | $\Delta$ Calls | Empirical Insight |
 | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Full FeedbackRAG (All S1–S4)** | **80.2%** | **0.00** | **11.26** | **0.00** | Balanced cost-accuracy Pareto frontier |
-| **Drop S1 (Self-Consistency)** | 80.2% | +0.00 | 11.66 | +0.40 | **Wastes calls**: escalates confident parametric queries |
-| **Drop S2 (Retrieval Quality)** | 73.6% | **-6.60** | 11.00 | -0.26 | Drops accuracy by accepting noisy distractor context |
-| **Drop S3 (Groundedness Checker)** | 66.8% | **-13.40** | 11.12 | -0.14 | **Catastrophic accuracy collapse**: hallucinations accepted |
-| **Drop S4 (Completeness Checker)** | 80.2% | +0.00 | 11.26 | 0.00 | Guards multi-faceted queries from premature exit |
+| **Full FeedbackRAG (All S1–S4)** | **80.2%** | **0.00** | **11.86** | **0.00** | Balanced baseline threshold gating |
+| **Drop S1 (Self-Consistency)** | 80.2% | 0.00 | 12.26 | +0.40 | **Wastes calls**: escalates confident parametric queries |
+| **Drop S2 (Retrieval Quality)** | 73.6% | **-6.60** | 11.60 | -0.26 | Drops accuracy by accepting noisy distractor context |
+| **Drop S3 (Groundedness Checker)** | 66.8% | **-13.40** | 11.72 | -0.14 | **Catastrophic accuracy collapse**: hallucinations accepted |
+| **Drop S4 (Completeness Checker)** | 80.2% | 0.00 | 11.86 | 0.00 | In this template setup, covered largely by S3 |
 
 ---
 

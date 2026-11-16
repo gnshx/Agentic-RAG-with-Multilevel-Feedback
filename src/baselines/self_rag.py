@@ -56,3 +56,4 @@ class SelfRAGBaseline:
             "critique_applied": critique_applied,
             "calls": calls_used
         }
+

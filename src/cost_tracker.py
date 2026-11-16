@@ -43,3 +43,4 @@ class CostTracker:
             "p99": round(float(np.percentile(arr, 99)), 4),
             "mean": round(float(np.mean(arr)), 4)
         }
+

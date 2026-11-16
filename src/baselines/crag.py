@@ -61,3 +61,4 @@ class CRAGBaseline:
             "calls": calls_used,
             "docs_used": len(active_docs)
         }
+

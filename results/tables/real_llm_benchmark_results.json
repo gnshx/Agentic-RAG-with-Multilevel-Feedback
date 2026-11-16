@@ -1,0 +1,495 @@
+{
+  "summary": {
+    "Always-L0": {
+      "em": 6.7,
+      "f1": 32.8,
+      "avg_latency_ms": 369.3,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 40.0,
+      "f1": 57.3,
+      "avg_latency_ms": 446.3,
+      "avg_calls": 2.0
+    },
+    "FeedbackRAG": {
+      "em": 13.3,
+      "f1": 43.5,
+      "avg_latency_ms": 491.0,
+      "avg_calls": 1.4
+    }
+  },
+  "per_question": {
+    "Always-L0": [
+      {
+        "id": "real_01",
+        "q": "What is the capital city of France?",
+        "pred": "Paris",
+        "gold": "Paris",
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 245.64695358276367,
+        "calls": 1
+      },
+      {
+        "id": "real_02",
+        "q": "What is the primary chemical element of diamond?",
+        "pred": "Diamond is primarily composed of carbon.",
+        "gold": "carbon",
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 286.47780418395996,
+        "calls": 1
+      },
+      {
+        "id": "real_03",
+        "q": "Who composed the opera Turandot?",
+        "pred": "The opera Turandot was composed by Wolfgang Amadeus Mozart.",
+        "gold": "Giacomo Puccini",
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 402.09317207336426,
+        "calls": 1
+      },
+      {
+        "id": "real_04",
+        "q": "In what year was Alan Turing born?",
+        "pred": "Alan Turing was born in 1912.",
+        "gold": "1912",
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 374.22871589660645,
+        "calls": 1
+      },
+      {
+        "id": "real_05",
+        "q": "In what year was Ada Lovelace born?",
+        "pred": "Ada Lovelace was born in 1815.",
+        "gold": "1815",
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 425.9495735168457,
+        "calls": 1
+      },
+      {
+        "id": "real_06",
+        "q": "What is the official elevation of Mount Everest in meters?",
+        "pred": "Mount Everest's official elevation is 8,848 meters.",
+        "gold": "8848",
+        "em": 0.0,
+        "f1": 0.25,
+        "latency_ms": 447.6666450500488,
+        "calls": 1
+      },
+      {
+        "id": "real_07",
+        "q": "What is the elevation of K2 in meters?",
+        "pred": "K2 is 8848 meters.",
+        "gold": "8611",
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 355.73530197143555,
+        "calls": 1
+      },
+      {
+        "id": "real_08",
+        "q": "In what year was the Python programming language first released?",
+        "pred": "Python was first released in 1991.",
+        "gold": "1991",
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 365.74268341064453,
+        "calls": 1
+      },
+      {
+        "id": "real_09",
+        "q": "In what year was the Java programming language released?",
+        "pred": "Java programming language was released in 1995.",
+        "gold": "1995",
+        "em": 0.0,
+        "f1": 0.25,
+        "latency_ms": 381.103515625,
+        "calls": 1
+      },
+      {
+        "id": "real_10",
+        "q": "In what city was Albert Einstein born?",
+        "pred": "Albert Einstein was born in Ulm, Germany.",
+        "gold": "Ulm",
+        "em": 0.0,
+        "f1": 0.25,
+        "latency_ms": 390.34223556518555,
+        "calls": 1
+      },
+      {
+        "id": "real_11",
+        "q": "Which river flows through Paris?",
+        "pred": "The Seine River flows through Paris.",
+        "gold": "Seine",
+        "em": 0.0,
+        "f1": 0.33333333333333337,
+        "latency_ms": 324.02944564819336,
+        "calls": 1
+      },
+      {
+        "id": "real_12",
+        "q": "Who directed the movie Inception?",
+        "pred": "The movie \"Inception\" was directed by Christopher Nolan.",
+        "gold": "Christopher Nolan",
+        "em": 0.0,
+        "f1": 0.4444444444444445,
+        "latency_ms": 382.7352523803711,
+        "calls": 1
+      },
+      {
+        "id": "real_13",
+        "q": "In what country was Android Inc founded?",
+        "pred": "Android Inc was founded in the United States.",
+        "gold": "United States",
+        "em": 0.0,
+        "f1": 0.4444444444444445,
+        "latency_ms": 338.1459712982178,
+        "calls": 1
+      },
+      {
+        "id": "real_14",
+        "q": "Who invented the World Wide Web?",
+        "pred": "The World Wide Web was invented by Tim Berners-Lee.",
+        "gold": "Tim Berners-Lee",
+        "em": 0.0,
+        "f1": 0.4,
+        "latency_ms": 392.9479122161865,
+        "calls": 1
+      },
+      {
+        "id": "real_15",
+        "q": "What is the native home country of Tim Berners-Lee?",
+        "pred": "Tim Berners-Lee's native home country is the United Kingdom.",
+        "gold": "United Kingdom",
+        "em": 0.0,
+        "f1": 0.4,
+        "latency_ms": 427.0179271697998,
+        "calls": 1
+      }
+    ],
+    "Always-L1": [
+      {
+        "id": "real_01",
+        "q": "What is the capital city of France?",
+        "pred": "The capital city of France is Paris.",
+        "gold": "Paris",
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 503.69787216186523,
+        "calls": 2
+      },
+      {
+        "id": "real_02",
+        "q": "What is the primary chemical element of diamond?",
+        "pred": "Diamond is primarily composed of carbon.",
+        "gold": "carbon",
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 475.33273696899414,
+        "calls": 2
+      },
+      {
+        "id": "real_03",
+        "q": "Who composed the opera Turandot?",
+        "pred": "Turandot was composed by Giacomo Puccini.",
+        "gold": "Giacomo Puccini",
+        "em": 0.0,
+        "f1": 0.5,
+        "latency_ms": 481.3663959503174,
+        "calls": 2
+      },
+      {
+        "id": "real_04",
+        "q": "In what year was Alan Turing born?",
+        "pred": "1912",
+        "gold": "1912",
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 388.8213634490967,
+        "calls": 2
+      },
+      {
+        "id": "real_05",
+        "q": "In what year was Ada Lovelace born?",
+        "pred": "1815",
+        "gold": "1815",
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 413.4976863861084,
+        "calls": 2
+      },
+      {
+        "id": "real_06",
+        "q": "What is the official elevation of Mount Everest in meters?",
+        "pred": "The official elevation of Mount Everest is 8,848 meters.",
+        "gold": "8848",
+        "em": 0.0,
+        "f1": 0.2222222222222222,
+        "latency_ms": 530.1942825317383,
+        "calls": 2
+      },
+      {
+        "id": "real_07",
+        "q": "What is the elevation of K2 in meters?",
+        "pred": "K2 is 8,611 meters.",
+        "gold": "8611",
+        "em": 0.0,
+        "f1": 0.4,
+        "latency_ms": 494.2154884338379,
+        "calls": 2
+      },
+      {
+        "id": "real_08",
+        "q": "In what year was the Python programming language first released?",
+        "pred": "1991",
+        "gold": "1991",
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 387.8769874572754,
+        "calls": 2
+      },
+      {
+        "id": "real_09",
+        "q": "In what year was the Java programming language released?",
+        "pred": "1995",
+        "gold": "1995",
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 373.6429214477539,
+        "calls": 2
+      },
+      {
+        "id": "real_10",
+        "q": "In what city was Albert Einstein born?",
+        "pred": "Albert Einstein was born in the Kingdom of W\u00fcrttemberg city of",
+        "gold": "Ulm",
+        "em": 0.0,
+        "f1": 0.0,
+        "latency_ms": 517.4820423126221,
+        "calls": 2
+      },
+      {
+        "id": "real_11",
+        "q": "Which river flows through Paris?",
+        "pred": "The river that flows through Paris is the Seine.",
+        "gold": "Seine",
+        "em": 0.0,
+        "f1": 0.25,
+        "latency_ms": 475.60977935791016,
+        "calls": 2
+      },
+      {
+        "id": "real_12",
+        "q": "Who directed the movie Inception?",
+        "pred": "Christopher Nolan",
+        "gold": "Christopher Nolan",
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 340.84463119506836,
+        "calls": 2
+      },
+      {
+        "id": "real_13",
+        "q": "In what country was Android Inc founded?",
+        "pred": "Android Inc was founded in the United States.",
+        "gold": "United States",
+        "em": 0.0,
+        "f1": 0.4444444444444445,
+        "latency_ms": 441.93339347839355,
+        "calls": 2
+      },
+      {
+        "id": "real_14",
+        "q": "Who invented the World Wide Web?",
+        "pred": "Sir Timothy John Berners-Lee invented the World Wide Web.",
+        "gold": "Tim Berners-Lee",
+        "em": 0.0,
+        "f1": 0.2,
+        "latency_ms": 482.4819564819336,
+        "calls": 2
+      },
+      {
+        "id": "real_15",
+        "q": "What is the native home country of Tim Berners-Lee?",
+        "pred": "United Kingdom",
+        "gold": "United Kingdom",
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 386.9214057922363,
+        "calls": 2
+      }
+    ],
+    "FeedbackRAG": [
+      {
+        "id": "real_01",
+        "q": "What is the capital city of France?",
+        "pred": "Paris",
+        "gold": "Paris",
+        "resolved_level": 0,
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 252.02488899230957,
+        "calls": 1
+      },
+      {
+        "id": "real_02",
+        "q": "What is the primary chemical element of diamond?",
+        "pred": "Diamond is primarily composed of carbon.",
+        "gold": "carbon",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 334.87415313720703,
+        "calls": 1
+      },
+      {
+        "id": "real_03",
+        "q": "Who composed the opera Turandot?",
+        "pred": "Turandot was composed by Giacomo Puccini.",
+        "gold": "Giacomo Puccini",
+        "resolved_level": 1,
+        "em": 0.0,
+        "f1": 0.5,
+        "latency_ms": 946.195125579834,
+        "calls": 3
+      },
+      {
+        "id": "real_04",
+        "q": "In what year was Alan Turing born?",
+        "pred": "Alan Turing was born in 1912.",
+        "gold": "1912",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 396.40235900878906,
+        "calls": 1
+      },
+      {
+        "id": "real_05",
+        "q": "In what year was Ada Lovelace born?",
+        "pred": "Ada Lovelace was born in 1815.",
+        "gold": "1815",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.2857142857142857,
+        "latency_ms": 421.3101863861084,
+        "calls": 1
+      },
+      {
+        "id": "real_06",
+        "q": "What is the official elevation of Mount Everest in meters?",
+        "pred": "Mount Everest's official elevation is 8,848 meters.",
+        "gold": "8848",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.25,
+        "latency_ms": 492.3238754272461,
+        "calls": 1
+      },
+      {
+        "id": "real_07",
+        "q": "What is the elevation of K2 in meters?",
+        "pred": "K2 is 8,611 meters.",
+        "gold": "8611",
+        "resolved_level": 1,
+        "em": 0.0,
+        "f1": 0.4,
+        "latency_ms": 934.2570304870605,
+        "calls": 3
+      },
+      {
+        "id": "real_08",
+        "q": "In what year was the Python programming language first released?",
+        "pred": "1991",
+        "gold": "1991",
+        "resolved_level": 1,
+        "em": 1.0,
+        "f1": 1.0,
+        "latency_ms": 824.8181343078613,
+        "calls": 3
+      },
+      {
+        "id": "real_09",
+        "q": "In what year was the Java programming language released?",
+        "pred": "Java programming language was released in 1995.",
+        "gold": "1995",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.25,
+        "latency_ms": 443.16720962524414,
+        "calls": 1
+      },
+      {
+        "id": "real_10",
+        "q": "In what city was Albert Einstein born?",
+        "pred": "Albert Einstein was born in Ulm, Germany.",
+        "gold": "Ulm",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.25,
+        "latency_ms": 380.4624080657959,
+        "calls": 1
+      },
+      {
+        "id": "real_11",
+        "q": "Which river flows through Paris?",
+        "pred": "The Seine River flows through Paris.",
+        "gold": "Seine",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.33333333333333337,
+        "latency_ms": 331.5396308898926,
+        "calls": 1
+      },
+      {
+        "id": "real_12",
+        "q": "Who directed the movie Inception?",
+        "pred": "The movie \"Inception\" was directed by Christopher Nolan.",
+        "gold": "Christopher Nolan",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.4444444444444445,
+        "latency_ms": 397.8605270385742,
+        "calls": 1
+      },
+      {
+        "id": "real_13",
+        "q": "In what country was Android Inc founded?",
+        "pred": "Android Inc was founded in the United States.",
+        "gold": "United States",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.4444444444444445,
+        "latency_ms": 357.76281356811523,
+        "calls": 1
+      },
+      {
+        "id": "real_14",
+        "q": "Who invented the World Wide Web?",
+        "pred": "The World Wide Web was invented by Tim Berners-Lee.",
+        "gold": "Tim Berners-Lee",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.4,
+        "latency_ms": 390.81478118896484,
+        "calls": 1
+      },
+      {
+        "id": "real_15",
+        "q": "What is the native home country of Tim Berners-Lee?",
+        "pred": "Tim Berners-Lee's native home country is the United Kingdom.",
+        "gold": "United Kingdom",
+        "resolved_level": 0,
+        "em": 0.0,
+        "f1": 0.4,
+        "latency_ms": 461.2767696380615,
+        "calls": 1
+      }
+    ]
+  }
+}

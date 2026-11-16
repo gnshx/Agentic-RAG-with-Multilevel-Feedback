@@ -66,3 +66,4 @@ def format_metric_with_ci(mean: float, lower: float, upper: float, is_percent: b
     if is_percent:
         return f"{mean * 100:.1f}% [{lower * 100:.1f}%, {upper * 100:.1f}%]"
     return f"{mean:.2f} [{lower:.2f}, {upper:.2f}]"
+
