@@ -24,7 +24,8 @@ def package():
         "requirements.txt",
         "pyproject.toml",
         ".env.example",
-        "config.yaml"
+        "config.yaml",
+        "AUDIT_REPORT.md"
     ]
     for rf in root_files:
         if os.path.exists(rf):
