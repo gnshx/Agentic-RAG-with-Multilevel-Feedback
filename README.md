@@ -10,9 +10,9 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-FF4B4B.svg?logo=streamlit)](https://streamlit.io)
 
-**DSL504/DS504 Natural Language Processing — Final Project**  
+**Author:** [NDS Ganesh](https://github.com/gnshx)  
 *Indian Institute of Technology Bhilai (IIT Bhilai)*  
-**Group 14:** Agentic RAG with Multilevel Feedback
+**DSL504/DS504 Natural Language Processing**
 
 [Technical Report](REPORT.md) • [System Architecture](docs/HLD.md) • [Product Requirements](docs/PRD.md) • [Test Verification](docs/TEST_VERIFICATION.md) • [Interactive Demo](app/streamlit_app.py)
 
@@ -417,8 +417,8 @@ If you build upon this work or use the FeedbackRAG MLFQ architecture, please cit
 
 ```bibtex
 @misc{feedbackrag2026,
-  title        = {FeedbackRAG: Agentic RAG with a Multilevel Feedback Queue System},
-  author       = {FeedbackRAG Team},
+  title        = {FeedbackRAG: Dynamic Escalation via Multilevel Feedback Queues for Cost-Optimal Agentic RAG},
+  author       = {Ganesh, N. D. S.},
   year         = {2026},
   howpublished = {IIT Bhilai Natural Language Processing (DSL504/DS504)},
   note         = {\url{https://github.com/gnshx/Agentic-RAG-with-Multilevel-Feedback}}
