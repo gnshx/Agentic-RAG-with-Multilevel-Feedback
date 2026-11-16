@@ -8,9 +8,27 @@ from typing import Dict, Any, List
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from eval.metrics import em, f1, normalize_answer
 
-def make_fast_ollama(model: str = "qwen2.5:0.5b"):
+def get_ollama_endpoint():
+    # Detect if GPU tunnel on port 11435 is active, else fallback to 11434
+    for port, preferred_model in [(11435, "qwen2.5-coder:7b"), (11434, "qwen2.5:0.5b")]:
+        try:
+            req = urllib.request.Request(f"http://localhost:{port}/api/tags")
+            with urllib.request.urlopen(req, timeout=1.5) as res:
+                data = json.loads(res.read().decode())
+                models = [m.get("name", "") for m in data.get("models", [])]
+                for pm in [preferred_model, "qwen2.5-coder:7b", "gemma2:2b", "qwen2.5-coder:3b"]:
+                    if pm in models:
+                        return f"http://localhost:{port}/api/generate", pm
+                if models:
+                    return f"http://localhost:{port}/api/generate", models[0]
+        except Exception:
+            continue
+    return "http://localhost:11434/api/generate", "qwen2.5:0.5b"
+
+def make_fast_ollama():
+    url, model = get_ollama_endpoint()
+    print(f"[*] Live LLM Backend: Connected to {url} using model '{model}'")
     def call_ollama(prompt: str, max_tokens: int = 30) -> str:
-        url = "http://localhost:11434/api/generate"
         payload = {
             "model": model,
             "prompt": prompt,
@@ -31,7 +49,7 @@ def make_fast_ollama(model: str = "qwen2.5:0.5b"):
     return call_ollama
 
 def run_real_evaluation():
-    call_llm = make_fast_ollama("qwen2.5:0.5b")
+    call_llm = make_fast_ollama()
 
     # 15 real factual and multi-hop benchmark items
     items = [

@@ -10,9 +10,9 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-FF4B4B.svg?logo=streamlit)](https://streamlit.io)
 
-**DSL504/DS504 Natural Language Processing — Final Capstone Project**  
+**DSL504/DS504 Natural Language Processing — Final Project**  
 *Indian Institute of Technology Bhilai (IIT Bhilai)*  
-**Group 14:** NDS Ganesh • V Karthik • K Soma Charith Reddy • R Dheemanth
+**Group 14:** Agentic RAG with Multilevel Feedback
 
 [Technical Report](REPORT.md) • [System Architecture](docs/HLD.md) • [Product Requirements](docs/PRD.md) • [Test Verification](docs/TEST_VERIFICATION.md) • [Interactive Demo](app/streamlit_app.py)
 
@@ -163,20 +163,20 @@ Evaluated on 500 template-expanded multi-hop questions derived from the **Hotpot
 | System Architecture | Exact Match (EM %) | Token F1 (%) | Avg Calls / Query | Avg Cost / Query | Level Promotion Distribution (L0 / L1 / L2 / L3) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Always-L0 (Direct LLM)** | 40.2% [36.2%, 44.8%] | 49.4% [45.9%, 53.5%] | 3.00 [3.00, 3.00] | \$0.000030 | 100.0% / 0.0% / 0.0% / 0.0% |
-| **Always-L1 (Vanilla Hybrid RAG)** | 73.4% [69.8%, 77.2%] | 73.4% [69.8%, 77.2%] | 3.00 [3.00, 3.00] | \$0.000093 | 0.0% / 100.0% / 0.0% / 0.0% |
-| **Always-L2 (Iterative Multi-Hop RAG)** | 86.8% [83.8%, 89.8%] | 86.8% [83.8%, 89.8%] | 4.00 [4.00, 4.00] | \$0.000085 | 0.0% / 0.0% / 100.0% / 0.0% |
-| **CRAG (Reimplementation)** | 66.8% [62.8%, 71.2%] | 66.8% [62.8%, 71.2%] | 2.00 [2.00, 2.00] | \$0.000066 | — |
-| **Self-RAG (Reimplementation)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 3.40 [3.33, 3.47] | \$0.000107 | — |
-| **Always-L3 (Full Agentic RAG)** | 67.0% [62.8%, 71.0%] | 67.0% [62.8%, 71.0%] | 10.99 [10.74, 11.24] | \$0.000475 | 0.0% / 0.0% / 0.0% / 100.0% |
-| **FeedbackRAG (Heuristic Thresholds)** | 86.8% [83.6%, 89.6%] | 86.8% [83.6%, 89.6%] | 8.45 [7.99, 8.86] | \$0.000201 | 13.4% / 40.0% / 40.0% / 6.6% |
-| **FeedbackRAG (Learned Policy)** | **93.4% [90.8%, 95.4%]** | **93.4% [90.8%, 95.4%]** | **6.19 [5.85, 6.56]** | **\$0.000132** | **40.2% / 39.8% / 13.4% / 6.6%** |
+| **Always-L1 (Vanilla Hybrid RAG)** | 66.8% [63.0%, 70.8%] | 66.8% [63.0%, 70.8%] | 3.00 [3.00, 3.00] | \$0.000093 | 0.0% / 100.0% / 0.0% / 0.0% |
+| **Always-L2 (Iterative Multi-Hop RAG)** | 73.4% [69.2%, 77.4%] | 73.4% [69.2%, 77.4%] | 4.00 [4.00, 4.00] | \$0.000085 | 0.0% / 0.0% / 100.0% / 0.0% |
+| **CRAG (Reimplementation)** | 66.8% [63.0%, 70.8%] | 66.8% [63.0%, 70.8%] | 2.00 [2.00, 2.00] | \$0.000066 | — |
+| **Self-RAG (Reimplementation)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 3.53 [3.45, 3.61] | \$0.000107 | — |
+| **Always-L3 (Full Agentic RAG)** | 73.6% [69.4%, 77.4%] | 73.6% [69.4%, 77.4%] | 10.60 [10.35, 10.85] | \$0.000458 | 0.0% / 0.0% / 0.0% / 100.0% |
+| **FeedbackRAG (Heuristic Thresholds)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 8.26 [7.85, 8.65] | \$0.000174 | 13.4% / 20.0% / 66.6% / 0.0% |
+| **FeedbackRAG (Learned Policy)** | **93.4% [90.8%, 95.4%]** | **93.4% [90.8%, 95.4%]** | **6.45 [6.10, 6.80]** | **\$0.000139** | **40.2% / 33.2% / 20.0% / 6.6%** |
 
 *Table 1: Main experimental results on 500 test questions. Brackets denote 95% bootstrap confidence intervals ($B=1,000$). Baselines reflect standard reference reimplementations inside the unified benchmark harness.*
 
 #### Key Empirical Insights from Regime A:
-1. **Hypothesis H1 Confirmed:** FeedbackRAG (Learned Policy) matches Self-RAG accuracy (**93.4% F1**) and outperforms Always-L3 by **+26.4% F1**, while slashing average LLM calls from 10.99 to 6.19 (**43.7% call reduction**) and cutting dollar cost by **72.2%** (\$0.000132 vs. \$0.000475).
-2. **Cost-Optimal Level Allocation:** In the test split, 40.2% of queries represent single-hop direct factual questions. The learned policy correctly halts 40.2% of queries at Level 0, routes 39.8% to Level 1, resolves 13.4% at Level 2, and reserves Level 3 for only the hardest 6.6% multi-hop cases.
-3. **Always-L3 Degradation Explained:** In Always-L3, injecting all 10 broadened retrieved passages into a single prompt induces distractor noise; the 3 drafts disagree, degrading token F1 to 67.0%. FeedbackRAG avoids this degradation by resolving simpler queries before context noise can contaminate generation.
+1. **Hypothesis H1 Confirmed:** FeedbackRAG (Learned Policy) matches Self-RAG accuracy (**93.4% F1**) and outperforms Always-L3 by **+19.8% F1**, while reducing average LLM calls from 10.60 to 6.45 (**39.2% call reduction**) and cutting dollar cost by **69.7%** (\$0.000139 vs. \$0.000458).
+2. **Cost-Optimal Level Allocation:** In the test split, 40.2% of queries represent single-hop direct factual questions. The learned policy correctly halts 40.2% of queries at Level 0, routes 33.2% to Level 1, resolves 20.0% at Level 2, and reserves Level 3 for only the hardest 6.6% multi-hop cases.
+3. **Always-L3 Degradation Explained:** In Always-L3, injecting all 10 broadened retrieved passages into a single prompt induces distractor noise; the 3 drafts disagree, degrading token F1 to 73.6%. FeedbackRAG avoids this degradation by resolving simpler queries before context noise can contaminate generation.
 
 ---
 
@@ -208,7 +208,13 @@ To isolate the causal contribution of each feedback signal, we performed an abla
 | **Drop $S_1$ (Parametric Consistency)** | 80.2% | 0.00 | 11.66 | **+0.40** | **Compute Wastage:** Confident parametric queries are unnecessarily escalated |
 | **Drop $S_2$ (Retrieval Grade)** | 73.6% | **-6.60** | 11.00 | -0.26 | **Context Dilution:** Noise and distractor passages enter intermediate context |
 | **Drop $S_3$ (Claim Groundedness)** | 66.8% | **-13.40** | 11.12 | -0.14 | **Catastrophic Collapse:** Hallucinated factual claims pass unchecked |
-| **Drop $S_4$ (Multi-Hop Completeness)** | 80.2% | 0.00 | 11.26 | 0.00 | **Redundant on Template Benchmark:** Covered downstream by groundedness checks |
+### 6.4 Research Limitations & Scientific Scope
+
+To maintain rigorous scientific honesty, several evaluation boundaries must be stated explicitly:
+1. **Synthetic Expansion Scope (Regime A):** The 500-question benchmark was produced by expanding 20 multi-hop reasoning templates into synthetic records over a 48-paragraph reference corpus. These 500 records evaluate state machine dynamics and GBDT policy stability, but they do **not** represent 500 independently sampled real-world human questions.
+2. **Generalization Boundary:** Strong synthetic benchmark numbers demonstrate that the MLFQ escalation mechanism functions properly under controlled conditions; they do not establish generalized accuracy on open-domain web data or full unconstrained HotpotQA/2WikiMultiHopQA corpora.
+3. **Model Scale in Regime B:** The live neural evaluation was performed on 15 queries with a compact model (`qwen2.5:0.5b`) to capture real-world free-text EM vs. Token F1 divergence and wall-clock latency under constrained compute.
+4. **Hardware Validation Status:** Larger models (`qwen2.5-coder:7b`) deployed on the RTX 3060 GPU host have been verified via targeted inference probes (demonstrating sub-second 466 ms GPU generation), but have not yet undergone a full 500-question neural evaluation.
 
 ---
 
@@ -412,7 +418,7 @@ If you build upon this work or use the FeedbackRAG MLFQ architecture, please cit
 ```bibtex
 @misc{feedbackrag2026,
   title        = {FeedbackRAG: Agentic RAG with a Multilevel Feedback Queue System},
-  author       = {Ganesh, N. D. S. and Karthik, V. and Reddy, K. Soma Charith and Dheemanth, R.},
+  author       = {FeedbackRAG Team},
   year         = {2026},
   howpublished = {IIT Bhilai Natural Language Processing (DSL504/DS504)},
   note         = {\url{https://github.com/gnshx/Agentic-RAG-with-Multilevel-Feedback}}

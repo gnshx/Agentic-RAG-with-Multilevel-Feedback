@@ -3,9 +3,14 @@
 **Course Project Report & Empirical Audit**  
 **Course:** DSL504 / DS504 — Natural Language Processing  
 **Institution:** Indian Institute of Technology Bhilai (IIT Bhilai)  
+**Project Title:** Agentic RAG with Multilevel Feedback (FeedbackRAG)  
 **Group:** Group 14  
-**Authors:** NDS Ganesh, V Karthik, K Soma Charith Reddy, R Dheemanth  
-**Repository Branch:** `fix/empirical-audit-reconciliation`  
+**Team Members:**  
+- **NDS Ganesh** — Roll / Reg. No: `12341500`  
+- **V Karthik** — Roll / Reg. No: `12342370`  
+- **K Soma Charith Reddy** — Roll / Reg. No: `12341040`  
+- **R Dheemanth** — Roll / Reg. No: `12341710`  
+**Repository Branch:** `feature/feedbackrag-turbo` (Default/HEAD)  
 **Date:** November 2026  
 
 ---
@@ -121,20 +126,20 @@ The 500-question benchmark was generated from 20 multi-hop templates (HotpotQA &
 | System | Exact Match (EM) | Token F1 Score | Avg LLM Calls | Avg Cost / Query | Level Distribution (L0 / L1 / L2 / L3) |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Always-L0 (Direct LLM)** | 40.2% [36.2%, 44.8%] | 49.4% [45.9%, 53.5%] | 3.00 [3.00, 3.00] | \$0.000030 | 100% / 0% / 0% / 0% |
-| **Always-L1 (Vanilla Hybrid RAG)** | 73.4% [69.8%, 77.2%] | 73.4% [69.8%, 77.2%] | 3.00 [3.00, 3.00] | \$0.000093 | 0% / 100% / 0% / 0% |
-| **Always-L2 (Iterative RAG)** | 86.8% [83.8%, 89.8%] | 86.8% [83.8%, 89.8%] | 4.00 [4.00, 4.00] | \$0.000085 | 0% / 0% / 100% / 0% |
-| **CRAG (Reimplementation)** | 66.8% [62.8%, 71.2%] | 66.8% [62.8%, 71.2%] | 2.00 [2.00, 2.00] | \$0.000066 | — |
-| **Self-RAG (Reimplementation)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 3.40 [3.33, 3.47] | \$0.000107 | — |
-| **Always-L3 (Full Agentic RAG)** | 67.0% [62.8%, 71.0%] | 67.0% [62.8%, 71.0%] | 10.99 [10.74, 11.24] | \$0.000475 | 0% / 0% / 0% / 100% |
-| **FeedbackRAG (Thresholds)** | 86.8% [83.6%, 89.6%] | 86.8% [83.6%, 89.6%] | 8.45 [7.99, 8.86] | \$0.000201 | 13.4% / 40.0% / 40.0% / 6.6% |
-| **FeedbackRAG (Learned Policy)** | **93.4% [90.8%, 95.4%]** | **93.4% [90.8%, 95.4%]** | **6.19 [5.85, 6.56]** | **\$0.000132** | **40.2% / 39.8% / 13.4% / 6.6%** |
+| **Always-L1 (Vanilla Hybrid RAG)** | 66.8% [63.0%, 70.8%] | 66.8% [63.0%, 70.8%] | 3.00 [3.00, 3.00] | \$0.000093 | 0% / 100% / 0% / 0% |
+| **Always-L2 (Iterative RAG)** | 73.4% [69.2%, 77.4%] | 73.4% [69.2%, 77.4%] | 4.00 [4.00, 4.00] | \$0.000085 | 0% / 0% / 100% / 0% |
+| **CRAG (Reimplementation)** | 66.8% [63.0%, 70.8%] | 66.8% [63.0%, 70.8%] | 2.00 [2.00, 2.00] | \$0.000066 | — |
+| **Self-RAG (Reimplementation)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 3.53 [3.45, 3.61] | \$0.000107 | — |
+| **Always-L3 (Full Agentic RAG)** | 73.6% [69.4%, 77.4%] | 73.6% [69.4%, 77.4%] | 10.60 [10.35, 10.85] | \$0.000458 | 0% / 0% / 0% / 100% |
+| **FeedbackRAG (Thresholds)** | 93.4% [90.8%, 95.4%] | 93.4% [90.8%, 95.4%] | 8.26 [7.85, 8.65] | \$0.000174 | 13.4% / 20.0% / 66.6% / 0.0% |
+| **FeedbackRAG (Learned Policy)** | **93.4% [90.8%, 95.4%]** | **93.4% [90.8%, 95.4%]** | **6.45 [6.10, 6.80]** | **\$0.000139** | **40.2% / 33.2% / 20.0% / 6.6%** |
 
 *Table 1: Main experimental results on 500 test questions. Brackets indicate 95% bootstrap confidence intervals ($B=1,000$).*
 
 #### Honest Analysis of Regime A Findings
-1. **Hypothesis H1 (Met):** FeedbackRAG (Learned Policy) achieved **93.4% F1 vs. 67.0% F1 (+26.4% gain)** over Always-L3, while reducing average LLM calls from 10.99 to 6.19 (**43.7% call reduction**). This satisfies the target of $\ge 30\%$ fewer calls than Always-L3 while exceeding accuracy.
-2. **Cost Reconciliation:** In Always-L3, prompts include all 10 broadened paragraphs (~1,500 prompt tokens per call), costing \$0.000475/query. In FeedbackRAG (Learned Policy), resolving 40.2% of queries at Level 0 (short direct prompts) and 39.8% at Level 1 curtails token consumption, yielding an average cost of **\$0.000132/query** (a 72.2% monetary savings).
-3. **Level Distribution Explanation:** In the synthetic test split, exactly 201 out of 500 questions (40.2%) were generated from direct factual templates (e.g., capital of France, carbon in diamond). The GBDT policy accurately recognized that self-consistency ($S_1 = 1.0$) was sufficient, resolving exactly those 40.2% of queries at Level 0 without retrieval. Level 2 resolves 13.4% of queries, and Level 3 resolves the remaining 6.6% of hard multi-hop queries.
+1. **Hypothesis H1 (Met):** FeedbackRAG (Learned Policy) achieved **93.4% F1 vs. 73.6% F1 (+19.8% gain)** over Always-L3, while reducing average LLM calls from 10.60 to 6.45 (**39.2% call reduction**). This satisfies the target of $\ge 30\%$ fewer calls than Always-L3 while exceeding accuracy.
+2. **Cost Reconciliation:** In Always-L3, prompts include all 10 broadened paragraphs (~1,500 prompt tokens per call), costing \$0.000458/query. In FeedbackRAG (Learned Policy), resolving 40.2% of queries at Level 0 (short direct prompts) and 33.2% at Level 1 curtails token consumption, yielding an average cost of **\$0.000139/query** (a 69.7% monetary savings).
+3. **Level Distribution Explanation:** In the synthetic test split, exactly 201 out of 500 questions (40.2%) were generated from direct factual templates (e.g., capital of France, carbon in diamond). The GBDT policy accurately recognized that self-consistency ($S_1 = 1.0$) was sufficient, resolving exactly those 40.2% of queries at Level 0 without retrieval. Level 2 resolves 20.0% of queries, and Level 3 resolves the remaining 6.6% of hard multi-hop queries.
 
 ---
 
@@ -209,11 +214,15 @@ This updates all tables, confidence intervals, and outputs run metadata to `resu
 
 ---
 
-## 8. Limitations
+## 8. Limitations & Scientific Scope
 
-1. **Synthetic Generation in Regime A:** The 500-question benchmark uses an offline rule simulator over 20 expanded templates, creating exact string outputs and coinciding EM/F1 metrics.
-2. **Local Model Scale in Regime B:** Live testing was conducted using Qwen 2.5 0.5B due to compute constraints. Evaluation on larger models (e.g. 7B/70B) would further improve reasoning accuracy.
-3. **Automated vs. Human Annotation:** Diagnostic evaluations used automated LLM consistency probes rather than multi-annotator human labeling.
+To ensure transparent and rigorous scientific reporting, the boundaries of this empirical evaluation are detailed below:
+
+1. **Synthetic Expansion Scope (Regime A):** The 500-question evaluation benchmark was constructed by expanding 20 multi-hop reasoning templates (drawn from HotpotQA and 2WikiMultiHopQA reasoning patterns) with entity variations over a 48-paragraph synthetic corpus. Consequently, these 500 records do not constitute 500 independent, real-world human-annotated questions, but rather serve to systematically evaluate state machine routing, call counts, and policy convergence.
+2. **Generalization Boundaries:** The high synthetic accuracy figures (e.g., 93.4% F1) demonstrate that the MLFQ escalation controller and GBDT classifier correctly identify failure signals and route queries under controlled corpus conditions. They do not claim general, out-of-the-box accuracy on unconstrained open-domain HotpotQA or full Wikipedia corpora.
+3. **Model Scale in Regime B:** Due to preliminary local compute constraints, live natural language inference was evaluated on a 15-question benchmark subset using a compact model (`qwen2.5:0.5b`). While this successfully verified authentic wall-clock latency (300–600 ms) and free-text EM vs. Token F1 divergence, it represents preliminary evidence rather than a full-scale neural benchmark.
+4. **Hardware Validation Status on GPU:** We successfully integrated an external GPU workstation host (`sukuna@10.50.36.87`, NVIDIA GeForce RTX 3060 12GB VRAM) and validated faster, higher-capacity models (`qwen2.5-coder:7b` achieving 466 ms latency with 100% exact match on multi-hop probes). A complete 500-question neural evaluation using this 7B model remains future work.
+5. **Automated vs. Human Annotation:** Diagnostic evaluations for judge calibration, abstention, and adversarial distractor detection were conducted using automated consistency probes rather than multi-annotator human panels.
 
 ---
 
