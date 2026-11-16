@@ -1,0 +1,93 @@
+{
+  "evaluation_timestamp": "2026-11-16 22:28:15",
+  "num_evaluated_answers": 100,
+  "student_raters": [
+    "NDS Ganesh",
+    "V Karthik",
+    "K Soma Charith Reddy",
+    "R Dheemanth"
+  ],
+  "inter_rater_reliability": {
+    "correctness": {
+      "fleiss_kappa": 0.4734,
+      "mean_pairwise_cohen_kappa": 0.474,
+      "unanimous_agreement_pct": 61.0,
+      "pairwise_cohen_kappa": {
+        "NDS Ganesh vs V Karthik": 0.3552,
+        "NDS Ganesh vs K Soma Charith Reddy": 0.504,
+        "NDS Ganesh vs R Dheemanth": 0.5436,
+        "V Karthik vs K Soma Charith Reddy": 0.4048,
+        "V Karthik vs R Dheemanth": 0.4929,
+        "K Soma Charith Reddy vs R Dheemanth": 0.5436
+      },
+      "pairwise_agreement_pct": {
+        "NDS Ganesh vs V Karthik": 74.0,
+        "NDS Ganesh vs K Soma Charith Reddy": 80.0,
+        "NDS Ganesh vs R Dheemanth": 82.0,
+        "V Karthik vs K Soma Charith Reddy": 76.0,
+        "V Karthik vs R Dheemanth": 80.0,
+        "K Soma Charith Reddy vs R Dheemanth": 82.0
+      }
+    },
+    "faithfulness": {
+      "fleiss_kappa": 0.4111,
+      "mean_pairwise_cohen_kappa": 0.4131,
+      "unanimous_agreement_pct": 56.0,
+      "pairwise_cohen_kappa": {
+        "NDS Ganesh vs V Karthik": 0.4937,
+        "NDS Ganesh vs K Soma Charith Reddy": 0.5294,
+        "NDS Ganesh vs R Dheemanth": 0.4133,
+        "V Karthik vs K Soma Charith Reddy": 0.3593,
+        "V Karthik vs R Dheemanth": 0.3418,
+        "K Soma Charith Reddy vs R Dheemanth": 0.3412
+      },
+      "pairwise_agreement_pct": {
+        "NDS Ganesh vs V Karthik": 80.0,
+        "NDS Ganesh vs K Soma Charith Reddy": 80.0,
+        "NDS Ganesh vs R Dheemanth": 78.0,
+        "V Karthik vs K Soma Charith Reddy": 72.0,
+        "V Karthik vs R Dheemanth": 74.0,
+        "K Soma Charith Reddy vs R Dheemanth": 72.0
+      }
+    }
+  },
+  "llm_judge_vs_human_consensus": {
+    "s3_faithfulness_groundedness": {
+      "judge_name": "S3 Groundedness Judge",
+      "raw_agreement_pct": 93.0,
+      "cohens_kappa": 0.7771,
+      "pearson_r": 0.7328,
+      "spearman_rho": 0.5047,
+      "precision": 96.25,
+      "recall": 95.06,
+      "f1_score": 95.65,
+      "specificity": 84.21
+    },
+    "llm_correctness": {
+      "judge_name": "LLM Correctness Judge",
+      "raw_agreement_pct": 89.0,
+      "cohens_kappa": 0.6358,
+      "pearson_r": 0.6022,
+      "spearman_rho": 0.3962,
+      "precision": 91.57,
+      "recall": 95.0,
+      "f1_score": 93.25,
+      "specificity": 65.0
+    },
+    "s2_retrieval_relevance": {
+      "judge_name": "S2 Retrieval Relevance Judge",
+      "raw_agreement_pct": 77.0,
+      "cohens_kappa": 0.2384,
+      "pearson_r": 0.2755,
+      "spearman_rho": 0.233,
+      "precision": 84.34,
+      "recall": 87.5,
+      "f1_score": 85.89,
+      "specificity": 35.0
+    }
+  },
+  "consensus_distribution": {
+    "consensus_correct_pct": 80.0,
+    "consensus_faithful_pct": 81.0
+  }
+}

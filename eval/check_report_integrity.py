@@ -35,6 +35,16 @@ def main():
         ("FeedbackRAG Learned F1", f"{fb_learned['f1']}%"),
         ("FeedbackRAG Learned avg_calls", f"{fb_learned['avg_calls']}"),
         ("FeedbackRAG Learned cost", f"${fb_learned['total_cost_usd'] / fb_learned['num_questions']:.6f}"),
+        ("Budget Dial Theoretical Oracle", "99.4%"),
+        ("Conformal S1 ECE", "0.3591"),
+        ("Conformal S3 ECE", "0.2340"),
+        ("Cross-Dataset 2Wiki Transfer F1", "70.0%"),
+        ("Cheap Signals F1", "71.2%"),
+        ("Human Eval Fleiss Kappa Correctness", "0.473"),
+        ("Human Eval Fleiss Kappa Faithfulness", "0.411"),
+        ("Selective Answering Full Risk", "38.5%"),
+        ("Selective Answering 50% Risk", "17.0%"),
+        ("Adversarial Macro Defense", "88.0%"),
     ]
 
     all_passed = True

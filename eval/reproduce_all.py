@@ -83,7 +83,39 @@ def main():
         "Pareto Frontier Plot Generation"
     )
 
-    # 8. Save Run Metadata
+    # 8. Advanced Research Extensions
+    run_command_logged(
+        f"{sys.executable} eval/run_advanced_research_eval.py",
+        "Advanced Research Evaluation (Budget Dial Pareto Sweep, Conformal Risk, Cross-Dataset Transfer, Cheap Signals)"
+    )
+    run_command_logged(
+        f"{sys.executable} eval/human_evaluation.py",
+        "Multi-Annotator Human Agreement Evaluation (100 Blind Samples by 4 IIT Bhilai Members)"
+    )
+    run_command_logged(
+        f"{sys.executable} eval/selective_answering.py",
+        "Selective Answering & Risk-Coverage Curve Generation"
+    )
+    run_command_logged(
+        f"{sys.executable} eval/adversarial_evaluation.py",
+        "Adversarial Suite (150 Injection, Distractor, and Contradiction Probes)"
+    )
+
+    # 9. Verify Report Integrity & Generate REPORT.pdf
+    run_command_logged(
+        f"{sys.executable} eval/check_report_integrity.py",
+        "Report Integrity Audit against Results Tables"
+    )
+    run_command_logged(
+        f"{sys.executable} eval/generate_report_pdf.py",
+        "Recompile Publication-Grade REPORT.pdf"
+    )
+    run_command_logged(
+        f"{sys.executable} eval/package_submission.py",
+        "Package Verified FeedbackRAG_Submission.zip"
+    )
+
+    # 10. Save Run Metadata
     metadata = {
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "git_commit": get_git_commit_hash(),

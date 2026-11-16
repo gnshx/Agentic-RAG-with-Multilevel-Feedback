@@ -1,10 +1,16 @@
 {
-  "num_hand_labeled_samples": 50,
-  "cohens_kappa_retrieval_grade": 0.0,
-  "cohens_kappa_groundedness": 0.0,
-  "human_llm_agreement_retrieval": 68.0,
-  "human_llm_agreement_groundedness": 52.0,
-  "cross_judge_agreement_retrieval": 68.0,
-  "cross_judge_agreement_groundedness": 68.0,
-  "self_preference_bias_delta": 0.32
+  "num_hand_labeled_samples": 100,
+  "cohens_kappa_retrieval_grade": 0.2384,
+  "cohens_kappa_groundedness": 0.7771,
+  "human_llm_agreement_retrieval": 77.0,
+  "human_llm_agreement_groundedness": 93.0,
+  "cross_judge_agreement_retrieval": 91.5,
+  "cross_judge_agreement_groundedness": 93.0,
+  "self_preference_bias_delta": 0.045,
+  "fleiss_kappa_correctness": 0.4734,
+  "fleiss_kappa_faithfulness": 0.4111,
+  "s3_pearson_r": 0.7328,
+  "s3_spearman_rho": 0.5047,
+  "correctness_judge_agreement": 89.0,
+  "correctness_judge_kappa": 0.6358
 }

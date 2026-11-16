@@ -7,14 +7,17 @@
   },
   "Always-L1": {
     "num_unanswerable_questions": 50,
-    "abstention_rate": 0.0,
-    "hallucination_rate": 100.0,
+    "abstention_rate": 12.0,
+    "hallucination_rate": 88.0,
     "avg_calls": 3.0
   },
   "FeedbackRAG": {
     "num_unanswerable_questions": 50,
-    "abstention_rate": 0.0,
-    "hallucination_rate": 100.0,
-    "avg_calls": 3.0
+    "abstention_rate": 100.0,
+    "hallucination_rate": 0.0,
+    "false_abstention_on_answerable": 2.0,
+    "abstention_precision": 98.04,
+    "abstention_f1": 99.01,
+    "avg_calls": 6.8
   }
 }

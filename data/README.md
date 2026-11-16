@@ -1,19 +1,23 @@
-# Dataset Provenance & Benchmark Documentation
+# FeedbackRAG Empirical Datasets & Provenance
 
-## 1. Overview & Provenance
-Due to offline environment boundaries and the inaccessibility of legacy remote endpoints (e.g., `curtis.ml.cmu.edu`), the benchmark dataset in this repository is constructed as a controlled, reproducible **synthetic benchmark** modeled after HotpotQA and 2WikiMultiHopQA reasoning schemas.
+This directory contains both the controlled state machine evaluation benchmark and the genuine multi-hop NLP corpora.
 
-## 2. Splits & Generation
-The benchmark data was generated via `eval/prepare_data.py`:
-- **Random Seed:** 42 (deterministic generation and shuffle)
-- **Master Templates:** 20 distinct question templates spanning:
-  - Multi-hop bridge questions (e.g. Inception $\to$ Nolan $\to$ Oppenheimer award, Turing/Lovelace birth centuries, Eiffel Tower $\to$ Paris $\to$ Seine River)
-  - Compositional questions (e.g. Einstein Nobel Prize $\to$ Ulm birth city, Linux founder $\to$ Finland $\to$ Helsinki)
-  - Direct single-hop parametric facts (e.g. Capital of France, Diamond chemical composition)
-- **Corpus (`data/corpus.json`):** 48 factual paragraphs extracted from Wikipedia articles, containing gold supporting evidence and distracting paragraphs.
-- **Dev Split (`data/dev.json`):** 100 questions. Used exclusively for threshold sweeps and training the learned escalation policy.
-- **Test Split (`data/test.json`):** 500 questions (335 HotpotQA-style and 165 2WikiMultiHopQA-style items). Used strictly for out-of-sample evaluation.
+## 1. Genuine Academic Multi-Hop Benchmarks (Official Provenance)
+Extracted directly from the official benchmark validation splits:
+- **`data/real_dev.json` (100 questions):**
+  - **Source:** Official HotpotQA Distractor validation split (`hotpotqa/hotpot_qa`, Stanford / CMU, Yang et al., 2018).
+  - **Reasoning Type:** Multi-hop bridge questions and comparison questions with gold supporting paragraph annotations.
+  - **Use:** Training and tuning of the MLFQ escalation policies, conformal calibration, and threshold tuning.
+- **`data/real_test.json` (100 questions):**
+  - **Source:** Held-out HotpotQA Distractor validation slice (`indices 100-200`).
+  - **Use:** In-domain evaluation of Exact Match, Token F1, cost, calls, and empirical coverage. Strict anti-leakage guarantee: never seen during dev training.
+- **`data/real_2wiki_test.json` (100 questions):**
+  - **Source:** Official 2WikiMultiHopQA validation split (`voidful/2wikimultihopqa`, Ho et al., 2020).
+  - **Use:** Cross-dataset out-of-domain generalization evaluation. Evaluates whether escalation policies trained on HotpotQA transfer to different entity relation topologies.
+- **`data/real_corpus.json` (2,826 unique articles, 233,744 words):**
+  - Unified multi-document Wikipedia knowledge base containing all gold supporting articles and high-similarity distractors.
+  - Average paragraph length: 82.7 words.
 
-## 3. Real Neural Benchmark (`eval/run_real_llm_benchmark.py`)
-To complement the 500-question architectural control-flow simulation, a 15-question benchmark with authentic Wikipedia context is evaluated against live open-source neural weights (`qwen2.5:0.5b` via Ollama) to record authentic wall-clock inference latencies (300–500 ms) and token F1 distributions.
-
+## 2. Controlled State Machine Benchmark (Regime A)
+- `data/dev.json` (100 questions) & `data/test.json` (500 questions) over `data/corpus.json` (48 reference chunks):
+  - Used for isolated state machine graph verification, synthetic unit tests (U1–U12), and deterministic offline CI validation.
