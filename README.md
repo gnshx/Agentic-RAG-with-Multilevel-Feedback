@@ -14,7 +14,7 @@
 *Course Project for DSL504 / DS504 Natural Language Processing, Indian Institute of Technology Bhilai (IIT Bhilai)*  
 **Group 14 Project Team:** NDS Ganesh (12341500), V Karthik (12342370), K Soma Charith Reddy (12341040), R Dheemanth (12341710)
 
-[Technical Report](REPORT.md) • [System Architecture](docs/HLD.md) • [Product Requirements](docs/PRD.md) • [Test Verification](docs/TEST_VERIFICATION.md) • [Interactive Demo](app/streamlit_app.py)
+[Technical Report](REPORT.md) • [System Architecture](docs/HLD.md) • [Product Requirements](docs/PRD.md) • [Test Verification](docs/TEST_VERIFICATION.md) • [Interactive Demo](app/streamlit_app.py) • [Presentation Guide](docs/PRESENTATION_GUIDE.md) • [Slide Deck (Google Slides)](https://docs.google.com/presentation/d/1d9c2QlZBBcYk5oPz8kjm73fMYyHPqLJavtY-1rLbJY8/edit) • [Slide Deck (HTML)](docs/presentation_deck.html)
 
 </div>
 

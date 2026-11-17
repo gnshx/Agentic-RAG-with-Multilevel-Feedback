@@ -1,27 +1,50 @@
 # FeedbackRAG: Live Defense & Presentation Walkthrough Guide
 
-This guide is designed for your **live Google Meet presentation/defense**. It provides a 5-minute structured demonstration script that highlights the technical novelty, system architecture, and scientific rigor of FeedbackRAG.
+This guide is designed for your **live Google Meet presentation and defense**. It provides complete presentation deck resources, a 5-minute structured live demonstration script, and anticipated examiner questions with winning answers.
 
 ---
 
-## 🚀 How to Launch the Demo
+## 📽️ Presentation Deck Resources
+
+You have 4 presentation format options ready to use:
+
+1. **Google Slides (Live Cloud Presentation - Account: `showspeed12mahi@gmail.com`):**  
+   👉 **[Open FeedbackRAG Google Slides Deck](https://docs.google.com/presentation/d/1d9c2QlZBBcYk5oPz8kjm73fMYyHPqLJavtY-1rLbJY8/edit)**  
+   *Presentation ID:* `1d9c2QlZBBcYk5oPz8kjm73fMYyHPqLJavtY-1rLbJY8`  
+   *Full 12-slide deck formatted in high-contrast dark mode with embedded speaker notes on every slide.*
+
+2. **PowerPoint Offline Presentation (.pptx):**  
+   📁 `docs/FeedbackRAG_Defense_Presentation.pptx`  
+   *Native Microsoft PowerPoint / LibreOffice presentation with full slide layouts, typography, and speaker notes.*
+
+3. **Printable / Projected PDF Presentation (.pdf):**  
+   📄 `docs/FeedbackRAG_Defense_Presentation.pdf`  
+   *12-slide vectorized slide deck ready for full-screen PDF presenting.*
+
+4. **Reveal.js Interactive Web Presentation (HTML/KaTeX):**  
+   🌐 `docs/presentation_deck.html`  
+   *Open in any web browser (Chrome/Edge/Firefox). Supports arrow-key navigation (◀ ▶), Spacebar, and KaTeX mathematical formula rendering.*
+
+---
+
+## 🚀 How to Launch the Live Demo
 
 In your terminal:
 ```bash
 # Ensure virtual environment is active
 source .venv/bin/activate
 
-# Launch presentation dashboard
+# Launch presentation dashboard on port 8501
 streamlit run app/streamlit_app.py --server.port 8501
 ```
-Open **`http://localhost:8501`** and share your screen in Google Meet.
+Open **`http://localhost:8501`** and share your browser window in Google Meet.
 
 ---
 
 ## 🎙️ 5-Minute Live Demonstration Script
 
-### Act 1: The RAG Dilemma & Problem Framing (1 Minute)
-> *"Professors, standard RAG systems suffer from an efficiency-accuracy dilemma. If you use simple single-pass RAG, you fail catastrophically on multi-hop questions because intermediate entities aren't known upfront. But if you use exhaustive agentic critique-revise loops, you incur 10 to 15 LLM calls and multi-second latencies on every single query—even simple factual questions.*
+### Act 1: The RAG Dilemma & Problem Framing (Slide 1–2 / 1 Minute)
+> *"Respected professors, standard RAG systems suffer from an efficiency-accuracy dilemma. If you use simple single-pass RAG, you fail catastrophically on multi-hop questions because intermediate entities aren't known upfront. But if you use exhaustive agentic critique-revise loops, you incur 10 to 15 LLM calls and multi-second latencies on every single query—even simple factual questions.*
 >
 > *FeedbackRAG solves this by adapting the classic Operating Systems Multilevel Feedback Queue (MLFQ) algorithm to generative retrieval. Queries enter at Level 0 (cheapest direct inference) and escalate to higher compute tiers only when verifiable, reference-free feedback signals indicate deficiency."*
 
@@ -31,7 +54,7 @@ Open **`http://localhost:8501`** and share your screen in Google Meet.
 1. **Show Level 0 Early Exit:**
    - Click **`🇫🇷 Direct (L0): Capital of France`**.
    - Click **`⚡ Execute MLFQ Pipeline`**.
-   - **Point out:** The green badge at Level 0:
+   - **Point out to professors:** The green badge at Level 0:
      - 3 LLM calls, zero retrieval overhead, lowest possible cost.
      - Signal $S_1$ (Self-Consistency) passed with high agreement ($S_1 \ge 0.80$).
      - The system saved 80% compute by never calling retrieval.
@@ -39,7 +62,7 @@ Open **`http://localhost:8501`** and share your screen in Google Meet.
 2. **Show Multi-Hop Escalation to Level 2:**
    - Click **`🐧 Composition (L2): Linux Creator`** (*"What is the capital of the country where the creator of the Linux kernel was born?"*).
    - Click **`⚡ Execute MLFQ Pipeline`**.
-   - **Walk through the pipeline progress bar:**
+   - **Walk through the pipeline progress breadcrumbs:**
      - **Level 0 (Direct):** Evaluated $S_1 = 0.33 < 0.80$ $\to$ Red **ESCALATED** badge.
      - **Level 1 (Single-Pass RAG):** Retrieved context, but groundedness failed ($S_3 = 0.0 < 0.70$) because single-pass search missed the secondary bridge passage $\to$ Red **ESCALATED** badge.
      - **Level 2 (Iterative Multi-Hop):** Decomposed into sub-queries (*"Where was Linus Torvalds born?"* $\to$ *Finland* $\to$ *"What is the capital of Finland?"* $\to$ *Helsinki*), retrieved bridge entities, validated $S_3 = 1.00$ and $S_4 = 1.00$ $\to$ Green **EXITED HERE** badge!
@@ -48,7 +71,7 @@ Open **`http://localhost:8501`** and share your screen in Google Meet.
 ---
 
 ### Act 3: 4-Strategy Live Arena (Tab 2 — 1 Minute)
-1. Select the Arena tab.
+1. Select Tab 2 (**`🥊 2. 4-Strategy Arena`**).
 2. Click **`🥊 Run 4-Way Head-to-Head Comparison`**.
 3. **Showcase the side-by-side comparison cards:**
    - **Always-L0:** Fails because it lacks external multi-hop facts.
@@ -85,11 +108,16 @@ Open **`http://localhost:8501`** and share your screen in Google Meet.
 
 ---
 
-## 💡 Anticipated Questions & Winning Answers
+## 💡 Anticipated Examiner Questions & Winning Answers
 
-- **Q: "Why does Always-L2 beat FeedbackRAG on the 100-question benchmark?"**
-  - **A:** *"Because all 100 questions in HotpotQA are specifically constructed to require cross-document multi-hop synthesis. 19% of queries prematurely exited at Level 0 due to entrenched parametric hallucinations ($S_1=1.00$). In a general-purpose distribution with 40% simple queries, FeedbackRAG is Pareto-optimal."*
-- **Q: "How does the SQLite feedback loop prevent catastrophic drift?"**
-  - **A:** *"We enforce strict mathematical clamping on dynamic weights between $[-0.8, +1.5]$ so that a single malicious user cannot permanently suppress valid documents."*
-- **Q: "Is the GBDT policy trained on test data?"**
-  - **A:** *"Strictly zero leakage. It was trained exclusively on `data/dev.json` using 11 observable runtime features (no gold labels or F1 scores visible), verified via automated unit tests in CI."*
+- **Q1: "Why does Always-L2 beat FeedbackRAG on your 100-question benchmark?"**
+  - **Winning Answer:** *"Because all 100 questions in HotpotQA are specifically selected to require multi-hop entity bridging. 19% of queries prematurely exited at Level 0 due to entrenched parametric hallucinations where the model was unanimously confident ($S_1=1.00$). Our quantitative attribution shows this single factor accounts for 92.8% of the entire 4.60-point deficit. On a balanced realistic workload containing 40% simple factual queries, FeedbackRAG is strictly Pareto-optimal in latency and compute."*
+
+- **Q2: "How does the SQLite feedback loop prevent catastrophic drift or malicious poisoning?"**
+  - **Winning Answer:** *"We enforce strict mathematical clamping on dynamic weights between $[-0.80, +1.50]$ so that no document score can diverge, and a malicious actor cannot permanently suppress or artificially elevate documents beyond safe bounds."*
+
+- **Q3: "Is your learned GBDT escalation policy trained on test data?"**
+  - **Winning Answer:** *"Strictly zero test leakage. The policy was trained exclusively on `data/dev.json` using 11 observable runtime metadata features (lengths, counts, and reference-free verification scores $S_1-S_4$). No gold answers, target entities, or ground-truth F1 scores were exposed during training, enforced by runtime assertions."*
+
+- **Q4: "Does SQLite store dense embedding vectors?"**
+  - **Winning Answer:** *"No, to keep disk storage efficient and operations ACID-compliant, SQLite persists the relational metadata: document weights, inference history, and user feedback logs. The dense embedding vectors reside in-memory in our hybrid retriever and are rehydrated on startup."*
