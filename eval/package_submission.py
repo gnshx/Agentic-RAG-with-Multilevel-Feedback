@@ -35,7 +35,7 @@ def package():
             print(f"  [!] Missing expected file: {rf}")
 
     # 2. Source directories into source/ AND root (for immediate execution in either path)
-    source_dirs = ["src", "app", "api", "core", "retrieval", "feedback", "graph", "eval", "tests"]
+    source_dirs = ["src", "app", "api", "core", "retrieval", "feedback", "graph", "eval", "tests", "scripts"]
     for sd in source_dirs:
         if os.path.exists(sd):
             # Copy into source/
@@ -59,7 +59,7 @@ def package():
             shutil.copytree(
                 md,
                 os.path.join(dest_dir, md),
-                ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.tmp", "*.log", "feedback_store.db")
+                ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.tmp", "*.log", "feedback_store.db", "*cache.json")
             )
             print(f"  [+] Copied metadata directory: {md}")
 
