@@ -620,3 +620,843 @@ def test_task6_collision_and_deduplication_matrix():
         assert res_repeat["skipped_count"] == 1
         assert len(corpus) == 3
         assert len(vector_store.documents) == 3
+
+
+def test_task6_same_id_same_content_different_source():
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    corpus = []
+    retriever = HybridRetriever(corpus=corpus)
+    vector_store = LocalVectorStore()
+
+    text = "The sun is a G-type main-sequence star."
+    doc_a = json.dumps([{"id": "doc_sun", "title": "Sun (Textbook)", "text": text, "source": "textbook.json"}])
+    res_a = ingest_document_to_stores(corpus, retriever, vector_store, source_name="textbook.json", content=doc_a)
+    assert res_a["added_count"] == 1
+    assert len(corpus) == 1
+    assert len(vector_store.documents) == 1
+
+    # Ingest same ID, same text, but DIFFERENT source -> must NOT be skipped as duplicate
+    doc_b = json.dumps([{"id": "doc_sun", "title": "Sun (NASA)", "text": text, "source": "nasa.json"}])
+
+    # With on_conflict="error" raises ValueError identifying collision on source
+    with pytest.raises(ValueError) as excinfo:
+        ingest_document_to_stores(corpus, retriever, vector_store, source_name="nasa.json", content=doc_b, on_conflict="error")
+    assert "doc_sun" in str(excinfo.value)
+
+    # With on_conflict="rename", indexes safely without discarding either document
+    res_b = ingest_document_to_stores(corpus, retriever, vector_store, source_name="nasa.json", content=doc_b)
+    assert res_b["added_count"] == 1
+    assert res_b["skipped_count"] == 0
+    assert len(corpus) == 2
+    assert len(vector_store.documents) == 2
+
+    # Verify both sources exist in both stores
+    corpus_sources = {c["source"] for c in corpus}
+    vstore_sources = {d["source"] for d in vector_store.documents.values()}
+    assert corpus_sources == {"textbook.json", "nasa.json"}
+    assert vstore_sources == {"textbook.json", "nasa.json"}
+
+
+def test_task6_same_source_content_different_ids_across_stores():
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    text = "Superconductivity occurs below a characteristic critical temperature."
+    source = "physics_lab.json"
+
+    # Simulate existing mismatched stores: corpus has 'corpus_id_101', vector_store has 'vstore_id_202'
+    corpus = [{"id": "corpus_id_101", "title": "Superconductivity", "text": text, "source": source}]
+    retriever = HybridRetriever(corpus=corpus)
+    vector_store = LocalVectorStore()
+    vstore_doc = {
+        "id": "vstore_id_202",
+        "content": text,
+        "source": source,
+        "score": 0.0,
+        "dynamic_weight": 0.25,
+        "metadata": {"title": "Superconductivity"}
+    }
+    vector_store.add_documents([vstore_doc])
+
+    assert "corpus_id_101" in [c["id"] for c in corpus]
+    assert "vstore_id_202" in vector_store.documents
+    assert len(corpus) == 1
+    assert len(vector_store.documents) == 1
+
+    # Ingest document with same source and content
+    ingest_json = json.dumps([{"title": "Superconductivity", "text": text, "source": source}])
+    res = ingest_document_to_stores(corpus, retriever, vector_store, source_name=source, content=ingest_json)
+
+    # Must reconcile stores without creating duplicate entries
+    assert res["added_count"] == 0
+    assert res["skipped_count"] == 1
+    assert len(corpus) == 1
+    assert len(vector_store.documents) == 1
+
+    canonical_id = res["chunk_ids"][0]
+    assert canonical_id == "corpus_id_101"
+    assert corpus[0]["id"] == canonical_id
+    assert canonical_id in vector_store.documents
+    assert "vstore_id_202" not in vector_store.documents
+    # Preserved dynamic weight and content
+    assert vector_store.documents[canonical_id]["content"] == text
+    assert vector_store.documents[canonical_id]["dynamic_weight"] == 0.25
+
+
+def test_task6_same_source_content_same_id_across_both_stores():
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    corpus = []
+    retriever = HybridRetriever(corpus=corpus)
+    vector_store = LocalVectorStore()
+
+    doc_json = json.dumps([{
+        "id": "canonical_qed_1",
+        "title": "QED",
+        "text": "Quantum electrodynamics describes how light and matter interact.",
+        "source": "qed.json"
+    }])
+
+    # First ingestion
+    res1 = ingest_document_to_stores(corpus, retriever, vector_store, source_name="qed.json", content=doc_json)
+    assert res1["added_count"] == 1
+    assert res1["skipped_count"] == 0
+    assert len(corpus) == 1
+    assert len(vector_store.documents) == 1
+
+    # Second ingestion with same source, same content, same ID -> must skip duplicate
+    res2 = ingest_document_to_stores(corpus, retriever, vector_store, source_name="qed.json", content=doc_json)
+    assert res2["added_count"] == 0
+    assert res2["skipped_count"] == 1
+    assert len(corpus) == 1
+    assert len(vector_store.documents) == 1
+    assert corpus[0]["id"] == "canonical_qed_1"
+    assert "canonical_qed_1" in vector_store.documents
+
+
+def test_task6_repeated_ingestion_after_reconciliation():
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    text = "Bose-Einstein condensation occurs at temperatures close to absolute zero."
+    source = "bec.json"
+
+    # Start with misaligned IDs across stores
+    corpus = [{"id": "bec_corpus_id", "title": "BEC", "text": text, "source": source}]
+    retriever = HybridRetriever(corpus=corpus)
+    vector_store = LocalVectorStore()
+    vector_store.add_documents([{
+        "id": "bec_vstore_id",
+        "content": text,
+        "source": source,
+        "score": 0.0,
+        "dynamic_weight": 0.0,
+        "metadata": {"title": "BEC"}
+    }])
+
+    doc_json = json.dumps([{"id": "bec_corpus_id", "title": "BEC", "text": text, "source": source}])
+
+    # Reconcile on first ingestion
+    res_reconcile = ingest_document_to_stores(corpus, retriever, vector_store, source_name=source, content=doc_json)
+    assert len(corpus) == 1
+    assert len(vector_store.documents) == 1
+    assert corpus[0]["id"] == "bec_corpus_id"
+    assert "bec_corpus_id" in vector_store.documents
+
+    # Repeated ingestions (3 iterations) must remain strictly idempotent
+    for _ in range(3):
+        res_repeat = ingest_document_to_stores(corpus, retriever, vector_store, source_name=source, content=doc_json)
+        assert res_repeat["added_count"] == 0
+        assert res_repeat["skipped_count"] == 1
+        assert len(corpus) == 1
+        assert len(vector_store.documents) == 1
+        assert corpus[0]["id"] == "bec_corpus_id"
+        assert "bec_corpus_id" in vector_store.documents
+
+
+def test_task6_reconciliation_persistence_across_store_reopen(tmp_path):
+    import sqlite3
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    db_file = str(tmp_path / "recon_persistence.db")
+    text = "High-temperature superconductors exhibit zero electrical resistance above 77 Kelvin."
+    source = "materials_science.json"
+
+    # 1. Pre-populate SQLite with inferences table and initial vector store state
+    with sqlite3.connect(db_file) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS inferences (
+                id TEXT PRIMARY KEY,
+                doc_ids TEXT
+            )
+        """)
+        conn.execute(
+            "INSERT INTO inferences (id, doc_ids) VALUES (?, ?)",
+            ("inf_sample_1", json.dumps(["vstore_beta_2", "doc_other"]))
+        )
+        conn.commit()
+
+    vstore1 = LocalVectorStore(db_path=db_file)
+    vstore1.add_documents([{
+        "id": "vstore_beta_2",
+        "content": text,
+        "source": source,
+        "score": 0.0,
+        "dynamic_weight": 0.0,
+        "metadata": {"category": "condensed_matter"}
+    }])
+    vstore1.update_weight("vstore_beta_2", 0.45)
+    assert vstore1.get_weight("vstore_beta_2") == 0.45
+
+    # 2. Setup corpus with mismatched ID
+    corpus = [{
+        "id": "corpus_alpha_1",
+        "title": "Superconductors",
+        "text": text,
+        "source": source,
+        "metadata": {"category": "condensed_matter"}
+    }]
+    retriever = HybridRetriever(corpus=corpus)
+
+    # 3. Ingest document -> triggers cross-store ID reconciliation
+    doc_json = json.dumps([{
+        "id": "corpus_alpha_1",
+        "title": "Superconductors",
+        "text": text,
+        "source": source
+    }])
+    res = ingest_document_to_stores(corpus, retriever, vstore1, source_name=source, content=doc_json)
+
+    assert res["added_count"] == 0
+    assert res["skipped_count"] == 1
+    canonical_id = res["chunk_ids"][0]
+    assert canonical_id == "corpus_alpha_1"
+    assert "corpus_alpha_1" in vstore1.documents
+    assert "vstore_beta_2" not in vstore1.documents
+    assert vstore1.documents["corpus_alpha_1"]["dynamic_weight"] == 0.45
+    assert vstore1.get_weight("corpus_alpha_1") == 0.45
+    assert vstore1.get_weight("vstore_beta_2") == 0.0
+
+    # 4. Verify SQLite persistence tables directly
+    with sqlite3.connect(db_file) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute("SELECT doc_id, dynamic_weight FROM document_weights WHERE doc_id = ?", ("corpus_alpha_1",))
+        row = cur.fetchone()
+        assert row is not None
+        assert float(row["dynamic_weight"]) == 0.45
+
+        cur.execute("SELECT doc_id FROM document_weights WHERE doc_id = ?", ("vstore_beta_2",))
+        assert cur.fetchone() is None
+
+        cur.execute("SELECT doc_ids FROM inferences WHERE id = ?", ("inf_sample_1",))
+        inf_row = cur.fetchone()
+        assert inf_row is not None
+        reconciled_doc_ids = json.loads(inf_row["doc_ids"])
+        assert reconciled_doc_ids == ["corpus_alpha_1", "doc_other"]
+
+    # 5. Simulate closing store and reopening new instance from db_file
+    vstore2 = LocalVectorStore(db_path=db_file)
+    assert vstore2.get_weight("corpus_alpha_1") == 0.45
+    assert vstore2.get_weight("vstore_beta_2") == 0.0
+
+    # Hydrate documents in reopened store
+    vstore2.add_documents([{
+        "id": "corpus_alpha_1",
+        "content": text,
+        "source": source,
+        "score": 0.0,
+        "dynamic_weight": 0.0,
+        "metadata": {"category": "condensed_matter"}
+    }])
+    assert vstore2.documents["corpus_alpha_1"]["dynamic_weight"] == 0.45
+
+    # Verify search leverages reconciled vector and dynamic weight
+    search_res = vstore2.search("superconductors electrical resistance", top_k=1)
+    assert len(search_res) == 1
+    assert search_res[0]["id"] == "corpus_alpha_1"
+    assert search_res[0]["dynamic_weight"] == 0.45
+
+    # 6. Re-ingestion against reopened store must strictly skip duplicates
+    res_reopen = ingest_document_to_stores(corpus, retriever, vstore2, source_name=source, content=doc_json)
+    assert res_reopen["added_count"] == 0
+    assert res_reopen["skipped_count"] == 1
+    assert len(corpus) == 1
+    assert len(vstore2.documents) == 1
+    assert corpus[0]["id"] == "corpus_alpha_1"
+    assert "corpus_alpha_1" in vstore2.documents
+
+
+def test_task6_reconciliation_persistence_failure_and_rollback():
+    from retrieval.document_loader import ingest_document_to_stores
+
+    text = "Topological insulators have conducting surface states protected by time-reversal symmetry."
+    source = "topological.json"
+
+    corpus = [{"id": "corpus_topo_1", "title": "Topological", "text": text, "source": source}]
+    retriever = HybridRetriever(corpus=corpus)
+
+    class FailingVectorStore:
+        def __init__(self):
+            self.documents = {"vstore_topo_2": {"id": "vstore_topo_2", "content": text, "source": source}}
+            self.vectors = {}
+
+        def reconcile_id(self, old_id: str, new_id: str):
+            raise RuntimeError("Simulated SQLite disk I/O failure during ID reconciliation")
+
+    failing_vstore = FailingVectorStore()
+
+    doc_json = json.dumps([{"id": "corpus_topo_1", "title": "Topological", "text": text, "source": source}])
+
+    # Must raise RuntimeError without swallowing and without corrupting corpus
+    with pytest.raises(RuntimeError) as excinfo:
+        ingest_document_to_stores(corpus, retriever, failing_vstore, source_name=source, content=doc_json)
+
+    assert "Simulated SQLite disk I/O failure" in str(excinfo.value)
+    # Corpus remains intact
+    assert len(corpus) == 1
+    assert corpus[0]["id"] == "corpus_topo_1"
+
+
+def test_task6_indexing_failure_rolls_back_corpus_and_retriever():
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    text = "Graphene is a single layer of carbon atoms arranged in a two-dimensional honeycomb lattice."
+    source = "nanomaterials.json"
+
+    # Initial state: corpus has corpus_id_init, vector_store has vstore_canonical_id
+    corpus = [{"id": "corpus_id_init", "title": "Graphene", "text": text, "source": source}]
+    retriever = HybridRetriever(corpus=corpus)
+    orig_tokenized = list(retriever.tokenized_corpus)
+    orig_vectors = [v.copy() for v in retriever.dense_vectors]
+
+    vector_store = LocalVectorStore()
+    vector_store.add_documents([{
+        "id": "vstore_canonical_id",
+        "content": text,
+        "source": source,
+        "score": 0.0,
+        "dynamic_weight": 0.35,
+        "metadata": {"title": "Graphene"}
+    }])
+
+    # Ingest document where cand_id matches vstore_canonical_id, but retriever indexing fails
+    doc_json = json.dumps([{"id": "vstore_canonical_id", "title": "Graphene", "text": text, "source": source}])
+
+    def failing_index_corpus(c):
+        raise RuntimeError("Simulated memory allocation error during retriever index_corpus")
+
+    retriever.index_corpus = failing_index_corpus
+
+    with pytest.raises(RuntimeError) as excinfo:
+        ingest_document_to_stores(corpus, retriever, vector_store, source_name=source, content=doc_json)
+
+    assert "Simulated memory allocation error" in str(excinfo.value)
+
+    # Verify corpus entry ID was rolled back
+    assert len(corpus) == 1
+    assert corpus[0]["id"] == "corpus_id_init"
+
+    # Verify retriever internal state was restored to snapshot
+    assert retriever.corpus[0]["id"] == "corpus_id_init"
+    assert retriever.tokenized_corpus == orig_tokenized
+    assert len(retriever.dense_vectors) == len(orig_vectors)
+
+    # Verify vector store remains intact
+    assert "vstore_canonical_id" in vector_store.documents
+    assert vector_store.documents["vstore_canonical_id"]["dynamic_weight"] == 0.35
+
+
+def test_task6_malformed_telemetry_inferences_json_raises_and_rolls_back_sqlite(tmp_path):
+    import sqlite3
+    from retrieval.vector_store import LocalVectorStore
+
+    db_file = str(tmp_path / "corrupt_telemetry.db")
+
+    # 1. Initialize SQLite database with an inferences record containing malformed JSON
+    with sqlite3.connect(db_file) as conn:
+        conn.execute("""
+            CREATE TABLE inferences (
+                id TEXT PRIMARY KEY,
+                doc_ids TEXT
+            )
+        """)
+        conn.execute("""
+            CREATE TABLE document_weights (
+                doc_id TEXT PRIMARY KEY,
+                dynamic_weight REAL,
+                updated_at TIMESTAMP
+            )
+        """)
+        # Malformed JSON string that triggers json.loads failure
+        conn.execute(
+            "INSERT INTO inferences (id, doc_ids) VALUES (?, ?)",
+            ("inf_corrupt_99", '{"malformed_json_missing_brace": ["old_chunk_id"')
+        )
+        conn.commit()
+
+    vstore = LocalVectorStore(db_path=db_file)
+    vstore.add_documents([{
+        "id": "old_chunk_id",
+        "content": "Quantum decoherence causes quantum states to lose phase coherence.",
+        "source": "quantum.json",
+        "score": 0.0,
+        "dynamic_weight": 0.0,
+        "metadata": {}
+    }])
+    vstore.update_weight("old_chunk_id", 0.75)
+    assert vstore.get_weight("old_chunk_id") == 0.75
+
+    # 2. Reconcile ID must fail loudly on malformed telemetry JSON and roll back transaction
+    with pytest.raises(RuntimeError) as excinfo:
+        vstore.reconcile_id("old_chunk_id", "new_canonical_id")
+
+    err_msg = str(excinfo.value)
+    assert "Malformed telemetry JSON in inferences record 'inf_corrupt_99'" in err_msg
+
+    # 3. Verify SQLite rollback: old_chunk_id still exists with 0.75; new_canonical_id was NOT created
+    with sqlite3.connect(db_file) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute("SELECT doc_id, dynamic_weight FROM document_weights WHERE doc_id = ?", ("old_chunk_id",))
+        row_old = cur.fetchone()
+        assert row_old is not None
+        assert float(row_old["dynamic_weight"]) == 0.75
+
+        cur.execute("SELECT doc_id FROM document_weights WHERE doc_id = ?", ("new_canonical_id",))
+        assert cur.fetchone() is None
+
+        # Corrupt inferences record still holds original raw content without partial edit
+        cur.execute("SELECT doc_ids FROM inferences WHERE id = ?", ("inf_corrupt_99",))
+        inf_row = cur.fetchone()
+        assert inf_row["doc_ids"] == '{"malformed_json_missing_brace": ["old_chunk_id"'
+
+    # 4. Verify in-memory state: old_chunk_id is preserved, new_canonical_id does not exist
+    assert "old_chunk_id" in vstore.documents
+    assert "new_canonical_id" not in vstore.documents
+    assert "old_chunk_id" in vstore.vectors
+    assert "new_canonical_id" not in vstore.vectors
+    assert vstore.documents["old_chunk_id"]["dynamic_weight"] == 0.75
+
+
+def test_task6_retriever_rollback_preserves_shared_corpus_identity_and_sync():
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    text_a = "Spintronics utilizes electron spin in addition to charge."
+    source = "physics_spin.json"
+
+    corpus = [{"id": "corpus_spin_1", "title": "Spintronics", "text": text_a, "source": source}]
+    retriever = HybridRetriever(corpus=corpus)
+
+    # Verify shared list identity
+    assert retriever.corpus is corpus
+
+    vector_store = LocalVectorStore()
+    vector_store.add_documents([{
+        "id": "vstore_spin_target",
+        "content": text_a,
+        "source": source,
+        "score": 0.0,
+        "dynamic_weight": 0.20,
+        "metadata": {"title": "Spintronics"}
+    }])
+
+    doc_json = json.dumps([{"id": "vstore_spin_target", "title": "Spintronics", "text": text_a, "source": source}])
+
+    # Inject failure into index_corpus
+    def failing_index(c):
+        raise RuntimeError("Transient indexing GPU/memory bus failure")
+
+    retriever.index_corpus = failing_index
+
+    with pytest.raises(RuntimeError) as excinfo:
+        ingest_document_to_stores(corpus, retriever, vector_store, source_name=source, content=doc_json)
+
+    assert "Transient indexing GPU/memory bus failure" in str(excinfo.value)
+
+    # Crucial assertion: shared list identity must be strictly preserved
+    assert retriever.corpus is corpus
+    assert len(corpus) == 1
+    assert corpus[0]["id"] == "corpus_spin_1"
+
+    # Restore retriever indexing capability
+    retriever.index_corpus = HybridRetriever.index_corpus.__get__(retriever, HybridRetriever)
+    retriever.index_corpus(corpus)
+
+    # Perform a subsequent valid ingestion and verify both lists stay strictly synchronized
+    text_b = "Magnons are quasiparticles associated with spin waves."
+    doc_b_json = json.dumps([{"id": "corpus_spin_2", "title": "Magnons", "text": text_b, "source": source}])
+    res_b = ingest_document_to_stores(corpus, retriever, vector_store, source_name=source, content=doc_b_json)
+
+    assert res_b["added_count"] == 1
+    assert len(corpus) == 2
+    assert len(retriever.corpus) == 2
+    assert retriever.corpus is corpus
+    assert any(c["id"] == "corpus_spin_2" for c in retriever.corpus)
+
+
+def test_task6_reconcile_id_target_collision_documents_and_vectors_protection():
+    import numpy as np
+    from retrieval.vector_store import LocalVectorStore
+
+    vstore = LocalVectorStore()
+    vstore.add_documents([
+        {
+            "id": "doc_source_old",
+            "content": "Source document to migrate.",
+            "source": "source.json",
+            "score": 0.0,
+            "dynamic_weight": 0.10,
+            "metadata": {}
+        },
+        {
+            "id": "doc_target_existing",
+            "content": "Target document that already exists with different data.",
+            "source": "target.json",
+            "score": 0.0,
+            "dynamic_weight": 0.90,
+            "metadata": {"protect": True}
+        }
+    ])
+
+    # 1. Target ID collision in self.documents
+    with pytest.raises(ValueError) as excinfo:
+        vstore.reconcile_id("doc_source_old", "doc_target_existing")
+
+    err_text = str(excinfo.value)
+    assert "target ID 'doc_target_existing' already exists in vector store documents" in err_text
+
+    # Verify target document was NOT overwritten and source doc is unchanged
+    assert vstore.documents["doc_target_existing"]["content"] == "Target document that already exists with different data."
+    assert vstore.documents["doc_target_existing"]["dynamic_weight"] == 0.90
+    assert vstore.documents["doc_source_old"]["content"] == "Source document to migrate."
+
+    # 2. Target ID collision in self.vectors
+    vstore.vectors["orphan_vector_id"] = np.ones(128, dtype=np.float32)
+    with pytest.raises(ValueError) as excinfo_vec:
+        vstore.reconcile_id("doc_source_old", "orphan_vector_id")
+
+    assert "target ID 'orphan_vector_id' already exists in vector store vectors" in str(excinfo_vec.value)
+    assert "doc_source_old" in vstore.vectors
+
+
+def test_task6_reconcile_id_target_collision_sqlite_weights_protection(tmp_path):
+    import sqlite3
+    from retrieval.vector_store import LocalVectorStore
+
+    db_file = str(tmp_path / "target_weights_collision.db")
+    with sqlite3.connect(db_file) as conn:
+        conn.execute("""
+            CREATE TABLE document_weights (
+                doc_id TEXT PRIMARY KEY,
+                dynamic_weight REAL,
+                updated_at TIMESTAMP
+            )
+        """)
+        # Pre-seed target ID with existing high dynamic weight
+        conn.execute(
+            "INSERT INTO document_weights (doc_id, dynamic_weight, updated_at) VALUES (?, ?, ?)",
+            ("target_canonical_id", 0.85, "2026-11-17T00:00:00")
+        )
+        conn.commit()
+
+    vstore = LocalVectorStore(db_path=db_file)
+    vstore.add_documents([{
+        "id": "old_source_id",
+        "content": "Sample content to migrate.",
+        "source": "sample.json",
+        "score": 0.0,
+        "dynamic_weight": 0.0,
+        "metadata": {}
+    }])
+    vstore.update_weight("old_source_id", 0.15)
+    assert vstore.get_weight("old_source_id") == 0.15
+
+    # Reconcile toward target_canonical_id must be rejected before modifying SQLite
+    with pytest.raises(ValueError) as excinfo:
+        vstore.reconcile_id("old_source_id", "target_canonical_id")
+
+    assert "target ID 'target_canonical_id' already exists in persisted document weights" in str(excinfo.value)
+
+    # Verify SQLite table integrity: target_canonical_id retains 0.85, old_source_id retains 0.15
+    with sqlite3.connect(db_file) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute("SELECT doc_id, dynamic_weight FROM document_weights WHERE doc_id = ?", ("target_canonical_id",))
+        target_row = cur.fetchone()
+        assert target_row is not None
+        assert float(target_row["dynamic_weight"]) == 0.85
+
+        cur.execute("SELECT doc_id, dynamic_weight FROM document_weights WHERE doc_id = ?", ("old_source_id",))
+        source_row = cur.fetchone()
+        assert source_row is not None
+        assert float(source_row["dynamic_weight"]) == 0.15
+
+
+def test_task6_corpus_target_collision_protection():
+    from retrieval.document_loader import ingest_document_to_stores
+    from retrieval.vector_store import LocalVectorStore
+
+    source = "physics_notes.json"
+    text_a = "Alpha particles consist of two protons and two neutrons."
+    text_b = "Beta particles are high-energy, high-speed electrons or positrons."
+
+    # Corpus has 'doc_alpha' with text_a and 'doc_beta' with text_b
+    corpus = [
+        {"id": "doc_alpha", "title": "Alpha Decay", "text": text_a, "source": source},
+        {"id": "doc_beta", "title": "Beta Decay", "text": text_b, "source": source}
+    ]
+    retriever = HybridRetriever(corpus=corpus)
+    vector_store = LocalVectorStore()
+
+    # Vector store has 'doc_alpha' holding text_b (a cross-store ID collision scenario)
+    vector_store.add_documents([
+        {
+            "id": "doc_alpha",
+            "content": text_b,
+            "source": source,
+            "score": 0.0,
+            "dynamic_weight": 0.30,
+            "metadata": {"title": "Beta Decay"}
+        }
+    ])
+
+    # Now ingest text_b with explicit candidate id="doc_alpha"
+    # cand_id is "doc_alpha" == vstore_matched_id ("doc_alpha")
+    # But target canonical ID "doc_alpha" already exists in corpus as doc_alpha (with text_a != text_b)!
+    cand_doc = json.dumps([{"id": "doc_alpha", "title": "Beta Decay", "text": text_b, "source": source}])
+
+    with pytest.raises(ValueError) as excinfo:
+        ingest_document_to_stores(corpus, retriever, vector_store, source_name=source, content=cand_doc)
+
+    err_msg = str(excinfo.value)
+    assert "target canonical ID 'doc_alpha' already exists in corpus as a different document." in err_msg
+
+    # Verify both corpus documents remain completely unchanged
+    assert len(corpus) == 2
+    assert corpus[0]["id"] == "doc_alpha"
+    assert corpus[0]["text"] == text_a
+    assert corpus[1]["id"] == "doc_beta"
+    assert corpus[1]["text"] == text_b
+
+    # Verify vector store remains completely unchanged
+    assert len(vector_store.documents) == 1
+    assert "doc_alpha" in vector_store.documents
+    assert vector_store.documents["doc_alpha"]["content"] == text_b
+    assert vector_store.documents["doc_alpha"]["dynamic_weight"] == 0.30
+
+
+def test_task6_reconcile_id_in_memory_failure_rolls_back_sqlite(tmp_path):
+    import sqlite3
+    from retrieval.vector_store import LocalVectorStore
+
+    db_file = str(tmp_path / "reconcile_rollback.db")
+    with sqlite3.connect(db_file) as conn:
+        conn.execute("""
+            CREATE TABLE document_weights (
+                doc_id TEXT PRIMARY KEY,
+                dynamic_weight REAL,
+                updated_at TIMESTAMP
+            )
+        """)
+        conn.execute(
+            "INSERT INTO document_weights (doc_id, dynamic_weight, updated_at) VALUES (?, ?, ?)",
+            ("old_persistent_id", 0.60, "2026-11-17T00:00:00")
+        )
+        conn.commit()
+
+    vstore = LocalVectorStore(db_path=db_file)
+    vstore.add_documents([{
+        "id": "old_persistent_id",
+        "content": "Original document content before simulated failure.",
+        "source": "sim.json",
+        "score": 0.0,
+        "dynamic_weight": 0.60,
+        "metadata": {"state": "original"}
+    }])
+
+    # Simulate in-memory failure during in-memory migration
+    class FailingVectors(dict):
+        def pop(self, key, *args):
+            if key == "old_persistent_id":
+                raise RuntimeError("Simulated in-memory crash during ID reconciliation")
+            return super().pop(key, *args)
+
+    vstore.vectors = FailingVectors(vstore.vectors)
+
+    with pytest.raises(RuntimeError) as excinfo:
+        vstore.reconcile_id("old_persistent_id", "new_migrated_id")
+
+    assert "Simulated in-memory crash" in str(excinfo.value)
+
+    # Verify SQLite transaction rolled back completely:
+    # 1. 'old_persistent_id' STILL has its original dynamic_weight (0.60)
+    # 2. 'new_migrated_id' does NOT exist in document_weights
+    with sqlite3.connect(db_file) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute("SELECT doc_id, dynamic_weight FROM document_weights WHERE doc_id = ?", ("old_persistent_id",))
+        old_row = cur.fetchone()
+        assert old_row is not None
+        assert float(old_row["dynamic_weight"]) == 0.60
+
+        cur.execute("SELECT 1 FROM document_weights WHERE doc_id = ?", ("new_migrated_id",))
+        assert cur.fetchone() is None
+
+    # Verify in-memory state is rolled back intact
+    assert "old_persistent_id" in vstore.documents
+    assert vstore.documents["old_persistent_id"]["id"] == "old_persistent_id"
+    assert "new_migrated_id" not in vstore.documents
+    assert "old_persistent_id" in vstore.vectors
+    assert "new_migrated_id" not in vstore.vectors
+
+
+def test_task6_reconcile_id_atomic_write_lock_same_transaction_and_concurrency(tmp_path):
+    import sqlite3
+    from retrieval.vector_store import LocalVectorStore
+
+    db_file = str(tmp_path / "atomic_concurrency.db")
+    with sqlite3.connect(db_file) as conn:
+        conn.execute("""
+            CREATE TABLE document_weights (
+                doc_id TEXT PRIMARY KEY,
+                dynamic_weight REAL,
+                updated_at TIMESTAMP
+            )
+        """)
+        conn.execute(
+            "INSERT INTO document_weights (doc_id, dynamic_weight, updated_at) VALUES (?, ?, ?)",
+            ("doc_src_orig", 0.45, "2026-11-17T00:00:00")
+        )
+        conn.commit()
+
+    vstore = LocalVectorStore(db_path=db_file)
+    vstore.add_documents([{
+        "id": "doc_src_orig",
+        "content": "Source text for atomic reconciliation test.",
+        "source": "source.json",
+        "score": 0.0,
+        "dynamic_weight": 0.45,
+        "metadata": {}
+    }])
+
+    # 1. Track executed statements and verify exact single-connection usage
+    real_get_conn = vstore._get_connection
+    conns = []
+    executed_ops = []
+    concurrent_write_blocked = []
+
+    class TrackedConn:
+        def __init__(self, raw):
+            self.raw = raw
+        def __enter__(self):
+            return self
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            self.close()
+        def execute(self, sql, *args):
+            executed_ops.append(("conn.execute", sql.strip()))
+            return self.raw.execute(sql, *args)
+        def cursor(self):
+            cur = self.raw.cursor()
+            class TrackedCur:
+                def __init__(self, c):
+                    self.c = c
+                def execute(self, sql, *args):
+                    clean_sql = sql.strip()
+                    executed_ops.append(("cur.execute", clean_sql))
+                    # Probe concurrent access during target-ID check under BEGIN IMMEDIATE
+                    if "SELECT 1 FROM document_weights WHERE doc_id = ?" in clean_sql:
+                        try:
+                            # Secondary connection with low timeout to verify immediate write lock holds
+                            conn_probe = sqlite3.connect(db_file, timeout=0.05)
+                            conn_probe.execute(
+                                "INSERT INTO document_weights VALUES (?, ?, ?)",
+                                ("doc_tgt_new", 0.99, "2026-11-17T00:00:00")
+                            )
+                            conn_probe.commit()
+                            concurrent_write_blocked.append(False)
+                        except sqlite3.OperationalError:
+                            concurrent_write_blocked.append(True)
+                        finally:
+                            conn_probe.close()
+                    return self.c.execute(sql, *args)
+                def fetchone(self):
+                    return self.c.fetchone()
+                def fetchall(self):
+                    return self.c.fetchall()
+            return TrackedCur(cur)
+        def commit(self):
+            executed_ops.append(("commit", ""))
+            return self.raw.commit()
+        def rollback(self):
+            executed_ops.append(("rollback", ""))
+            return self.raw.rollback()
+        def close(self):
+            executed_ops.append(("close", ""))
+            return self.raw.close()
+
+    vstore._get_connection = lambda: (conns.append(1), TrackedConn(real_get_conn()))[1]
+
+    # Reconcile from doc_src_orig to doc_tgt_new
+    res = vstore.reconcile_id("doc_src_orig", "doc_tgt_new")
+    assert res is True
+
+    # 2. Assertions: Single connection used (no separate conn_check)
+    assert len(conns) == 1, "Collision check and migration must use the exact same SQLite connection."
+
+    # 3. Assertions: BEGIN IMMEDIATE ran before collision check and migration
+    op_names = [op[0] for op in executed_ops]
+    op_sqls = [op[1] for op in executed_ops]
+    assert executed_ops[0] == ("conn.execute", "BEGIN IMMEDIATE")
+
+    check_idx = next(i for i, sql in enumerate(op_sqls) if "SELECT 1 FROM document_weights WHERE doc_id = ?" in sql)
+    insert_idx = next(i for i, sql in enumerate(op_sqls) if "INSERT INTO document_weights" in sql)
+    commit_idx = op_names.index("commit")
+
+    assert check_idx < insert_idx < commit_idx, "Collision check must precede INSERT and both occur within the same transaction."
+
+    # 4. Assertions: Concurrent write was blocked by the BEGIN IMMEDIATE lock
+    assert concurrent_write_blocked == [True], "Concurrent write must be locked out by BEGIN IMMEDIATE."
+
+    # 5. Assertions: Final database state has correct dynamic_weight and source doc was cleaned up
+    with sqlite3.connect(db_file) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute("SELECT doc_id, dynamic_weight FROM document_weights WHERE doc_id = ?", ("doc_tgt_new",))
+        target_row = cur.fetchone()
+        assert target_row is not None
+        assert float(target_row["dynamic_weight"]) == 0.45
+
+        cur.execute("SELECT 1 FROM document_weights WHERE doc_id = ?", ("doc_src_orig",))
+        assert cur.fetchone() is None
+
+    # 6. Verify existing target weight is never overwritten under collision
+    # Clear in-memory docs and vectors to directly exercise the persisted document_weights collision check under write lock
+    vstore.documents.clear()
+    vstore.vectors.clear()
+    vstore.add_documents([{
+        "id": "another_doc",
+        "content": "Another text",
+        "source": "source2.json",
+        "score": 0.0,
+        "dynamic_weight": 0.10,
+        "metadata": {}
+    }])
+    with pytest.raises(ValueError) as excinfo:
+        vstore.reconcile_id("another_doc", "doc_tgt_new")
+    assert "target ID 'doc_tgt_new' already exists in persisted document weights" in str(excinfo.value)
+
+    # Verify existing target weight (0.45) was not overwritten
+    with sqlite3.connect(db_file) as conn:
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+        cur.execute("SELECT dynamic_weight FROM document_weights WHERE doc_id = ?", ("doc_tgt_new",))
+        row = cur.fetchone()
+        assert row is not None
+        assert float(row["dynamic_weight"]) == 0.45

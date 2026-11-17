@@ -239,72 +239,221 @@ def ingest_document_to_stores(
     for cand in candidates:
         cand_id = cand["id"]
         c_text = cand["text"].strip()
-        c_source = cand["source"]
+        c_source = str(cand["source"]).strip()
         c_title = cand["title"]
         c_meta = cand["metadata"]
         content_hash = hashlib.md5(c_text.encode("utf-8")).hexdigest()
         source_content_key = (c_source, content_hash)
 
-        # Content-hash deduplication: check if exact (source, content) already exists
-        matched_content_id = None
-        if source_content_key in existing_corpus_by_hash:
-            matched_content_id = existing_corpus_by_hash[source_content_key]
-        elif source_content_key in existing_vstore_by_hash:
-            matched_content_id = existing_vstore_by_hash[source_content_key]
+        # 2a. Content + Source Match in both stores
+        corpus_matched_id = existing_corpus_by_hash.get(source_content_key)
+        vstore_matched_id = existing_vstore_by_hash.get(source_content_key)
 
-        if matched_content_id:
-            # Document with same source and content exists
-            in_corpus = (matched_content_id in existing_corpus_by_id)
-            in_vstore = (matched_content_id in existing_vstore_by_id)
-            if in_corpus and (in_vstore or vector_store is None):
-                # Fully present in both stores: duplicate, safely skip
+        if corpus_matched_id is not None and vstore_matched_id is not None:
+            if corpus_matched_id == vstore_matched_id:
+                # Same source + same content already in both stores under identical ID -> skip duplicate
                 skipped_count += 1
+                chunk_ids.append(corpus_matched_id)
                 continue
-            # Partially present in one store: synchronize missing store using matched_content_id
-            target_id = matched_content_id
-        else:
-            # New content from this source: check for ID collision with different content
-            target_id = cand_id
-            corpus_collision = False
-            if target_id in existing_corpus_by_id:
-                if str(existing_corpus_by_id[target_id].get("text", "")).strip() != c_text:
-                    corpus_collision = True
+            else:
+                # Cross-store ID mismatch for identical source + content!
+                # Reconcile safely: choose a canonical ID and align both stores without creating duplicates.
+                if cand_id == vstore_matched_id:
+                    canonical_id = vstore_matched_id
+                    # Collision prevention: check whether canonical_id already belongs to a different corpus document
+                    if canonical_id in existing_corpus_by_id and canonical_id != corpus_matched_id:
+                        raise ValueError(
+                            f"Cannot reconcile document ID: target canonical ID '{canonical_id}' "
+                            f"already exists in corpus as a different document."
+                        )
 
-            vstore_collision = False
-            if target_id in existing_vstore_by_id:
-                if str(existing_vstore_by_id[target_id].get("content", "")).strip() != c_text:
-                    vstore_collision = True
+                    # Update corpus to match canonical_id with full rollback guard
+                    old_corpus_entry = None
+                    for c in corpus:
+                        if isinstance(c, dict) and c.get("id") == corpus_matched_id:
+                            old_corpus_entry = c
+                            break
+                    if old_corpus_entry is not None:
+                        old_corpus_id = old_corpus_entry["id"]
 
-            if corpus_collision or vstore_collision:
-                if on_conflict == "error":
-                    raise ValueError(
-                        f"Document ID collision: '{target_id}' already exists with different content."
-                    )
-                # Generate deterministic alternative ID
-                alt_base = f"{target_id}_{content_hash[:8]}"
-                alt_id = alt_base
-                counter = 1
-                while (alt_id in existing_corpus_by_id) or (alt_id in existing_vstore_by_id):
-                    # If this alt_id has the exact same content, it was already ingested
-                    c_same = (alt_id in existing_corpus_by_id and str(existing_corpus_by_id[alt_id].get("text", "")).strip() == c_text)
-                    v_same = (alt_id in existing_vstore_by_id and str(existing_vstore_by_id[alt_id].get("content", "")).strip() == c_text)
-                    if c_same and (v_same or vector_store is None):
-                        target_id = alt_id
-                        break
-                    alt_id = f"{alt_base}_{counter}"
-                    counter += 1
+                        # Snapshot retriever internal state before indexing
+                        prev_retriever_state = None
+                        retriever_shares_corpus = False
+                        if retriever is not None:
+                            prev_retriever_state = {}
+                            retriever_shares_corpus = (
+                                hasattr(retriever, "corpus") and retriever.corpus is corpus
+                            )
+                            if hasattr(retriever, "corpus") and not retriever_shares_corpus:
+                                prev_retriever_state["corpus"] = [
+                                    dict(doc) if isinstance(doc, dict) else doc
+                                    for doc in retriever.corpus
+                                ]
+                            if hasattr(retriever, "tokenized_corpus") and isinstance(retriever.tokenized_corpus, list):
+                                prev_retriever_state["tokenized_corpus"] = [list(toks) for toks in retriever.tokenized_corpus]
+                            if hasattr(retriever, "bm25"):
+                                prev_retriever_state["bm25"] = getattr(retriever, "bm25", None)
+                            if hasattr(retriever, "dense_vectors") and isinstance(retriever.dense_vectors, list):
+                                prev_retriever_state["dense_vectors"] = [
+                                    vec.copy() if hasattr(vec, "copy") else vec
+                                    for vec in retriever.dense_vectors
+                                ]
+
+                        old_corpus_entry["id"] = canonical_id
+                        try:
+                            if retriever is not None:
+                                retriever.index_corpus(corpus)
+                        except Exception as e:
+                            # 1. Rollback corpus entry ID
+                            old_corpus_entry["id"] = old_corpus_id
+                            # 2. Rollback retriever internal state to pre-indexing snapshot while preserving shared list identity
+                            if retriever is not None:
+                                if retriever_shares_corpus:
+                                    retriever.corpus = corpus
+                                elif prev_retriever_state and "corpus" in prev_retriever_state:
+                                    retriever.corpus = prev_retriever_state["corpus"]
+                                if prev_retriever_state:
+                                    for attr in ("tokenized_corpus", "bm25", "dense_vectors"):
+                                        if attr in prev_retriever_state:
+                                            setattr(retriever, attr, prev_retriever_state[attr])
+                            raise RuntimeError(
+                                f"Failed to reconcile corpus ID to '{canonical_id}': {e}"
+                            ) from e
+                        existing_corpus_by_id.pop(corpus_matched_id, None)
+                        existing_corpus_by_id[canonical_id] = old_corpus_entry
+                        existing_corpus_by_hash[source_content_key] = canonical_id
                 else:
-                    target_id = alt_id
+                    canonical_id = corpus_matched_id
+                    # Update vector_store to match canonical_id
+                    if vector_store is not None:
+                        if hasattr(vector_store, "reconcile_id"):
+                            vector_store.reconcile_id(vstore_matched_id, canonical_id)
+                        else:
+                            # In-memory fallback if mock vector store without reconcile_id
+                            if hasattr(vector_store, "documents") and vstore_matched_id in vector_store.documents:
+                                old_chunk = vector_store.documents[vstore_matched_id]
+                                try:
+                                    vector_store.documents.pop(vstore_matched_id)
+                                    old_chunk["id"] = canonical_id
+                                    vector_store.documents[canonical_id] = old_chunk
+                                    if hasattr(vector_store, "vectors") and vstore_matched_id in vector_store.vectors:
+                                        vector_store.vectors[canonical_id] = vector_store.vectors.pop(vstore_matched_id)
+                                except Exception as err:
+                                    old_chunk["id"] = vstore_matched_id
+                                    vector_store.documents[vstore_matched_id] = old_chunk
+                                    vector_store.documents.pop(canonical_id, None)
+                                    raise RuntimeError(f"Fallback reconciliation failed: {err}") from err
 
-        # Check presence under target_id
+                    existing_vstore_by_id.pop(vstore_matched_id, None)
+                    if vector_store is not None and hasattr(vector_store, "documents") and canonical_id in vector_store.documents:
+                        existing_vstore_by_id[canonical_id] = vector_store.documents[canonical_id]
+                    existing_vstore_by_hash[source_content_key] = canonical_id
+
+                skipped_count += 1
+                chunk_ids.append(canonical_id)
+                continue
+
+        elif corpus_matched_id is not None and vstore_matched_id is None:
+            # Document present in corpus, missing from vector store -> synchronize into vector_store
+            target_id = corpus_matched_id
+            if vector_store is not None:
+                vstore_chunk: DocumentChunk = {
+                    "id": target_id,
+                    "content": c_text,
+                    "source": c_source,
+                    "score": 0.0,
+                    "dynamic_weight": 0.0,
+                    "metadata": dict(c_meta)
+                }
+                new_vstore_chunks.append(vstore_chunk)
+                existing_vstore_by_id[target_id] = vstore_chunk
+                existing_vstore_by_hash[source_content_key] = target_id
+            added_count += 1
+            chunk_ids.append(target_id)
+            continue
+
+        elif corpus_matched_id is None and vstore_matched_id is not None:
+            # Document present in vector store, missing from corpus -> synchronize into corpus
+            target_id = vstore_matched_id
+            corpus_item = {
+                "id": target_id,
+                "title": c_title,
+                "text": c_text,
+                "source": c_source,
+                "metadata": c_meta
+            }
+            corpus.append(corpus_item)
+            new_corpus_items.append(corpus_item)
+            existing_corpus_by_id[target_id] = corpus_item
+            existing_corpus_by_hash[source_content_key] = target_id
+            added_count += 1
+            chunk_ids.append(target_id)
+            continue
+
+        # 2b. Content + Source NOT found in either store under any ID:
+        # Check whether cand_id collides with an existing document with different content OR different source
+        target_id = cand_id
+        corpus_collision = False
+        if target_id in existing_corpus_by_id:
+            existing_c = existing_corpus_by_id[target_id]
+            if str(existing_c.get("text", "")).strip() != c_text or str(existing_c.get("source", "")).strip() != c_source:
+                corpus_collision = True
+
+        vstore_collision = False
+        if target_id in existing_vstore_by_id:
+            existing_v = existing_vstore_by_id[target_id]
+            if str(existing_v.get("content", "")).strip() != c_text or str(existing_v.get("source", "")).strip() != c_source:
+                vstore_collision = True
+
+        if corpus_collision or vstore_collision:
+            if on_conflict == "error":
+                raise ValueError(
+                    f"Document ID collision: '{target_id}' already exists with different content or source."
+                )
+            # Generate deterministic alternative ID based on source and content hash
+            src_cnt_hash = hashlib.md5(f"{c_source}:{c_text}".encode("utf-8")).hexdigest()
+            alt_base = f"{target_id}_{src_cnt_hash[:8]}"
+            alt_id = alt_base
+            counter = 1
+            while (alt_id in existing_corpus_by_id) or (alt_id in existing_vstore_by_id):
+                # Check if this alt_id matches BOTH content AND source
+                c_same = (
+                    alt_id in existing_corpus_by_id
+                    and str(existing_corpus_by_id[alt_id].get("text", "")).strip() == c_text
+                    and str(existing_corpus_by_id[alt_id].get("source", "")).strip() == c_source
+                )
+                v_same = (
+                    alt_id in existing_vstore_by_id
+                    and str(existing_vstore_by_id[alt_id].get("content", "")).strip() == c_text
+                    and str(existing_vstore_by_id[alt_id].get("source", "")).strip() == c_source
+                )
+                if c_same and (v_same or vector_store is None):
+                    target_id = alt_id
+                    break
+                alt_id = f"{alt_base}_{counter}"
+                counter += 1
+            else:
+                target_id = alt_id
+
+        # 2c. Check presence under target_id (must match BOTH content AND source to be skipped)
         in_corpus = (target_id in existing_corpus_by_id)
         in_vstore = (target_id in existing_vstore_by_id)
 
         if in_corpus and (in_vstore or vector_store is None):
-            c_match = (str(existing_corpus_by_id[target_id].get("text", "")).strip() == c_text)
-            v_match = (vector_store is None or str(existing_vstore_by_id[target_id].get("content", "")).strip() == c_text)
+            c_match = (
+                str(existing_corpus_by_id[target_id].get("text", "")).strip() == c_text
+                and str(existing_corpus_by_id[target_id].get("source", "")).strip() == c_source
+            )
+            v_match = (
+                vector_store is None
+                or (
+                    str(existing_vstore_by_id[target_id].get("content", "")).strip() == c_text
+                    and str(existing_vstore_by_id[target_id].get("source", "")).strip() == c_source
+                )
+            )
             if c_match and v_match:
                 skipped_count += 1
+                chunk_ids.append(target_id)
                 continue
 
         added_count += 1
