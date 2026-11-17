@@ -46,7 +46,9 @@ Open **`http://localhost:8501`** and share your browser window in Google Meet.
 ### Act 1: The RAG Dilemma & Problem Framing (Slide 1–2 / 1 Minute)
 > *"Respected professors, standard RAG systems suffer from an efficiency-accuracy dilemma. If you use simple single-pass RAG, you fail catastrophically on multi-hop questions because intermediate entities aren't known upfront. But if you use exhaustive agentic critique-revise loops, you incur 10 to 15 LLM calls and multi-second latencies on every single query—even simple factual questions.*
 >
-> *FeedbackRAG solves this by adapting the classic Operating Systems Multilevel Feedback Queue (MLFQ) algorithm to generative retrieval. Queries enter at Level 0 (cheapest direct inference) and escalate to higher compute tiers only when verifiable, reference-free feedback signals indicate deficiency."*
+> *FeedbackRAG solves this by adapting the classic Operating Systems Multilevel Feedback Queue (MLFQ) algorithm to generative retrieval. Queries enter at Level 0 (cheapest direct inference) and escalate to higher compute tiers only when verifiable, reference-free feedback signals indicate deficiency.*
+>
+> *Note on demonstration: Today's interactive dashboard demonstrates the live MLFQ state transitions and feedback mechanisms in real time, while our scientific research findings in Table 4b reflect our full empirical benchmark evaluated on HotpotQA using Qwen 2.5 Coder 14B on an NVIDIA RTX 3060 12GB GPU."*
 
 ---
 
@@ -111,7 +113,7 @@ Open **`http://localhost:8501`** and share your browser window in Google Meet.
 ## 💡 Anticipated Examiner Questions & Winning Answers
 
 - **Q1: "Why does Always-L2 beat FeedbackRAG on your 100-question benchmark?"**
-  - **Winning Answer:** *"Because all 100 questions in HotpotQA are specifically selected to require multi-hop entity bridging. 19% of queries prematurely exited at Level 0 due to entrenched parametric hallucinations where the model was unanimously confident ($S_1=1.00$). Our quantitative attribution shows this single factor accounts for 92.8% of the entire 4.60-point deficit. On a balanced realistic workload containing 40% simple factual queries, FeedbackRAG is strictly Pareto-optimal in latency and compute."*
+  - **Winning Answer:** *"Because all 100 questions in HotpotQA are specifically selected to require multi-hop entity bridging. 19% of queries prematurely exited at Level 0 due to entrenched parametric hallucinations where the model was unanimously confident ($S_1=1.00$). Our quantitative attribution shows this single factor accounts for 92.8% of the entire 4.60-point deficit. Across workloads of varying complexity, FeedbackRAG is designed to balance answer quality and computational cost by avoiding redundant retrieval on simple queries while escalating when needed."*
 
 - **Q2: "How does the SQLite feedback loop prevent catastrophic drift or malicious poisoning?"**
   - **Winning Answer:** *"We enforce strict mathematical clamping on dynamic weights between $[-0.80, +1.50]$ so that no document score can diverge, and a malicious actor cannot permanently suppress or artificially elevate documents beyond safe bounds."*
