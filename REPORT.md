@@ -15,7 +15,7 @@ In this work, we propose **FeedbackRAG**, a dynamic framework that models agenti
 
 We evaluate FeedbackRAG across multiple rigorous regimes:
 1. **Regime A (Simulated State-Machine Benchmark):** An architectural control-flow benchmark across 500 template-expanded multi-hop items (drawn from 20 seed reasoning patterns) evaluating MLFQ state transitions, Pareto efficiency, and learned policy convergence under deterministic mock outputs with 95% bootstrap confidence intervals ($B=1,000$). Accuracy in Regime A reflects control-flow routing rather than free-text neural reasoning.
-2. **Regime B (Live Neural Model Pilot):** Open-weight neural inference using local LLM backends (feasibility validation on `qwen2.5:0.5b` and GPU workstation inference on `qwen2.5-coder:7b` via Ollama on an NVIDIA GeForce RTX 3060 12GB GPU across $N=15$ items), measuring authentic wall-clock latency (129–257 ms) and free-text Exact Match vs. Token F1 divergence.
+2. **Regime B (Live Neural Model Validation & Empirical Multi-Hop Benchmark):** Open-weight neural inference using local and remote LLM backends (feasibility validation on `qwen2.5:0.5b` and `qwen2.5-coder:7b`, followed by an audited 100-question multi-hop benchmark on `qwen2.5-coder:14b` via an NVIDIA GeForce RTX 3060 12GB GPU), measuring authentic neural generation, multi-hop routing dynamics, and an end-to-end feedback loop with SQLite persistence across store restarts.
 3. **Advanced Research Extensions:**
    - **Cost-Aware Policy with Continuous Budget Dial ($\lambda$):** Optimizes expected F1 gain $\mathbb{E}[\Delta F_1]$ against incremental monetary cost, establishing an empirical Pareto frontier against a Theoretical Oracle (99.4% F1, \$0.201/1k queries).
    - **Risk-Controlled Conformal Calibration:** Split conformal calibration bounding early-exit error rate with Expected Calibration Error (ECE) analysis ($S_1$ ECE = 0.3258, $S_3$ ECE = 0.2300).
@@ -25,7 +25,7 @@ We evaluate FeedbackRAG across multiple rigorous regimes:
    - **Selective Answering:** Confidence-based abstention on ambiguous test queries, reducing error from **38.5%** at 100% coverage to **17.0%** at 50% coverage (AURC = 0.1901).
    - **Empirical Adversarial Robustness:** 150 structured attack probes demonstrating an **88.0%** defense rate across counterfactual distractors, indirect prompt injections, and cross-document contradictions (vs. 24.7% for single-pass RAG).
 
-**Key Benchmark Result (Regime A Simulation):** In architectural simulation, FeedbackRAG with Learned Policy matches Self-RAG's top accuracy (**93.4% F1 [90.8%, 95.4%]**) and outperforms Always-Level-3 by **+13.2% F1** while reducing average LLM calls from 10.20 to 6.72 (**34.1% call reduction**) and slashing inference cost by **65.6%** (\$0.000149 vs. \$0.000433 per query). In the live GPU neural feasibility pilot (Regime B, $N=15$), FeedbackRAG resolves queries in **257.0 ms** with 88.3% F1.
+**Key Benchmark Result (Regime A Simulation):** In architectural simulation, FeedbackRAG with Learned Policy matches Self-RAG's top accuracy (**93.4% F1 [90.8%, 95.4%]**) and outperforms Always-Level-3 by **+13.2% F1** while reducing average LLM calls from 10.20 to 6.72 (**34.1% call reduction**) and slashing inference cost by **65.6%** (\$0.000149 vs. \$0.000433 per query). In the live GPU neural feasibility pilot (Regime B, $N=15$), FeedbackRAG resolves queries in **257.0 ms** with 88.3% F1. In the 100-question multi-hop benchmark on `qwen2.5-coder:14b`, FeedbackRAG achieves **49.6% F1 [39.8%, 58.4%]**, exceeding single-pass RAG (Always-L1, 46.1% F1) but trailing dedicated iterative multi-hop RAG (Always-L2, **54.2% F1**) due to premature Level 0 exits on confident hallucinations (accounting for approximately 93% of the gap).
 
 ---
 
@@ -205,7 +205,9 @@ The 500-question benchmark comprises 20 seed multi-hop reasoning templates (~25 
 
 ---
 
-### 6.2 Regime B: Live Neural Model Validation (Local GPU Workstation Inference)
+### 6.2 Regime B: Live Neural Model Validation & Empirical Multi-Hop Benchmark
+
+#### 6.2.1 Feasibility Pilot Study: Local CPU & GPU Workstation Verification ($N=15$)
 
 To validate the framework on authentic neural weights producing conversational free text, we evaluated benchmark items against local LLM backends:
 
@@ -224,6 +226,108 @@ To validate the framework on authentic neural weights producing conversational f
 - **Free-Text EM vs. F1 Gap:** Real open-weight models generate conversational phrasing (e.g., *"Christopher Nolan directed Inception"*), scoring partial token overlap (F1 = 57%) with 0% Exact Match. Grounded Level 1 context steers models toward concise targets, boosting EM to 80.0% and F1 to 91.1% on the 7B GPU workstation.
 - **Accuracy vs. Latency Trade-off in Real Pilot:** On this $N=15$ feasibility cohort, FeedbackRAG scored slightly below Always-L1 in Token F1 (88.3% vs. 91.1% on 7B; 43.5% vs. 57.3% on 0.5B). Because factual queries met the self-consistency gate ($S_1=1.0$) at Level 0, the system early-exited directly. While this avoided external database calls and delivered 257.0 ms latency, it missed the retrieved context that steered Always-L1 toward exact phrasing. Additionally, `qwen2.5-coder:7b` is trained primarily for code, which introduces minor conversational verbosity on QA.
 - **Hardware Acceleration:** On a dedicated NVIDIA GeForce RTX 3060 12GB GPU host, generation times averaged **257.0 ms** for FeedbackRAG, running in dedicated VRAM (4,546 MiB allocated).
+
+---
+
+#### 6.2.2 Large-Scale Empirical Multi-Hop Benchmark (100 Authentic HotpotQA Questions on Qwen 2.5 Coder 14B)
+
+To evaluate system behavior beyond small feasibility cohorts, we conducted a rigorous 100-question empirical benchmark comparing all six architectures on authentic multi-hop questions from `data/real_test.json` over the full 2,826-document Wikipedia corpus in `data/real_corpus.json` using **`qwen2.5-coder:14b`** hosted on an NVIDIA GeForce RTX 3060 12GB GPU workstation.
+
+| System Architecture | Exact Match (95% CI) | Token F1 (95% CI) | Avg Calls / Query | Routing Distribution (L0 / L1 / L2 / L3) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Always-L0 (Parametric Direct)** | 14.0% [8.0%, 21.0%] | 19.2% [12.4%, 26.2%] | 1.00 | 100% / 0% / 0% / 0% |
+| **Always-L1 (Vanilla Hybrid RAG)** | 34.0% [24.0%, 42.0%] | 46.1% [36.6%, 54.9%] | 1.00 | 0% / 100% / 0% / 0% |
+| **Always-L2 (Iterative Multi-Hop)** | **41.0% [32.0%, 50.0%]** | **54.2% [44.5%, 62.8%]** | 2.00 | 0% / 0% / 100% / 0% |
+| **Always-L3 (Full Agentic RAG)** | 37.0% [28.0%, 46.0%] | 46.8% [37.4%, 55.3%] | 2.19 | 0% / 0% / 0% / 100% |
+| **FeedbackRAG (Heuristic Thresholds)** | 36.0% [27.0%, 45.0%] | 49.0% [39.0%, 57.4%] | 5.22 | 19.0% / 11.0% / 69.0% / 1.0% |
+| **FeedbackRAG (Learned GBDT Policy)** | 37.0% [28.0%, 46.0%] | 49.6% [39.8%, 58.4%] | 5.26 | 19.0% / 10.0% / 69.0% / 2.0% |
+
+*Table 4b: Live neural model evaluation on 100 authentic HotpotQA multi-hop questions using `qwen2.5-coder:14b` across 2,826 Wikipedia documents with 95% bootstrap confidence intervals ($B=1,000$). Wall-clock latency is excluded from comparative claims due to deterministic query-level disk caching across experimental runs; computational cost is characterized by logical LLM calls and context footprints.*
+
+##### 1. Experimental Parity & Evaluation Control
+All six systems were evaluated under strict experimental control:
+- **Same Underlying Model:** `qwen2.5-coder:14b` served via Ollama on an NVIDIA GeForce RTX 3060 12GB GPU.
+- **Same Corpus & Retriever:** The identical 2,826 Wikipedia passages indexed in `HybridRetriever` (BM25 + Dense RRF fusion).
+- **Same Target Constraints & Metrics:** All prompts enforced concise 1–4 word fact extraction; predictions were evaluated against gold references via standard Exact Match and Token F1 normalization.
+- **Architecture-Specific Workflows:** Each system implemented its native processing workflow: direct generation for L0, single-pass retrieval for L1, query decomposition + iterative multi-hop retrieval for L2, broad retrieval + draft-critique-revise for L3, and dynamic signal-driven escalation for FeedbackRAG.
+
+##### 2. Latency & Cache Transparency
+In `eval/run_real_llm_benchmark.py`, query-level generations were cached to disk (`results/real_100q_llm_cache.json`) via deterministic SHA-256 hashes (`model|prompt|temperature|sample_id`). While this prevented conflating greedy decoding ($T=0.0$) with stochastic samples ($T=0.7$) and guaranteed reproducible re-runs, sequential execution meant downstream architectures (`FeedbackRAG-Learned`) received warm cache hits for Level 0 samples, whereas earlier systems (`FeedbackRAG-Thresholds`) absorbed cold network round-trips (1,050.2 ms p50). **Consequently, raw wall-clock latencies are excluded from comparative performance claims.** Instead, computational cost is represented by logical LLM calls and context token volume.
+
+##### 3. Core Empirical Finding: Why Always-L2 Outperforms FeedbackRAG
+The central finding from Table 4b is that **Always-L2 is the accuracy champion on this benchmark**, achieving **54.2% F1**, outperforming FeedbackRAG-Learned (**49.6% F1**) by 4.60 percentage points:
+- **Nonsignificant Lift Over Vanilla RAG:** While FeedbackRAG-Learned outperforms single-pass RAG (Always-L1, 46.1% F1) by +3.5 percentage points, this improvement is **not statistically significant** under paired bootstrap testing ($p = 0.3735, B=2,000$).
+- **The Specialization Trade-off:** All 100 evaluation questions are drawn from the authentic HotpotQA multi-hop dataset. Consequently, this benchmark primarily evaluates multi-hop reasoning and does not represent the heterogeneous query distribution expected in a general-purpose RAG application. Adaptive escalation does not automatically outperform a consistently applied multi-hop strategy on purely multi-hop workloads.
+
+##### 4. Quantitative Error Attribution
+To understand the 4.60-point F1 deficit, we analyzed the performance of FeedbackRAG-Learned partitioned by its terminal routing level:
+
+| Routing Subgroup | Query Count | FeedbackRAG F1 | Always-L2 F1 on Same Queries | Subgroup Gap ($\Delta$ F1) | Contribution to Total Gap |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Escalated to Level 2** | 69 | 49.8% | 49.8% | 0.0% | 0.00 pts |
+| **Escalated to Level 1** | 10 | 48.0% | 48.0% | 0.0% | 0.00 pts |
+| **Exited at Level 0 (Parametric)** | 19 | 50.7% | 73.1% | -22.4% | **4.256 pts** |
+| **Escalated to Level 3 (Agentic)** | 2 | 42.9% | 59.5% | -16.6% | **0.332 pts** |
+
+Combining the subgroup penalties:
+$$\Delta \text{Gap}_{\text{Total}} = 4.256 + 0.332 = 4.588 \approx 4.60 \text{ percentage points}$$
+- **Level 0 Premature Exits account for approximately 93% of the total performance gap** ($4.256 / 4.588 \approx 92.8\%$).
+- **Level 3 Agentic Degradation accounts for approximately 7% of the total performance gap** ($0.332 / 4.588 \approx 7.2\%$).
+
+##### 5. Confident Hallucinations and the Epistemic Blind Spot of Self-Consistency
+Examining all 19 queries that exited at Level 0 provides a complete breakdown of why Level 0 suffered a 22.4-point penalty relative to Always-L2:
+- **7 queries were Exact Parametric Hits (EM: 1.0, F1: 1.00):** The model answered correctly without retrieval, saving latency and calls: *Leo Varadkar*, *Texas Tech University*, *Roberta Vinci*, *Argand lamp*, *Seven Days Battles*, *Manchester United*, and *Dinosaur*. Notably, for *Manchester United* (query `5a713a5a5542994082a3e6a9`: *"What football club plays in the area between the old tool gates: Brook Bar and Trafford bar?"*), Level 0 achieved exact match (EM: 1.0, F1: 1.00; `"Manchester United"`), whereas Always-L2 retrieved Wikipedia context mentioning the formal club name and predicted `"Manchester United F.C."`, resulting in EM: 0.0 and F1: 0.80.
+- **6 queries were Confident Hallucinations Recovered by L2 (F1: 0.00 $\to$ F1 $\ge$ 0.89):** When asked multi-hop entity questions, `qwen2.5-coder:14b` held confident but incorrect parametric priors. Because the prior was entrenched, all $N=3$ stochastic samples at $T=0.7$ converged to the identical incorrect response, achieving maximum consistency ($S_1 = 1.00$):
+  - *Shellite chemical formula:* Parametric hallucinated `"Shellite"` (F1: 0.00); Always-L2 retrieved the paragraph and correctly answered `"Picric acid"` (F1: 1.00).
+  - *2014 Algeria World Cup host:* Parametric hallucinated `"Russia 2018"` (F1: 0.00); Always-L2 retrieved `"Brazil"` (F1: 1.00).
+  - *Kansas High School city:* Parametric hallucinated `"Overland Park"` (F1: 0.00); Always-L2 retrieved `"Wichita"` (F1: 1.00).
+  - *Yi Guan's viral research:* Parametric hallucinated `"COVID-19"` (F1: 0.00); Always-L2 retrieved `"Severe acute respiratory syndrome (SARS)"` (F1: 0.89).
+  - *Siege of Bharatpur commander:* Parametric hallucinated `"Lord Cornwallis"` (F1: 0.50); Always-L2 retrieved `"Lord Combermere"` (F1: 1.00).
+  - *Kristiina Varis collection:* Parametric hallucinated `"Artworks"` (F1: 0.00); Always-L2 retrieved `"drawings"` (F1: 1.00).
+- **5 queries were Partial Semantic Overlaps & Formulation Divergences (F1: 0.12–0.67):** Both systems identified the core semantic concept, but answer boundaries or descriptive phrasing affected token F1:
+  - *David Yates & Pietro Germi occupation:* Gold: `director`. Both L0 and L2 predicted `"Film Director"`, achieving partial token overlap (F1: 0.67, EM: 0.0).
+  - *DISCLOSE Act political position:* Gold: `United States Senator`. L0 predicted `"Senator"` (F1: 0.50, EM: 0.0) while L2 predicted `"U.S. Senator"` (F1: 0.40, EM: 0.0).
+  - *Ian Watkins incarceration query:* Q: *"Which of these talented men was incarcerated, impacting his career with a rock band?"*. Both L0 and L2 correctly named `"Ian Watkins"`. However, the raw gold reference in HotpotQA was the full explanatory sentence: `Lostprophets disbanded in 2013 after Watkins was charged with sexual offences in late 2012.`. Both received EM = 0.0 and F1 = 0.12 due to lexical overlap with "Watkins".
+  - *State Senate district birthplace:* Gold: `Brooklyn, New York`. L0 predicted the broader entity `"New York City"` (F1: 0.67, EM: 0.0), whereas L2 failed retrieval and output `"Not provided"` (F1: 0.00).
+  - *The Year Without a Santa Claus work type:* Gold: `seasonal television specials, particularly its work in stop motion animation`. L0 captured the core medium `"Animation"` (F1: 0.18, EM: 0.0), while L2 named the studio `"Rankin-Bass"` (F1: 0.00).
+- **1 query was a Mutual Joint Failure (both F1: 0.00):**
+  - *Georges-Henri Bousquet historian heritage:* Gold: `North African Arab`. Both models failed to identify the target heritage, with L0 predicting `"French"` (F1: 0.00) and L2 predicting `"Tunisian"` (F1: 0.00).
+
+Combining these four categories ($7 + 6 + 5 + 1 = 19$), the data reveals that premature Level 0 exits are primarily penalized by entrenched parametric hallucinations on multi-hop entity relations rather than universal catastrophic failure.
+
+This demonstrates a fundamental epistemic limitation of self-consistency: **consistency is a proxy for confidence, not truth**. When a neural model is confidently wrong, stochastic self-consistency generates a false-positive early exit.
+
+##### 6. GBDT Policy: Synthetic Training vs. Initial Cross-Domain Evaluation
+The GBDT escalation policy artifact (`results/learned_policy.pkl`) was fitted strictly on `data/dev.json` (100 synthetic dev queries producing 300 level-transition pairs, enforced at runtime via `assert split_name.lower() == "dev"`).
+- **Zero Label Leakage:** The 100 evaluation queries in `data/real_test.json` were strictly held out and unseen during training.
+- **Initial Cross-Domain Evaluation:** However, there is a distinct distribution shift between training on synthetic state-machine signals and evaluating on real neural outputs. While the learned policy successfully avoided destructive Level 3 routing for 98% of queries, its routing behavior (19% L0, 10% L1, 69% L2, 2% L3) largely mirrors the heuristic threshold rules. This represents an initial cross-domain evaluation under covariate shift, not a proof of universal policy generalization across arbitrary neural architectures.
+
+##### 7. Agentic Distractor Degradation (Always-L3)
+Always-L3 achieved only 46.8% F1 (below Always-L2's 54.2% F1). Unconditionally retrieving 6 candidate passages and injecting critique/revision prompts creates context window pollution. On open-weight neural models, irrelevant paragraphs act as distractors that dilute the attention mechanism and cause generation drift, demonstrating that more agentic autonomy is counterproductive when not guided by selective feedback.
+
+---
+
+#### 6.2.3 End-to-End Live Multilevel Feedback & Store Restart Verification
+
+To verify that human and signal feedback actively alter retrieval scoring rather than acting as dead metadata, we implemented and executed the end-to-end verification script `scripts/verify_live_feedback_loop.py` against live `qwen2.5-coder:14b` running on the remote NVIDIA RTX 3060 12GB GPU host:
+
+1. **Document Ingestion & Multi-Hop Querying:** Ingested 4 HotpotQA paragraphs into `HybridRetriever` and `LocalVectorStore` backed by SQLite. On the multi-hop query (*"Where did the descendants of the group of black Indians associated with the Seminole people settle?"*), initial vector search ranked the supporting document `doc_349fd35fd71d` (*Mascogos*) at Rank 1 with baseline similarity `0.8947`.
+2. **Neural Inference & Audit Logging:** The live LLM generated the correct gold answer (`"Coahuila, Mexico"` in 681.5 ms; EM: 1.0, F1: 1.00). The inference trace was committed to the SQLite `inferences` table via `FeedbackRegistry` (`log_id: da97e289-2721-4e9b-bdf1-1fad3751f9a0`).
+3. **Human Feedback and Persistent Retrieval-Weight Update:** An evaluator submitted positive feedback (+1 rating) rewarding the supporting evidence chunk. `LocalVectorStore.update_weight()` updated the `document_weights` table in SQLite, assigning a dynamic weight increment of $\Delta w = +0.25$.
+4. **Verified Retrieval Boosting:** Re-querying the vector store confirmed that dynamic weights directly modulate retrieval scores according to:
+   $$\text{score}_{\text{combined}} = \min\left(1.0, \;\text{score}_{\text{base}} \times (1 + \text{dynamic\_weight})\right)$$
+   The target document score increased from `0.8947` to `1.0000`, successfully boosting its margin over distractors.
+5. **Persistence Across Cold Store Restarts:** We simulated a complete process termination and reopened a brand-new `LocalVectorStore` pointing to the SQLite database file. Ingesting candidate chunks into the fresh store verified that the $+0.25$ dynamic weight was loaded from SQLite immediately, restoring the boosted score (`1.0000`) and Rank 1 status identically.
+
+*Qualification on Feedback Scope & Store Persistence:* This live verification proves that user and supervisor feedback dynamically updates retrieval rankings and persists safely across cold restarts. Note that `LocalVectorStore` rehydrates document chunks and dense embeddings into memory at startup, while SQLite independently persists the `document_weights` table (dynamic score multipliers) and `inferences`/`feedback` audit tables. Dynamic weights are reloaded on initialization and modulate combined retrieval scores without storing large vector blobs in relational rows. Online policy retraining of the GBDT routing model remains an offline batch pipeline, not streaming online gradient descent.
+
+##### Reproducibility Commands:
+To independently reproduce and audit every empirical claim in this report:
+- **Scientific Report Integrity Check:** `./.venv/bin/python eval/check_report_integrity.py`
+- **Full Regression Test Suite (94 tests):** `./.venv/bin/pytest tests/`
+- **Live Multilevel Feedback & Store Restart Verification:** `./.venv/bin/python scripts/verify_live_feedback_loop.py`
+- **100-Question Multi-Hop Benchmark Replay:** `./.venv/bin/python eval/run_real_llm_benchmark.py --dataset real_test`
+- **Simulated Regime A Pipeline & GBDT Training:** `./.venv/bin/python eval/run_feedbackrag.py`
 
 ---
 
