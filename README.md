@@ -6,7 +6,7 @@
 [![FeedbackRAG CI](https://github.com/gnshx/Agentic-RAG-with-Multilevel-Feedback/actions/workflows/ci.yml/badge.svg)](https://github.com/gnshx/Agentic-RAG-with-Multilevel-Feedback/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Test Suite](https://img.shields.io/badge/tests-64%2F64%20passing-brightgreen.svg)](tests/)
+[![Test Suite](https://img.shields.io/badge/tests-94%2F94%20passing-brightgreen.svg)](tests/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.32+-FF4B4B.svg?logo=streamlit)](https://streamlit.io)
 
@@ -180,8 +180,9 @@ Evaluated on 500 template-expanded multi-hop questions derived from 20 seed patt
 
 ---
 
-### 6.2 Regime B: Live Neural Model Feasibility Pilot
+### 6.2 Regime B: Live Neural Model Validation & Empirical Multi-Hop Benchmark
 
+#### 6.2.1 Feasibility Pilot Study ($N=15$)
 To validate the architecture against real neural weights generating natural language free-text, we evaluated a live benchmark subset across $N=15$ factual and multi-hop queries using `qwen2.5:0.5b` (local CPU) and `qwen2.5-coder:7b` (NVIDIA GeForce RTX 3060 12GB GPU via Ollama).
 
 | Model & Execution Setup | Pipeline Variant | Exact Match (EM %) | Token F1 (%) | Wall-Clock Latency (p50 / avg) | Avg LLM Calls |
@@ -193,12 +194,35 @@ To validate the architecture against real neural weights generating natural lang
 | | Always-L1 (Single-Pass RAG) | **80.0%** | **91.1%** | 240 ms / 321.8 ms | 2.00 |
 | | FeedbackRAG (Escalation Queue) | 66.7% | 88.3% | **202 ms / 257.0 ms** | 2.00 |
 
-*Table 2: Live neural model evaluation on real open-weight models across $N=15$ queries.*
+*Table 2: Live neural model feasibility evaluation on real open-weight models across $N=15$ queries.*
 
-#### Authentic Empirical Divergence & Trade-offs:
-- **Accuracy vs. Latency Trade-off in Pilot:** On this small 15-question pilot, FeedbackRAG scored below Always-L1 in Token F1 (43.5% vs. 57.3% on 0.5B; 88.3% vs. 91.1% on 7B). FeedbackRAG early-exited factual queries at Level 0 on high self-consistency without external retrieval. This saved latency (257.0 ms) and avoided external lookups, but missed the retrieved context that steered Always-L1 to concise exact answers. Additionally, `qwen2.5-coder:7b` is specialized for code rather than QA, resulting in conversational phrasing.
-- **Free-Text EM vs. F1 Gap:** Real neural generation includes natural conversational formatting (e.g., *"Christopher Nolan directed Inception"*), yielding non-zero Token F1 (57.1%) with 0.0% Exact Match. Grounding with retrieved context enables concise fact production, raising EM to 80.0% and F1 to 91.1% on the 7B GPU model.
-- **Realistic GPU Acceleration:** On the dedicated RTX 3060 GPU host, FeedbackRAG achieved **257.0 ms** average generation in 4,546 MiB dedicated VRAM.
+#### 6.2.2 Large-Scale Empirical Multi-Hop Benchmark (100 Authentic HotpotQA Questions on Qwen 2.5 Coder 14B)
+To evaluate system behavior on authentic multi-hop reasoning beyond small cohorts, we evaluated all six architectures across 100 authentic HotpotQA multi-hop questions against 2,826 Wikipedia passages using `qwen2.5-coder:14b` served on an NVIDIA GeForce RTX 3060 12GB GPU host:
+
+| System Architecture | Exact Match (95% CI) | Token F1 (95% CI) | Avg Calls / Query | Routing Distribution (L0 / L1 / L2 / L3) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Always-L0 (Parametric Direct)** | 14.0% [8.0%, 21.0%] | 19.2% [12.4%, 26.2%] | 1.00 | 100% / 0% / 0% / 0% |
+| **Always-L1 (Vanilla Hybrid RAG)** | 34.0% [24.0%, 42.0%] | 46.1% [36.6%, 54.9%] | 1.00 | 0% / 100% / 0% / 0% |
+| **Always-L2 (Iterative Multi-Hop)** | **41.0% [32.0%, 50.0%]** | **54.2% [44.5%, 62.8%]** | 2.00 | 0% / 0% / 100% / 0% |
+| **Always-L3 (Full Agentic RAG)** | 37.0% [28.0%, 46.0%] | 46.8% [37.4%, 55.3%] | 2.19 | 0% / 0% / 0% / 100% |
+| **FeedbackRAG (Heuristic Thresholds)** | 36.0% [27.0%, 45.0%] | 49.0% [39.0%, 57.4%] | 5.22 | 19.0% / 11.0% / 69.0% / 1.0% |
+| **FeedbackRAG (Learned GBDT Policy)** | 37.0% [28.0%, 46.0%] | 49.6% [39.8%, 58.4%] | 5.26 | 19.0% / 10.0% / 69.0% / 2.0% |
+
+*Table 2b: Empirical evaluation across 100 multi-hop HotpotQA queries on `qwen2.5-coder:14b` with 95% bootstrap confidence intervals ($B=1,000$).*
+
+##### Core Empirical Findings:
+1. **Always-L2 is the Accuracy Champion:** Dedicated iterative multi-hop RAG (Always-L2) achieves **54.2% F1**, outperforming FeedbackRAG-Learned (**49.6% F1**) by 4.60 percentage points on this pure multi-hop benchmark.
+2. **Nonsignificant Lift Over Vanilla RAG:** While FeedbackRAG-Learned outperforms single-pass RAG (Always-L1, 46.1% F1) by +3.5 percentage points, this improvement is **not statistically significant** under paired bootstrap testing ($p = 0.3735, B=2,000$).
+3. **Quantitative Error Attribution:** Premature Level 0 parametric exits account for **~93% of the deficit** ($0.19 \times 22.4 = 4.256\text{ pts}$), driven by entrenched parametric hallucinations where stochastic self-consistency converged to an incorrect answer ($S_1 = 1.00$). Level 3 agentic degradation accounts for **~7% of the deficit** ($0.02 \times 16.6 = 0.332\text{ pts}$).
+4. **Level 0 Taxonomy Breakdown (19 queries):** 7 exact hits (EM 1.0, F1 1.00) + 6 confident hallucinations recovered by L2 (F1: 0.00–0.50 $\to$ 0.89–1.00) + 5 partial semantic overlaps (F1: 0.12–0.67) + 1 mutual joint failure (both F1: 0.00).
+
+#### 6.2.3 End-to-End Live Multilevel Feedback & Store Restart Verification
+Executed via `scripts/verify_live_feedback_loop.py` on the live remote GPU model:
+- Evaluator submitted positive feedback (+1) on supporting evidence chunk `doc_349fd35fd71d` (*Mascogos*).
+- `LocalVectorStore` committed a $+0.25$ dynamic weight increment to the SQLite `document_weights` table.
+- Subsequent vector retrieval boosted the combined score from `0.8947` to `1.0000`, securing Rank 1 status over distractors.
+- Simulating complete process termination and opening a fresh vector store verified that SQLite dynamic weights survived the restart and identically restored the boosted score.
+- *Persistence Architecture:* `LocalVectorStore` rehydrates document chunks and dense embeddings into memory on startup, while SQLite independently persists the dynamic score multipliers and inference audit trail. Offline GBDT policy training remains an offline batch pipeline.
 
 ---
 
@@ -219,22 +243,23 @@ To maintain rigorous scientific honesty, several evaluation boundaries must be s
 2. **Generalization Boundary:** Strong synthetic benchmark numbers demonstrate that the MLFQ escalation mechanism functions properly under controlled conditions; they do not establish generalized accuracy on open-domain web data or full unconstrained HotpotQA/2WikiMultiHopQA corpora.
 3. **Model Scale in Regime B:** The live neural evaluation was performed on 15 queries with a compact model (`qwen2.5:0.5b`) to capture real-world free-text EM vs. Token F1 divergence and wall-clock latency under constrained compute.
 4. **Hardware Validation Status:** Larger models (`qwen2.5-coder:7b`) deployed on the RTX 3060 GPU host have been verified via targeted inference probes (demonstrating sub-second 466 ms GPU generation), but have not yet undergone a full 500-question neural evaluation.
+5. **Authentic Multi-Hop Benchmark Boundary (Regime B):** All 100 evaluation questions in Section 6.2.2 are drawn from the authentic HotpotQA multi-hop dataset. Consequently, this benchmark primarily evaluates multi-hop reasoning and does not represent the heterogeneous query distribution expected in a general-purpose RAG application.
 
 ---
 
 ## 7. Safety, Reliability & Advanced Research Extensions
 
-In accordance with rigorous ML evaluation standards, we evaluated the system across 7 advanced research dimensions:
+In accordance with rigorous ML evaluation standards, we evaluated the system across 8 advanced research dimensions:
 
-1. **Continuous Budget Dial ($\lambda$) & Theoretical Oracle:** Predicts expected F1 gain vs. cost trade-off across $\lambda \in [0, 10000]$. Theoretical Oracle establishes a 99.4% F1 upper bound at $0.201/1k queries, revealing an empirical headroom gap of only 6.9% F1 at $\lambda=0$.
-2. **Risk-Controlled Escalation via Split Conformal Prediction:** Calibrates nonconformity scores on dev data to bound early-exit error rate under nominal $lpha$. Evaluates Expected Calibration Error (ECE) for feedback signals ($S_1$ ECE = 0.3591, $S_3$ ECE = 0.2340) and reports an honest negative result regarding non-exchangeability across multi-hop reasoning graphs.
-3. **Cross-Dataset Generalization (HotpotQA $	o$ 2WikiMultiHopQA):** Zero-shot transfer evaluates policy transferability under complex relational and genealogical chains (70.0% F1, $-22.5\%$ domain transfer delta), diagnosing bridge entity reasoning shifts.
-4. **Lightweight Zero-Cost Heuristic Signals:** Replaces LLM-as-a-judge with retrieval score margin ($\Delta_{\text{score}}$) and lexical unigram overlap ($J_{\text{overlap}}$) proxies, slashing inference cost by **63.4%** ($0.073/1k queries) and accelerating p50 latency to **94.5 ms**.
+1. **Continuous Budget Dial ($\lambda$) & Theoretical Oracle:** Predicts expected F1 gain vs. cost trade-off across $\lambda \in [0, 10000]$. Theoretical Oracle establishes a 99.4% F1 upper bound at ash.201/1k queries, revealing an empirical headroom gap of only 6.9% F1 at $\lambda=0$.
+2. **Risk-Controlled Escalation via Split Conformal Prediction:** Calibrates nonconformity scores on dev data to bound early-exit error rate under nominal $\alpha$. Evaluates Expected Calibration Error (ECE) for feedback signals ($ ECE = 0.3258, $ ECE = 0.2300) and reports an honest negative result regarding non-exchangeability across multi-hop reasoning graphs.
+3. **Cross-Dataset Generalization (HotpotQA $\to$ 2WikiMultiHopQA):** Zero-shot transfer evaluates policy transferability under complex relational and genealogical chains (71.2% F1, hBc22.2\%$ domain transfer delta), diagnosing bridge entity reasoning shifts.
+4. **Lightweight Zero-Cost Heuristic Signals:** Replaces LLM-as-a-judge with retrieval score margin ($\Delta_{\text{score}}$) and lexical unigram overlap ({\text{overlap}}$) proxies, slashing inference cost by **63.4%** (ash.070/1k queries) and accelerating p50 latency to **94.5 ms** (2.7x speedup) with 72.8% F1.
 5. **Simulated Multi-Agent Consensus Protocol (100 Synthetic Rater Samples):** Evaluated across factual correctness and context faithfulness using prompt/agent perturbation raters, yielding substantial inter-agent agreement (Fleiss' $\kappa = 0.473$ correctness, $\kappa = 0.411$ faithfulness) and high automated judge calibration (89.0% agreement, Cohen's $\kappa = 0.715$).
-6. **Selective Answering & Empirical Risk-Coverage Curve:** Confidence-based abstention reducing error from **38.5%** at 100% coverage to **17.0%** at 50% coverage ($	ext{AURC} = 0.1901$).
+6. **Selective Answering & Empirical Risk-Coverage Curve:** Confidence-based abstention reducing error from **38.5%** at 100% coverage to **17.0%** at 50% coverage ($\text{AURC} = 0.1901$).
 7. **Empirical Adversarial Attack Probing (150 Probes):** Evaluated against counterfactual distractors, indirect prompt injections (OWASP LLM01), and cross-document contradictions. FeedbackRAG achieves an **88.0% macro defense rate** (vs. 24.7% for single-pass RAG).
 8. **Failure Taxonomy Breakdown (30 Case Studies):**
-   - **Retrieval Miss (33.3%, 10 cases):** Hybrid search failed to rank the second-hop bridge entity in the top-$k$.
+   - **Retrieval Miss (33.3%, 10 cases):** Hybrid search failed to rank the second-hop bridge entity in the top-$.
    - **Decomposition Failure (26.7%, 8 cases):** Sub-query planner failed to preserve dependent clauses.
    - **Grader Misclassification (23.3%, 7 cases):** Borderline relevant context misclassified as irrelevant.
    - **Reasoning Error (16.7%, 5 cases):** Correct context present, but comparative deduction failed.
@@ -319,20 +344,69 @@ python3 eval/check_report_integrity.py
 
 Expected output:
 ```
-=== Checking Report Integrity against results/tables/ ===
-  [PASS] Always-L0 EM: found '40.2%' in REPORT.md
-  [PASS] Always-L0 F1: found '49.4%' in REPORT.md
-  [PASS] Always-L1 EM: found '73.4%' in REPORT.md
-  [PASS] Always-L1 F1: found '73.4%' in REPORT.md
-  [PASS] Always-L3 EM: found '67.0%' in REPORT.md
-  [PASS] Always-L3 F1: found '67.0%' in REPORT.md
-  [PASS] Always-L3 avg_calls: found '10.2' in REPORT.md
-  [PASS] FeedbackRAG Thresholds F1: found '93.4%' in REPORT.md
-  [PASS] FeedbackRAG Learned F1: found '93.4%' in REPORT.md
-  [PASS] FeedbackRAG Learned avg_calls: found '6.72' in REPORT.md
-  [PASS] FeedbackRAG Learned cost: found '$0.000149' in REPORT.md
+=== Enhanced Scientific & Report Integrity Verifier ===
 
-[SUCCESS] All checked figures in REPORT.md match results/tables/ exactly.
+--- Verifying 100-Question Dataset Schema, Record Counts, & Query-ID Invariants ---
+  [PASS] All 6 benchmark systems validated: exactly 100 records each
+  [PASS] 100 unique query IDs per system with 100% identical cross-system coverage
+  [PASS] All resolved_level values valid (in [0, 1, 2, 3])
+  [PASS] All numeric fields (em, f1, calls, latency_ms) present, finite, and within valid bounds
+
+--- Verifying Table 3 (Regime A: Simulated State-Machine Benchmark) ---
+  [PASS] Always-L0 (Direct LLM)                 | EM: 40.2% | F1: 49.4% | Calls: 3.00 | Cost: bash.000030
+  [PASS] Always-L1 (Vanilla Hybrid RAG)         | EM: 73.4% | F1: 73.4% | Calls: 3.00 | Cost: bash.000094
+  [PASS] Always-L2 (Iterative Multi-Hop RAG)    | EM: 80.2% | F1: 80.2% | Calls: 4.00 | Cost: bash.000086
+  [PASS] Always-L3 (Full Agentic RAG)           | EM: 80.2% | F1: 80.2% | Calls: 10.20 | Cost: bash.000433
+  [PASS] FeedbackRAG (Heuristic Thresholds)     | EM: 93.4% | F1: 93.4% | Calls: 7.99 | Cost: bash.000172
+  [PASS] FeedbackRAG (Learned Policy)           | EM: 93.4% | F1: 93.4% | Calls: 6.72 | Cost: bash.000149
+
+--- Verifying Table 4 (Regime B: Live Neural Model Validation) ---
+  [PASS] Qwen 7B Always-L0 (Direct Parametric)  | EM: 66.7% | F1: 88.3% | Calls: 1.00
+  [PASS] Qwen 7B Always-L1 (Single-Pass RAG)    | EM: 80.0% | F1: 91.1% | Calls: 2.00
+  [PASS] Qwen 7B FeedbackRAG (Escalation Queue) | EM: 66.7% | F1: 88.3% | Calls: 2.00
+  [PASS] Qwen 0.5B Always-L0 (Direct Parametric) | EM: 6.7% | F1: 32.8% | Calls: 1.00
+  [PASS] Qwen 0.5B Always-L1 (Single-Pass RAG)  | EM: 40.0% | F1: 57.3% | Calls: 2.00
+  [PASS] Qwen 0.5B FeedbackRAG (Escalation Queue) | EM: 13.3% | F1: 43.5% | Calls: 1.40
+
+--- Verifying Table 4b (100-Question Multi-Hop Benchmark on Qwen 2.5 Coder 14B) ---
+  [PASS] Always-L0 (Parametric Direct)        | EM: 14.0% [8.0%, 21.0%] | F1: 19.2% [12.4%, 26.2%] | Calls: 1.00 | Dist: 100% / 0% / 0% / 0%
+  [PASS] Always-L1 (Vanilla Hybrid RAG)       | EM: 34.0% [24.0%, 42.0%] | F1: 46.1% [36.6%, 54.9%] | Calls: 1.00 | Dist: 0% / 100% / 0% / 0%
+  [PASS] Always-L2 (Iterative Multi-Hop)      | EM: 41.0% [32.0%, 50.0%] | F1: 54.2% [44.5%, 62.8%] | Calls: 2.00 | Dist: 0% / 0% / 100% / 0%
+  [PASS] Always-L3 (Full Agentic RAG)         | EM: 37.0% [28.0%, 46.0%] | F1: 46.8% [37.4%, 55.3%] | Calls: 2.19 | Dist: 0% / 0% / 0% / 100%
+  [PASS] FeedbackRAG (Heuristic Thresholds)   | EM: 36.0% [27.0%, 45.0%] | F1: 49.0% [39.0%, 57.4%] | Calls: 5.22 | Dist: 19.0% / 11.0% / 69.0% / 1.0%
+  [PASS] FeedbackRAG (Learned GBDT Policy)    | EM: 37.0% [28.0%, 46.0%] | F1: 49.6% [39.8%, 58.4%] | Calls: 5.26 | Dist: 19.0% / 10.0% / 69.0% / 2.0%
+
+--- Verifying Subgroup Error Attribution Arithmetic & Table ---
+  [PASS] Subgroup Escalated to Level 2           | Count: 69 | FB F1: 49.8% | L2 F1: 49.8% | Gap:   0.0% | Contrib: 0.000 pts
+  [PASS] Subgroup Escalated to Level 1           | Count: 10 | FB F1: 48.0% | L2 F1: 48.0% | Gap:   0.0% | Contrib: 0.000 pts
+  [PASS] Subgroup Exited at Level 0 (Parametric) | Count: 19 | FB F1: 50.7% | L2 F1: 73.1% | Gap: -22.4% | Contrib: 4.256 pts
+  [PASS] Subgroup Escalated to Level 3 (Agentic) | Count:  2 | FB F1: 42.9% | L2 F1: 59.5% | Gap: -16.6% | Contrib: 0.332 pts
+  [PASS] Level 0 Subgroup Penalty: 4.256 pts (19% * 22.4%) verified in REPORT.md
+  [PASS] Level 3 Subgroup Penalty: 0.332 pts (2% * 16.6%) verified in REPORT.md
+  [PASS] Total Subgroup Gap: 4.588 pts accounted for (approx 4.60 pts)
+  [PASS] Relative Attribution: Level 0 = 93% (~93%), Level 3 = 7% (~7%) verified in REPORT.md
+
+--- Verifying Paired Bootstrap Statistical Significance Test ---
+  [PASS] Paired bootstrap significance test against Always-L1: p = 0.3735 verified in JSON and REPORT.md
+
+--- Verifying All 19 Level 0 Case Examples against Raw JSON Records ---
+  [PASS] Level 0 Case: Leo Varadkar                 | L0: 'Leo Varadkar' (F1=1.00) | L2: 'Leo Varadkar' (F1=1.00)
+  ...
+  [PASS] Level 0 Case: Georges-Henri Bousquet       | L0: 'French' (F1=0.00) | L2: 'Tunisian' (F1=0.00)
+
+--- Verifying Research Extension Results against JSON Tables ---
+  [PASS] Budget Dial Oracle F1                      | Value: 99.4% verified in results/tables/budget_dial_pareto.md and REPORT.md
+  [PASS] Conformal S1 ECE                           | Value: 0.3258 verified in results/tables/conformal_calibration.md and REPORT.md
+  [PASS] Conformal S3 ECE                           | Value: 0.2300 verified in results/tables/conformal_calibration.md and REPORT.md
+  [PASS] Cross-Dataset 2Wiki Transfer F1            | Value: 71.2% verified in results/tables/cross_dataset_transfer.md and REPORT.md
+  [PASS] Lightweight Heuristic Signals F1           | Value: 72.8% verified in results/tables/cheap_signals_ablation.md and REPORT.md
+  [PASS] Multi-Agent Fleiss Kappa (Correctness)     | Value: 0.473 verified in results/tables/human_agreement.md and REPORT.md
+  [PASS] Multi-Agent Fleiss Kappa (Faithfulness)    | Value: 0.411 verified in results/tables/human_agreement.md and REPORT.md
+  [PASS] Selective Answering Risk @ 100% Coverage   | Value: 38.5% verified in results/tables/selective_answering.md and REPORT.md
+  [PASS] Selective Answering Risk @ 50% Coverage    | Value: 17.0% verified in results/tables/selective_answering.md and REPORT.md
+  [PASS] Adversarial Defense Rate                   | Value: 88.0% verified in results/tables/adversarial_robustness.md and REPORT.md
+
+[SUCCESS] 100% of checked figures in REPORT.md match results/tables/ exactly.
 ```
 
 ---
@@ -367,6 +441,7 @@ Agentic-RAG-with-Multilevel-Feedback/
 │   ├── check_report_integrity.py# Automated REPORT.md integrity verifier
 │   ├── error_analysis.py        # Failure taxonomy breakdown script
 │   ├── judge_validation.py      # LLM judge calibration probe
+│   ├── package_submission.py    # Self-contained zip submission packaging script
 │   ├── plot_pareto.py           # Pareto frontier generator
 │   ├── reproduce_all.py         # Full end-to-end reproduction runner
 │   ├── run_baselines.py         # Always-L0..3, CRAG, Self-RAG benchmark
@@ -390,12 +465,19 @@ Agentic-RAG-with-Multilevel-Feedback/
 │   ├── planner.py               # Multi-hop query decomposition planner
 │   ├── retriever.py             # Hybrid BM25 + Dense retriever with RRF
 │   └── signals.py               # S1–S4 signal extraction auditors
-├── tests/                       # Unit & integration test suite (34 tests)
+├── scripts/                     # Operational verification scripts
+│   └── verify_live_feedback_loop.py # End-to-end SQLite weight feedback & restart test
+├── tests/                       # Unit & integration test suite (94 tests)
+│   ├── test_advanced_research.py # Oracle, conformal, transfer, cheap signals tests
+│   ├── test_adversarial_human_selective.py # Adversarial, consensus, selective tests
 │   ├── test_api.py              # FastAPI endpoint tests
+│   ├── test_budget_conformal.py # Conformal calibration & budget dial tests
 │   ├── test_end_to_end_graph.py # LangGraph workflow integration tests
 │   ├── test_feedback_level1.py  # Level 1 retrieval grading tests
 │   ├── test_feedback_level2.py  # Level 2 hallucination & completeness tests
 │   ├── test_feedback_level3.py  # Level 3 system memory & feedback tests
+│   ├── test_p0_fixes.py         # Critical regression & anti-leakage invariants
+│   ├── test_real_benchmarks.py  # Real LLM benchmark runner invariants
 │   └── test_verification_feedbackrag.py # Core MLFQ pipeline verification (U1–U12, I1–I6)
 ├── pyproject.toml               # Package specifications & pytest configuration
 ├── requirements.txt             # Locked project dependencies
