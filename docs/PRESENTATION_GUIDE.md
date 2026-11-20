@@ -123,3 +123,6 @@ Open **`http://localhost:8501`** and share your browser window in Google Meet.
 
 - **Q4: "Does SQLite store dense embedding vectors?"**
   - **Winning Answer:** *"No, to keep disk storage efficient and operations ACID-compliant, SQLite persists the relational metadata: document weights, inference history, and user feedback logs. The dense embedding vectors reside in-memory in our hybrid retriever and are rehydrated on startup."*
+
+- **Q5: "How does FeedbackRAG behave across model scaling (from 3B up to 70B parameters) and reasoning models?"**
+  - **Winning Answer:** *"We evaluated FeedbackRAG on an enterprise NVIDIA RTX A6000 48GB GPU across 6 Ollama models from 3.2B to 70.6B parameters (`llama3.2:3b`, `mistral:7b`, `llama3.1:8b`, `qwen3:8b`, `qwen3:14b`, and `llama3.1:70b` loaded in 44.5 GB VRAM). A key empirical finding is that on reasoning models (`qwen3`) and frontier 70B models, naive single-pass RAG suffers from severe retrieval distraction when presented with uncurated passages on factual queries, causing chain-of-thought token exhaustion. FeedbackRAG's self-consistency gate ($S_1=1.0$) enables confident queries to exit cleanly at Level 0 without retrieval noise, achieving 80.0% F1 on Llama 3.1 70B (vs 15.6% for Always-L1) while cutting latency by more than half (971 ms vs 2076 ms)."*

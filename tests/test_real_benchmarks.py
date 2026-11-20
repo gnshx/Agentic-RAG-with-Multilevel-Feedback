@@ -67,3 +67,45 @@ def test_real_benchmark_schemas_and_counts():
             for p in item["context"]:
                 assert p["id"] in corpus_dict, f"Document {p['id']} referenced in {split_name} missing from corpus"
                 assert corpus_dict[p["id"]]["title"] == p["title"]
+
+
+def test_multimodel_benchmark_artifact():
+    path = "results/tables/multimodel_benchmark_results.json"
+    assert os.path.exists(path), f"Expected {path} to exist"
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    expected_models = [
+        "llama3.2:3b",
+        "mistral:latest",
+        "llama3.1:latest",
+        "qwen3:8b",
+        "qwen3:14b",
+        "llama3.1:70b"
+    ]
+    for m in expected_models:
+        assert m in data, f"Model {m} missing from multi-model benchmark results"
+        m_res = data[m]
+        assert "Always-L0" in m_res
+        assert "Always-L1" in m_res
+        assert "FeedbackRAG" in m_res
+        assert "escalation_rate" in m_res
+
+        for sname in ["Always-L0", "Always-L1", "FeedbackRAG"]:
+            s = m_res[sname]
+            assert 0.0 <= s["em"] <= 100.0
+            assert 0.0 <= s["f1"] <= 100.0
+            assert s["avg_lat_ms"] > 0
+            assert s["avg_calls"] >= 1.0
+
+
+def test_multimodel_markdown_report_exists():
+    path = "results/tables/multimodel_benchmark_results.md"
+    assert os.path.exists(path), f"Expected {path} to exist"
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    assert "NVIDIA RTX A6000 48GB" in content
+    for m in ["llama3.2:3b", "mistral:latest", "llama3.1:latest", "qwen3:8b", "qwen3:14b", "llama3.1:70b"]:
+        assert m in content
+

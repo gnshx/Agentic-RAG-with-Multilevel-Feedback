@@ -298,6 +298,49 @@ def check_integrity():
                 errors.append(err)
                 print(f"  [FAIL] {err}")
 
+    # 4b. Verifying Table 4c (Multi-Model Scaling on NVIDIA RTX A6000 48GB GPU)
+    print("\n--- Verifying Table 4c (Multi-Model Scaling on NVIDIA RTX A6000 48GB GPU) ---")
+    multimodel_path = "results/tables/multimodel_benchmark_results.json"
+    if os.path.exists(multimodel_path):
+        with open(multimodel_path, "r", encoding="utf-8") as f:
+            mm_data = json.load(f)
+        t4c_start = report_text.find("#### 6.2.1b Cross-Architecture Scaling Evaluation")
+        t4c_end = report_text.find("#### 6.2.2 Large-Scale Empirical Multi-Hop Benchmark")
+        t4c_text = report_text[t4c_start:t4c_end] if t4c_start != -1 and t4c_end != -1 else ""
+
+        if not t4c_text:
+            err = "Could not locate Section 6.2.1b boundaries in REPORT.md"
+            errors.append(err)
+            print(f"  [FAIL] {err}")
+        else:
+            for m_name, m_res in mm_data.items():
+                found_row = None
+                lines = t4c_text.splitlines()
+                for i, line in enumerate(lines):
+                    if m_name in line:
+                        for sub_line in lines[i:i+6]:
+                            if "FeedbackRAG" in sub_line and "|" in sub_line:
+                                found_row = sub_line
+                                break
+                        if found_row:
+                            break
+
+                if not found_row:
+                    err = f"Could not find FeedbackRAG row for {m_name} in Table 4c"
+                    errors.append(err)
+                    print(f"  [FAIL] {err}")
+                    continue
+
+                exp_em = f"{m_res['FeedbackRAG']['em']:.1f}%"
+                exp_f1 = f"{m_res['FeedbackRAG']['f1']:.1f}%"
+                exp_calls = f"{m_res['FeedbackRAG']['avg_calls']:.2f}"
+                if exp_em in found_row and exp_f1 in found_row and exp_calls in found_row:
+                    print(f"  [PASS] {m_name:<18} FeedbackRAG  | EM: {exp_em} | F1: {exp_f1} | Calls: {exp_calls}")
+                else:
+                    err = f"Mismatch in Table 4c for {m_name}: expected EM={exp_em}, F1={exp_f1}, Calls={exp_calls} in row: {found_row}"
+                    errors.append(err)
+                    print(f"  [FAIL] {err}")
+
     # 5. Verifying Table 4b (100-Question Multi-Hop Benchmark on Qwen 2.5 Coder 14B)
     print("\n--- Verifying Table 4b (100-Question Multi-Hop Benchmark on Qwen 2.5 Coder 14B) ---")
     system_map = [

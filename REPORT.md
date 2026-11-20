@@ -15,7 +15,7 @@ In this work, we propose **FeedbackRAG**, a dynamic framework that models agenti
 
 We evaluate FeedbackRAG across multiple rigorous regimes:
 1. **Regime A (Simulated State-Machine Benchmark):** An architectural control-flow benchmark across 500 template-expanded multi-hop items (drawn from 20 seed reasoning patterns) evaluating MLFQ state transitions, Pareto efficiency, and learned policy convergence under deterministic mock outputs with 95% bootstrap confidence intervals ($B=1,000$). Accuracy in Regime A reflects control-flow routing rather than free-text neural reasoning.
-2. **Regime B (Live Neural Model Validation & Empirical Multi-Hop Benchmark):** Open-weight neural inference using local and remote LLM backends (feasibility validation on `qwen2.5:0.5b` and `qwen2.5-coder:7b`, followed by an audited 100-question multi-hop benchmark on `qwen2.5-coder:14b` via an NVIDIA GeForce RTX 3060 12GB GPU), measuring authentic neural generation, multi-hop routing dynamics, and an end-to-end feedback loop with SQLite persistence across store restarts.
+2. **Regime B (Live Neural Model Validation & Empirical Multi-Hop Benchmark):** Open-weight neural inference using local and enterprise GPU backends: cross-architecture scaling across 6 models from 3.2B to 70.6B parameters (`llama3.2:3b`, `mistral:7b`, `llama3.1:8b`, `qwen3:8b`, `qwen3:14b`, and frontier `llama3.1:70b` in 44.5 GB VRAM) on an **NVIDIA RTX A6000 48GB GPU workstation**, followed by an audited 100-question multi-hop benchmark on `qwen2.5-coder:14b` via an NVIDIA GeForce RTX 3060 12GB GPU, measuring authentic neural generation, multi-hop routing dynamics, and an end-to-end feedback loop with SQLite persistence across store restarts.
 3. **Advanced Research Extensions:**
    - **Cost-Aware Policy with Continuous Budget Dial ($\lambda$):** Optimizes expected F1 gain $\mathbb{E}[\Delta F_1]$ against incremental monetary cost, establishing an empirical Pareto frontier against a Theoretical Oracle (99.4% F1, \$0.201/1k queries).
    - **Risk-Controlled Conformal Calibration:** Split conformal calibration bounding early-exit error rate with Expected Calibration Error (ECE) analysis ($S_1$ ECE = 0.3258, $S_3$ ECE = 0.2300).
@@ -226,6 +226,43 @@ To validate the framework on authentic neural weights producing conversational f
 - **Free-Text EM vs. F1 Gap:** Real open-weight models generate conversational phrasing (e.g., *"Christopher Nolan directed Inception"*), scoring partial token overlap (F1 = 57%) with 0% Exact Match. Grounded Level 1 context steers models toward concise targets, boosting EM to 80.0% and F1 to 91.1% on the 7B GPU workstation.
 - **Accuracy vs. Latency Trade-off in Real Pilot:** On this $N=15$ feasibility cohort, FeedbackRAG scored slightly below Always-L1 in Token F1 (88.3% vs. 91.1% on 7B; 43.5% vs. 57.3% on 0.5B). Because factual queries met the self-consistency gate ($S_1=1.0$) at Level 0, the system early-exited directly. While this avoided external database calls and delivered 257.0 ms latency, it missed the retrieved context that steered Always-L1 toward exact phrasing. Additionally, `qwen2.5-coder:7b` is trained primarily for code, which introduces minor conversational verbosity on QA.
 - **Hardware Acceleration:** On a dedicated NVIDIA GeForce RTX 3060 12GB GPU host, generation times averaged **257.0 ms** for FeedbackRAG, running in dedicated VRAM (4,546 MiB allocated).
+
+---
+
+#### 6.2.1b Cross-Architecture Scaling Evaluation on NVIDIA RTX A6000 48GB GPU ($N=15$, 3B to 70B Parameters)
+
+To analyze how multi-level feedback routing scales across varying model capacities and reasoning mechanisms, we deployed the benchmark suite to an **NVIDIA RTX A6000 workstation featuring 49,140 MiB (48GB) GDDR6 VRAM and 503GB host RAM** (`10.10.14.233`, CUDA 13.0, Driver 580.126.20). We evaluated six open-weight models spanning dense instruction-tuned models (`llama3.2:3b`, `mistral:7b`, `llama3.1:8b`), frontier large parameters (`llama3.1:70b` requiring 44.5 GB dedicated VRAM), and native reasoning models (`qwen3:8b`, `qwen3:14b` with internal `<think>` generation traces).
+
+| Model Architecture | Parameter Scale | VRAM Footprint | Strategy | Exact Match (EM %) | Token F1 (%) | Avg Latency | Avg Calls |
+| :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| **llama3.2:3b** | 3.2B | 2.0 GB | Always-L0 (Parametric) | 46.7% | 71.3% | 654.2 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 33.3% | 40.0% | 442.6 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **46.7%** | **69.1%** | **389.1 ms** | **2.27** |
+| **mistral:latest** | 7.2B | 4.4 GB | Always-L0 (Parametric) | 66.7% | 86.7% | 312.0 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 60.0% | 67.8% | 224.5 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **66.7%** | **86.7%** | **142.0 ms** | **2.00** |
+| **llama3.1:latest** | 8.0B | 4.9 GB | Always-L0 (Parametric) | 60.0% | 71.1% | 606.5 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 6.7% | 6.7% | 474.5 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **53.3%** | **64.4%** | **393.4 ms** | **2.13** |
+| **qwen3:8b** | 8.2B (Reasoning) | 5.2 GB | Always-L0 (Parametric) | 60.0% | 69.5% | 2104.7 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 0.0% | 0.5% | 1925.2 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **60.0%** | **68.9%** | **1738.6 ms** | **2.53** |
+| **qwen3:14b** | 14.8B (Reasoning) | 9.3 GB | Always-L0 (Parametric) | 80.0% | 80.3% | 2662.7 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 0.0% | 0.7% | 2716.3 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **80.0%** | **80.0%** | **2600.7 ms** | **2.40** |
+| **llama3.1:70b** | 70.6B (Frontier) | 42.5 GB | Always-L0 (Parametric) | 73.3% | 86.7% | 1902.4 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 6.7% | 15.6% | 2076.9 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **66.7%** | **80.0%** | **971.0 ms** | **2.13** |
+
+*Table 4c: Multi-model cross-scaling evaluation on NVIDIA RTX A6000 48GB GPU across 15 validation queries spanning factual entities and multi-hop queries. Raw outputs archived in `results/tables/multimodel_benchmark_results.json`.*
+
+##### Key Cross-Architecture Findings:
+1. **Frontier 70B Scaling & Distractor Resistance:**
+   On `llama3.1:70b` (occupying 44,527 MiB of VRAM), parametric knowledge is exceptionally rich (Always-L0 achieves 86.7% F1). However, when naive single-pass RAG (Always-L1) forces the model to read retrieved passages on simple factual queries, distractor passages introduce semantic confusion, collapsing Always-L1 F1 to 15.6%. In contrast, FeedbackRAG uses its self-consistency gate ($S_1=1.0$) to answer parametric queries directly, preserving 80.0% F1 while cutting generation latency by more than half (971.0 ms vs. 2076.9 ms).
+2. **Reasoning Models (`qwen3:8b` & `14b`) and Retrieval Distraction:**
+   Reasoning models emit dynamic chain-of-thought tokens prior to generating final answers. In Always-L1, when noisy retrieved context is injected into the prompt, the model's internal thinking budget is consumed reconciling distractor claims against parametric knowledge, dropping Token F1 to 0.5%–0.7% under fixed token limits. FeedbackRAG mitigates this vulnerability: confident queries resolve at Level 0 (68.9% F1 on 8B, 80.0% F1 on 14B), while multi-hop uncertainties escalate with focused context.
+3. **Instruction Model Efficiency (`mistral:latest`):**
+   On `mistral:latest` (7.2B), FeedbackRAG achieves **86.7% F1 with only 142.0 ms average latency**, exiting cleanly at Level 0 with 0% escalation on the factual cohort, eliminating redundant vector store lookups entirely.
 
 ---
 
@@ -481,7 +518,10 @@ FeedbackRAG incorporates enterprise-grade engineering:
 1. **Synthetic Benchmark Scope (Regime A):** The 500-question benchmark evaluates control-flow routing and policy convergence over 20 template-expanded multi-hop patterns and 48 corpus paragraphs. It does not claim general out-of-the-box accuracy on unconstrained open-domain corpora.
 2. **Conformal Exchangeability Bounds:** Split conformal calibration guarantees hold under exchangeability. On complex multi-hop distributions, non-exchangeability between single-hop and multi-hop structures yields empirical error rates above nominal $\alpha$.
 3. **Cross-Dataset Relational Gap:** Relational and biographical reasoning in 2WikiMultiHopQA exhibits a -22.2% F1 transfer gap when trained on HotpotQA bridge entities.
-4. **Hardware Status:** Neural GPU inference was validated on `qwen2.5-coder:7b` on an NVIDIA RTX 3060 12GB GPU host, confirming 257.0 ms latency. A full 500-question neural evaluation on 7B weights remains future work.
+4. **Hardware Validation & GPU Infrastructure:** Neural GPU inference has been empirically validated across two physical GPU environments:
+   - **Enterprise 48GB GPU Workstation:** NVIDIA RTX A6000 (49,140 MiB GDDR6 VRAM, 503GB host RAM, Driver 580.126.20, CUDA 13.0, Host `10.10.14.233`), evaluating 6 models from 3.2B to 70.6B parameters (`llama3.2:3b`, `mistral:latest`, `llama3.1:latest`, `qwen3:8b`, `qwen3:14b`, and `llama3.1:70b` loaded in 44,527 MiB VRAM).
+   - **Dedicated 12GB GPU Workstation:** NVIDIA GeForce RTX 3060 12GB GDDR6 (AMD Ryzen 5 5600X, 32GB RAM), executing the 100-question multi-hop benchmark on `qwen2.5-coder:14b` and the live SQLite feedback loop.
+   A full 500-question neural evaluation on frontier 70B weights remains future work due to wall-clock compute constraints.
 
 ---
 

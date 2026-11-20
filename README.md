@@ -54,7 +54,7 @@ While fully agentic architectures (such as multi-draft revision loops, self-refl
 - **Multilevel Feedback Queue (MLFQ) for RAG:** We formalize dynamic escalation across four compute tiers ($L_0 \to L_1 \to L_2 \to L_3$), where a query only incurs additional compute if verifiable runtime signals indicate deficiency.
 - **Decoupled 4-Signal Verification Suite:** We formulate four orthogonal runtime signals ($S_1$: Self-Consistency, $S_2$: Retrieval Quality, $S_3$: Groundedness Verification, $S_4$: Multi-part Completeness) computed without requiring gold labels.
 - **Learned GBDT Escalation Policy:** We train an 11-feature gradient-boosted decision tree on dev-split observable features with strict data-leakage guards to dynamically predict whether escalating to $L+1$ yields an empirical accuracy gain.
-- **Scientific Transparency (Dual-Regime Evaluation):** We explicitly separate results between **Regime A: Simulated State-Machine Benchmark** (evaluating MLFQ queue routing and GBDT policy convergence across 500 template-expanded items with 95% bootstrap CIs) and **Regime B: Live Neural Feasibility Pilot** (evaluating open-weight models `qwen2.5:0.5b` and `qwen2.5-coder:7b` on an RTX 3060 12GB GPU across $N=15$ queries, documenting authentic wall-clock latencies and conversational EM vs. F1 divergence).
+- **Scientific Transparency (Dual-Regime Evaluation):** We explicitly separate results between **Regime A: Simulated State-Machine Benchmark** (evaluating MLFQ queue routing and GBDT policy convergence across 500 template-expanded items with 95% bootstrap CIs) and **Regime B: Live Neural Model Validation** (evaluating open-weight models across two GPU environments: an **NVIDIA RTX A6000 48GB GPU workstation** testing 6 models from 3B to 70B parameters, and an **NVIDIA RTX 3060 12GB GPU host** testing a 100-question multi-hop benchmark on `qwen2.5-coder:14b`).
 
 ---
 
@@ -196,6 +196,32 @@ To validate the architecture against real neural weights generating natural lang
 
 *Table 2: Live neural model feasibility evaluation on real open-weight models across $N=15$ queries.*
 
+#### 6.2.1b Cross-Architecture Scaling Evaluation on NVIDIA RTX A6000 48GB GPU ($N=15$, 3B to 70B Parameters)
+To evaluate how dynamic feedback routing behaves across model capacity and reasoning styles, we evaluated 6 models on an **NVIDIA RTX A6000 48GB GDDR6 GPU workstation** (`10.10.14.233`, 503GB RAM, Driver 580.126.20, CUDA 13.0):
+
+| Model Architecture | Parameter Scale | VRAM Footprint | Strategy | Exact Match (EM %) | Token F1 (%) | Avg Latency | Avg LLM Calls |
+| :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| **llama3.2:3b** | 3.2B | 2.0 GB | Always-L0 (Parametric) | 46.7% | 71.3% | 654.2 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 33.3% | 40.0% | 442.6 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **46.7%** | **69.1%** | **389.1 ms** | **2.27** |
+| **mistral:latest** | 7.2B | 4.4 GB | Always-L0 (Parametric) | 66.7% | 86.7% | 312.0 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 60.0% | 67.8% | 224.5 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **66.7%** | **86.7%** | **142.0 ms** | **2.00** |
+| **llama3.1:latest** | 8.0B | 4.9 GB | Always-L0 (Parametric) | 60.0% | 71.1% | 606.5 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 6.7% | 6.7% | 474.5 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **53.3%** | **64.4%** | **393.4 ms** | **2.13** |
+| **qwen3:8b** | 8.2B (Reasoning) | 5.2 GB | Always-L0 (Parametric) | 60.0% | 69.5% | 2104.7 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 0.0% | 0.5% | 1925.2 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **60.0%** | **68.9%** | **1738.6 ms** | **2.53** |
+| **qwen3:14b** | 14.8B (Reasoning) | 9.3 GB | Always-L0 (Parametric) | 80.0% | 80.3% | 2662.7 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 0.0% | 0.7% | 2716.3 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **80.0%** | **80.0%** | **2600.7 ms** | **2.40** |
+| **llama3.1:70b** | 70.6B (Frontier) | 42.5 GB | Always-L0 (Parametric) | 73.3% | 86.7% | 1902.4 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 6.7% | 15.6% | 2076.9 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **66.7%** | **80.0%** | **971.0 ms** | **2.13** |
+
+*Table 2b: Multi-model evaluation across 6 architectures on NVIDIA RTX A6000 48GB GPU (archived in `results/tables/multimodel_benchmark_results.json`).*
+
 #### 6.2.2 Large-Scale Empirical Multi-Hop Benchmark (100 Authentic HotpotQA Questions on Qwen 2.5 Coder 14B)
 To evaluate system behavior on authentic multi-hop reasoning beyond small cohorts, we evaluated all six architectures across 100 authentic HotpotQA multi-hop questions against 2,826 Wikipedia passages using `qwen2.5-coder:14b` served on an NVIDIA GeForce RTX 3060 12GB GPU host:
 
@@ -242,7 +268,7 @@ To maintain rigorous scientific honesty, several evaluation boundaries must be s
 1. **Synthetic Expansion Scope (Regime A):** The 500-question benchmark was produced by expanding 20 multi-hop reasoning templates into synthetic records over a 48-paragraph reference corpus. These 500 records evaluate state machine dynamics and GBDT policy stability, but they do **not** represent 500 independently sampled real-world human questions.
 2. **Generalization Boundary:** Strong synthetic benchmark numbers demonstrate that the MLFQ escalation mechanism functions properly under controlled conditions; they do not establish generalized accuracy on open-domain web data or full unconstrained HotpotQA/2WikiMultiHopQA corpora.
 3. **Model Scale in Regime B:** The live neural evaluation was performed on 15 queries with a compact model (`qwen2.5:0.5b`) to capture real-world free-text EM vs. Token F1 divergence and wall-clock latency under constrained compute.
-4. **Hardware Validation Status:** Larger models (`qwen2.5-coder:7b`) deployed on the RTX 3060 GPU host have been verified via targeted inference probes (demonstrating sub-second 466 ms GPU generation), but have not yet undergone a full 500-question neural evaluation.
+4. **Hardware Validation Status:** Neural GPU inference has been empirically validated across two environments: an enterprise **NVIDIA RTX A6000 48GB GPU workstation** (503GB RAM) evaluating 6 models from 3B to 70B parameters (`llama3.2:3b`, `mistral:7b`, `llama3.1:8b`, `qwen3:8b`, `qwen3:14b`, and `llama3.1:70b` in 44.5 GB VRAM), and an **NVIDIA RTX 3060 12GB GPU host** executing the 100-question multi-hop benchmark on `qwen2.5-coder:14b`. A full 500-question evaluation on frontier 70B weights remains future work.
 5. **Authentic Multi-Hop Benchmark Boundary (Regime B):** All 100 evaluation questions in Section 6.2.2 are drawn from the authentic HotpotQA multi-hop dataset. Consequently, this benchmark primarily evaluates multi-hop reasoning and does not represent the heterogeneous query distribution expected in a general-purpose RAG application.
 
 ---
@@ -367,6 +393,14 @@ Expected output:
   [PASS] Qwen 0.5B Always-L0 (Direct Parametric) | EM: 6.7% | F1: 32.8% | Calls: 1.00
   [PASS] Qwen 0.5B Always-L1 (Single-Pass RAG)  | EM: 40.0% | F1: 57.3% | Calls: 2.00
   [PASS] Qwen 0.5B FeedbackRAG (Escalation Queue) | EM: 13.3% | F1: 43.5% | Calls: 1.40
+
+--- Verifying Table 4c (Multi-Model Scaling on NVIDIA RTX A6000 48GB GPU) ---
+  [PASS] llama3.2:3b        FeedbackRAG  | EM: 46.7% | F1: 69.1% | Calls: 2.27
+  [PASS] mistral:latest     FeedbackRAG  | EM: 66.7% | F1: 86.7% | Calls: 2.00
+  [PASS] llama3.1:latest    FeedbackRAG  | EM: 53.3% | F1: 64.4% | Calls: 2.13
+  [PASS] qwen3:8b           FeedbackRAG  | EM: 60.0% | F1: 68.9% | Calls: 2.53
+  [PASS] qwen3:14b          FeedbackRAG  | EM: 80.0% | F1: 80.0% | Calls: 2.40
+  [PASS] llama3.1:70b       FeedbackRAG  | EM: 66.7% | F1: 80.0% | Calls: 2.13
 
 --- Verifying Table 4b (100-Question Multi-Hop Benchmark on Qwen 2.5 Coder 14B) ---
   [PASS] Always-L0 (Parametric Direct)        | EM: 14.0% [8.0%, 21.0%] | F1: 19.2% [12.4%, 26.2%] | Calls: 1.00 | Dist: 100% / 0% / 0% / 0%

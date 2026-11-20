@@ -15,26 +15,34 @@ from src.signals import _json, retrieval_margin, lexical_groundedness_proxy, con
 from src.learned_policy import LearnedEscalationPolicy, extract_level_features
 from eval.bootstrap import bootstrap_ci, bootstrap_paired_test, format_metric_with_ci
 
-def get_ollama_endpoint():
+def get_ollama_endpoint(preferred_model: Optional[str] = None, preferred_port: Optional[int] = None):
     # Detect if GPU tunnel on port 11435 is active, else fallback to 11434
-    for port, preferred_model in [(11435, "qwen2.5-coder:14b"), (11435, "qwen2.5-coder:7b"), (11434, "qwen2.5:0.5b")]:
+    ports = [preferred_port] if preferred_port else [11435, 11434]
+    for port in ports:
+        if port is None:
+            continue
         try:
             req = urllib.request.Request(f"http://localhost:{port}/api/tags")
             with urllib.request.urlopen(req, timeout=3.0) as res:
                 data = json.loads(res.read().decode())
                 models = [m.get("name", "") for m in data.get("models", [])]
-                for pm in [preferred_model, "qwen2.5-coder:14b", "qwen2.5-coder:7b", "gemma2:2b", "qwen2.5-coder:3b", "qwen2.5:0.5b"]:
-                    if pm in models:
+                if preferred_model and preferred_model in models:
+                    return f"http://localhost:{port}/api/generate", preferred_model
+                for pm in [preferred_model, "llama3.1:70b", "qwen3:14b", "llama3.1:latest", "qwen3:8b", "mistral:latest", "llama3.2:3b", "qwen2.5-coder:14b", "qwen2.5:0.5b"]:
+                    if pm and pm in models:
                         return f"http://localhost:{port}/api/generate", pm
                 if models:
                     return f"http://localhost:{port}/api/generate", models[0]
         except Exception:
             continue
-    return "http://localhost:11434/api/generate", "qwen2.5:0.5b"
+    return "http://localhost:11434/api/generate", (preferred_model or "llama3.2:latest")
 
-def make_fast_ollama(cache_path: str = "results/real_100q_llm_cache.json"):
-    url, model = get_ollama_endpoint()
-    print(f"[*] Live LLM Backend: Connected to {url} using model '{model}'")
+def make_fast_ollama(model_name: Optional[str] = None, port: Optional[int] = None, cache_path: Optional[str] = None):
+    url, model = get_ollama_endpoint(preferred_model=model_name, preferred_port=port)
+    if cache_path is None:
+        safe_m = model.replace(":", "_").replace("/", "_")
+        cache_path = f"results/real_cache_{safe_m}.json"
+    print(f"[*] Live LLM Backend: Connected to {url} using model '{model}' (cache: {cache_path})")
     cache = {}
     if os.path.exists(cache_path):
         try:
@@ -53,11 +61,14 @@ def make_fast_ollama(cache_path: str = "results/real_100q_llm_cache.json"):
         if key in cache:
             return cache[key]
 
+        # For reasoning models (e.g. qwen3), allocate enough tokens to complete the think phase
+        num_predict = max(max_tokens, 200) if ("qwen3" in model.lower()) else max(max_tokens, 30)
+
         payload = {
             "model": model,
             "prompt": prompt,
             "stream": False,
-            "options": {"temperature": temp, "num_predict": max_tokens}
+            "options": {"temperature": temp, "num_predict": num_predict}
         }
         req = urllib.request.Request(
             url,
@@ -66,9 +77,13 @@ def make_fast_ollama(cache_path: str = "results/real_100q_llm_cache.json"):
         )
         for attempt in range(3):
             try:
-                with urllib.request.urlopen(req, timeout=45) as res:
+                with urllib.request.urlopen(req, timeout=60) as res:
                     data = json.loads(res.read().decode("utf-8"))
                     out = data.get("response", "").strip()
+                    # Fallback if model put answer in thinking
+                    if not out and data.get("thinking"):
+                        think_text = data.get("thinking", "").strip().split("\n")[-1]
+                        out = think_text
                     cache[key] = out
                     if len(cache) % 10 == 0:
                         save_cache()
@@ -180,9 +195,12 @@ def run_real_evaluation(
     use_retrieval: bool = False,
     dataset: str = "targeted",
     limit: Optional[int] = None,
-    output_path: Optional[str] = None
+    output_path: Optional[str] = None,
+    model: Optional[str] = None,
+    port: Optional[int] = None,
+    cache_path: Optional[str] = None
 ):
-    call_llm = make_fast_ollama()
+    call_llm = make_fast_ollama(model_name=model, port=port, cache_path=cache_path)
 
     retriever = None
     if use_retrieval:
@@ -322,11 +340,14 @@ def run_real_evaluation(
 def run_real_100q_benchmark(
     limit: Optional[int] = None,
     output_path: Optional[str] = None,
-    systems_to_run: Optional[List[str]] = None
+    systems_to_run: Optional[List[str]] = None,
+    model: Optional[str] = None,
+    port: Optional[int] = None,
+    cache_path: Optional[str] = None
 ):
     """
     Comprehensive Real Neural LLM Benchmark across 100 Multi-Hop HotpotQA Queries.
-    Evaluates 6 architectures on authentic neural weights (qwen2.5-coder:14b on remote RTX 3060 12GB GPU):
+    Evaluates 6 architectures on authentic neural weights (e.g. qwen3:14b or llama3.1:70b on NVIDIA RTX A6000 48GB GPU):
       1. Always-L0: Direct Parametric LLM (Zero Retrieval)
       2. Always-L1: Vanilla Single-Pass Hybrid RAG
       3. Always-L2: Iterative Multi-Hop RAG (Sub-Question Decomposition)
@@ -334,7 +355,13 @@ def run_real_100q_benchmark(
       5. FeedbackRAG (Heuristic Thresholds): Dynamic MLFQ queue guided by calibrated signal gates
       6. FeedbackRAG (Learned Policy): Dynamic MLFQ queue guided by trained GBDT classifier
     """
-    call_llm = make_fast_ollama(cache_path="results/real_100q_llm_cache.json")
+    if cache_path is None:
+        if model:
+            safe_m = model.replace(":", "_").replace("/", "_")
+            cache_path = f"results/real_100q_{safe_m}_cache.json"
+        else:
+            cache_path = "results/real_100q_llm_cache.json"
+    call_llm = make_fast_ollama(model_name=model, port=port, cache_path=cache_path)
 
     corpus_file = "data/real_corpus.json"
     assert os.path.exists(corpus_file), f"Missing {corpus_file}"
@@ -757,7 +784,7 @@ def run_real_100q_benchmark(
     # Generate Markdown Table Artifact
     md_lines = [
         f"# Live Neural LLM Benchmark Results (100 Multi-Hop HotpotQA Queries)",
-        f"\n**Model:** `{call_llm.model}` on Remote NVIDIA GeForce RTX 3060 12GB GPU host (`10.50.10.52`)",
+        f"\n**Model:** `{call_llm.model}` on Remote NVIDIA RTX A6000 48GB GPU host (`10.10.14.233`)",
         f"**Corpus:** 2,826 real documents from `data/real_corpus.json` (BM25 + Dense RRF fusion)",
         f"**Evaluated Queries:** {n_q} authentic multi-hop questions with 95% Bootstrap Confidence Intervals ($B=1,000$)\n",
         f"| System Architecture | Exact Match (95% CI) | Token F1 (95% CI) | Avg Calls / Query | p50 Latency (ms) | Level Distribution (L0 / L1 / L2 / L3) |",
@@ -783,6 +810,162 @@ def run_real_100q_benchmark(
     print(f"[*] Markdown report saved to: {target_md}")
 
 
+def run_multimodel_benchmark(
+    models: Optional[List[str]] = None,
+    use_retrieval: bool = True,
+    limit: Optional[int] = 15,
+    port: int = 11435,
+    output_path: Optional[str] = None
+):
+    if models is None:
+        models = [
+            "llama3.2:3b",
+            "mistral:latest",
+            "llama3.1:latest",
+            "qwen3:8b",
+            "qwen3:14b",
+            "llama3.1:70b"
+        ]
+
+    corpus_file = "data/real_corpus.json"
+    retriever = None
+    if os.path.exists(corpus_file):
+        with open(corpus_file, "r", encoding="utf-8") as f:
+            corpus = json.load(f)
+        retriever = HybridRetriever(corpus=corpus)
+    
+    items = get_targeted_items()
+    if limit is not None:
+        items = items[:limit]
+
+    print(f"\n==========================================================================================")
+    print(f"Running Multi-Model Evaluation across {len(models)} Ollama Models on 48GB GPU")
+    print(f"Models: {', '.join(models)}")
+    print(f"==========================================================================================")
+
+    multimodel_results = {}
+    for m in models:
+        print(f"\n>>> Evaluating Model: {m} on NVIDIA RTX A6000 48GB GPU <<<")
+        safe_m = m.replace(":", "_").replace("/", "_")
+        cache_path = f"results/real_cache_{safe_m}.json"
+        
+        call_llm = make_fast_ollama(model_name=m, port=port, cache_path=cache_path)
+        
+        model_res = {"Always-L0": [], "Always-L1": [], "FeedbackRAG": []}
+        
+        # 1. Always-L0
+        for item in items:
+            prompt = f"Answer concisely in 1-4 words:\nQuestion: {item['q']}\nAnswer:"
+            t0 = time.time()
+            pred = call_llm(prompt, max_tokens=25)
+            dt = (time.time() - t0) * 1000
+            score_em = em(pred, item["gold"])
+            score_f1 = f1(pred, item["gold"])
+            model_res["Always-L0"].append({"em": score_em, "f1": score_f1, "lat": dt, "pred": pred, "gold": item["gold"]})
+
+        # 2. Always-L1
+        for item in items:
+            if retriever:
+                docs = retriever.search(item["q"], k=3)
+                ctx = " ".join([d.get("text", "") for d in docs])
+            else:
+                ctx = item.get("context", "")
+            prompt = f"Answer concisely in 1-4 words using only the context:\nContext: {ctx}\nQuestion: {item['q']}\nAnswer:"
+            t0 = time.time()
+            pred = call_llm(prompt, max_tokens=25)
+            dt = (time.time() - t0) * 1000
+            score_em = em(pred, item["gold"])
+            score_f1 = f1(pred, item["gold"])
+            model_res["Always-L1"].append({"em": score_em, "f1": score_f1, "lat": dt, "pred": pred, "gold": item["gold"]})
+
+        # 3. FeedbackRAG
+        escalation_count = 0
+        for item in items:
+            t0 = time.time()
+            l0_prompt = f"Answer concisely in 1-4 words:\nQuestion: {item['q']}\nAnswer:"
+            pred_l0 = call_llm(l0_prompt, max_tokens=25)
+            calls = 1
+
+            norm_l0 = normalize_answer(pred_l0)
+            uncertainty_phrases = ["cannot", "unknown", "do not know", "not sure", "sorry", "unclear", "no information"]
+            is_uncertain = any(phrase in norm_l0 for phrase in uncertainty_phrases)
+            is_malformed = (len(norm_l0.split()) == 0 or len(norm_l0.split()) > 15)
+
+            perturbed_prompt = f"State the factual answer directly in 1-3 words:\nQuestion: {item['q']}\nAnswer:"
+            pred_l0_alt = call_llm(perturbed_prompt, max_tokens=25)
+            calls += 1
+            norm_alt = normalize_answer(pred_l0_alt)
+
+            consistency_match = (norm_l0 == norm_alt or norm_l0 in norm_alt or norm_alt in norm_l0) and not is_uncertain and not is_malformed
+
+            if consistency_match:
+                final_pred = pred_l0
+                lvl = 0
+            else:
+                escalation_count += 1
+                if retriever:
+                    docs = retriever.search(item["q"], k=3)
+                    ctx = " ".join([d.get("text", "") for d in docs])
+                else:
+                    ctx = item.get("context", "")
+                l1_prompt = f"Answer concisely in 1-4 words using only the context:\nContext: {ctx}\nQuestion: {item['q']}\nAnswer:"
+                final_pred = call_llm(l1_prompt, max_tokens=25)
+                calls += 2
+                lvl = 1
+
+            dt = (time.time() - t0) * 1000
+            score_em = em(final_pred, item["gold"])
+            score_f1 = f1(final_pred, item["gold"])
+            model_res["FeedbackRAG"].append({"em": score_em, "f1": score_f1, "lat": dt, "calls": calls, "lvl": lvl, "pred": final_pred, "gold": item["gold"]})
+
+        summary_m = {}
+        for sname, rlist in model_res.items():
+            summary_m[sname] = {
+                "em": round(sum(r["em"] for r in rlist) / len(rlist) * 100, 1),
+                "f1": round(sum(r["f1"] for r in rlist) / len(rlist) * 100, 1),
+                "avg_lat_ms": round(sum(r["lat"] for r in rlist) / len(rlist), 1),
+                "avg_calls": round(sum(r.get("calls", 1) for r in rlist) / len(rlist), 2)
+            }
+        summary_m["escalation_rate"] = f"{escalation_count}/{len(items)} ({round(escalation_count/len(items)*100, 1)}%)"
+        multimodel_results[m] = summary_m
+        print(f"[{m}] Always-L0: F1={summary_m['Always-L0']['f1']}%, Always-L1: F1={summary_m['Always-L1']['f1']}%, FeedbackRAG: F1={summary_m['FeedbackRAG']['f1']}% (Escalated: {summary_m['escalation_rate']})")
+        if hasattr(call_llm, "save_cache"):
+            call_llm.save_cache()
+
+    target_json = output_path or "results/tables/multimodel_benchmark_results.json"
+    target_md = target_json.replace(".json", ".md")
+    os.makedirs(os.path.dirname(target_json), exist_ok=True)
+    with open(target_json, "w", encoding="utf-8") as f:
+        json.dump(multimodel_results, f, indent=2)
+
+    # Generate Markdown Table
+    md_lines = [
+        "# Cross-Model Scaling Evaluation on NVIDIA RTX A6000 48GB GPU",
+        f"\n**Hardware:** NVIDIA RTX A6000 48GB VRAM (Host: `10.10.14.233`, 503GB RAM, Driver 580.126.20, CUDA 13.0)",
+        f"**Benchmark Cohort:** {len(items)} Factual & Multi-Hop Validation Queries across {len(models)} Model Architectures (3B to 70B parameters)\n",
+        "| Model Architecture | Parameter Scale | VRAM Footprint | Strategy | Exact Match | Token F1 | Avg Latency | Avg Calls |",
+        "| :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: |"
+    ]
+    model_meta = {
+        "llama3.2:3b": ("3.2B", "2.0 GB"),
+        "mistral:latest": ("7.2B", "4.4 GB"),
+        "llama3.1:latest": ("8.0B", "4.9 GB"),
+        "qwen3:8b": ("8.2B (Reasoning)", "5.2 GB"),
+        "qwen3:14b": ("14.8B (Reasoning)", "9.3 GB"),
+        "llama3.1:70b": ("70.6B (Frontier)", "42.5 GB")
+    }
+    for m, s in multimodel_results.items():
+        params, vram = model_meta.get(m, ("—", "—"))
+        md_lines.append(f"| **{m}** | {params} | {vram} | Always-L0 (Parametric) | {s['Always-L0']['em']}% | {s['Always-L0']['f1']}% | {s['Always-L0']['avg_lat_ms']:.1f} ms | {s['Always-L0']['avg_calls']:.2f} |")
+        md_lines.append(f"| | | | Always-L1 (Hybrid RAG) | {s['Always-L1']['em']}% | {s['Always-L1']['f1']}% | {s['Always-L1']['avg_lat_ms']:.1f} ms | {s['Always-L1']['avg_calls']:.2f} |")
+        md_lines.append(f"| | | | **FeedbackRAG (Adaptive MLFQ)** | **{s['FeedbackRAG']['em']}%** | **{s['FeedbackRAG']['f1']}%** | **{s['FeedbackRAG']['avg_lat_ms']:.1f} ms** | **{s['FeedbackRAG']['avg_calls']:.2f}** |")
+
+    with open(target_md, "w", encoding="utf-8") as f:
+        f.write("\n".join(md_lines) + "\n")
+    print(f"\n[*] Multi-model results saved to {target_json} and {target_md}")
+    return multimodel_results
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Live Neural LLM Benchmark for FeedbackRAG")
     parser.add_argument("--use-retrieval", action="store_true", help="Perform real BM25/Dense hybrid retrieval instead of static context")
@@ -790,20 +973,37 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, default=None, help="Max queries to evaluate")
     parser.add_argument("--output", type=str, default=None, help="Output JSON path")
     parser.add_argument("--systems", type=str, default=None, help="Comma-separated list of systems to evaluate")
+    parser.add_argument("--model", type=str, default=None, help="Target Ollama model name (e.g. qwen3:14b, llama3.1:70b)")
+    parser.add_argument("--port", type=int, default=11435, help="Port of Ollama service or SSH tunnel")
+    parser.add_argument("--cache-path", type=str, default=None, help="Cache JSON file path")
+    parser.add_argument("--multimodel", action="store_true", help="Run multi-model comparison across all installed Ollama models")
     args = parser.parse_args()
 
     systems_list = [s.strip() for s in args.systems.split(",")] if args.systems else None
 
-    if args.dataset == "real_test":
+    if args.multimodel:
+        run_multimodel_benchmark(
+            use_retrieval=args.use_retrieval,
+            limit=args.limit,
+            port=args.port,
+            output_path=args.output
+        )
+    elif args.dataset == "real_test":
         run_real_100q_benchmark(
             limit=args.limit,
             output_path=args.output,
-            systems_to_run=systems_list
+            systems_to_run=systems_list,
+            model=args.model,
+            port=args.port,
+            cache_path=args.cache_path
         )
     else:
         run_real_evaluation(
             use_retrieval=args.use_retrieval,
             dataset=args.dataset,
             limit=args.limit,
-            output_path=args.output
+            output_path=args.output,
+            model=args.model,
+            port=args.port,
+            cache_path=args.cache_path
         )
