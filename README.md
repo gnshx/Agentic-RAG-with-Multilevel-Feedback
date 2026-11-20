@@ -27,10 +27,11 @@
 - [4. The 4 Feedback Verification Signals](#4-the-4-feedback-verification-signals)
 - [5. Learned Escalation Policy](#5-learned-escalation-policy)
 - [6. Empirical Benchmarks & Findings](#6-empirical-benchmarks--findings)
-  - [6.1 Regime A: 500-Question Multi-Hop Benchmark](#61-regime-a-500-question-multi-hop-benchmark)
-  - [6.2 Regime B: Live Local LLM Validation (Qwen 2.5 0.5B)](#62-regime-b-live-local-llm-validation-qwen-25-05b)
+  - [6.1 Regime A: Simulated State-Machine Benchmark (500 Questions)](#61-regime-a-simulated-state-machine-benchmark-500-questions)
+  - [6.2 Regime B: Live Neural Model Validation & Empirical Multi-Hop Benchmark](#62-regime-b-live-neural-model-validation--empirical-multi-hop-benchmark)
   - [6.3 Feedback Signal Ablation Analysis](#63-feedback-signal-ablation-analysis)
-- [7. Safety, Reliability & Diagnostic Probing](#7-safety-reliability--diagnostic-probing)
+  - [6.4 Research Limitations & Scientific Scope](#64-research-limitations--scientific-scope)
+- [7. Safety, Reliability & Advanced Research Extensions](#7-safety-reliability--advanced-research-extensions)
 - [8. Production Engineering & System Guarantees](#8-production-engineering--system-guarantees)
 - [9. Quickstart & Developer Guide](#9-quickstart--developer-guide)
 - [10. Automated End-to-End Reproducibility](#10-automated-end-to-end-reproducibility)
@@ -64,24 +65,24 @@ FeedbackRAG maps the classic Operating Systems Multilevel Feedback Queue (MLFQ) 
 
 ```mermaid
 flowchart TD
-    Q([Incoming User Query]) --> L0[LEVEL 0: Direct Parametric LLM\nN=3 Samples at T=0.7]
+    Q(["Incoming User Query"]) --> L0["LEVEL 0: Direct Parametric LLM<br/>N=3 Samples at T=0.7"]
     
-    L0 --> S1Check{Signal S1: Self-Consistency\nS1 ≥ τ0 OR Learned Policy Stay?}
-    S1Check -- "Pass (Consensus)" --> R0[Early Exit: Return Direct Answer\nCalls: 3 | Cost: Minimal]
-    S1Check -- "Fail (Escalate)" --> L1[LEVEL 1: Single-Pass Hybrid RAG\nBM25 + Dense RRF Fusion, k=5]
+    L0 --> S1Check{"Signal S1: Self-Consistency<br/>Consensus Reached OR Policy Stay?"}
+    S1Check -->|"Pass (Consensus)"| R0["Early Exit: Return Direct Answer<br/>Calls: 3 • Cost: Minimal"]
+    S1Check -->|"Fail (Escalate)"| L1["LEVEL 1: Single-Pass Hybrid RAG<br/>BM25 + Dense RRF Fusion, k=5"]
 
-    L1 --> S2S3Check{Signals S2 & S3\nS2 ≥ τ1_ret AND S3 ≥ τ1_gnd\nOR Learned Policy Stay?}
-    S2S3Check -- "Pass (Grounded)" --> R1[Early Exit: Return L1 + Citations\nCalls: ~3 | Cost: Low]
-    S2S3Check -- "Fail (Escalate)" --> L2[LEVEL 2: Iterative Multi-Hop RAG\nSub-Query Decomposition + Bridge Rerank]
+    L1 --> S2S3Check{"Signals S2 and S3<br/>Sufficient Retrieval & Grounding<br/>OR Policy Stay?"}
+    S2S3Check -->|"Pass (Grounded)"| R1["Early Exit: Return L1 + Citations<br/>Calls: ~3 • Cost: Low"]
+    S2S3Check -->|"Fail (Escalate)"| L2["LEVEL 2: Iterative Multi-Hop RAG<br/>Sub-Query Decomposition + Bridge Rerank"]
 
-    L2 --> S3S4Check{Signals S3 & S4\nS3 ≥ τ2_gnd AND S4 ≥ τ2_comp\nOR Learned Policy Stay?}
-    S3S4Check -- "Pass (Complete)" --> R2[Early Exit: Return L2 + Multi-Hop Trace\nCalls: ~4-6 | Cost: Medium]
-    S3S4Check -- "Fail (Escalate)" --> L3[LEVEL 3: Full Agentic Synthesis\nBroadened k=10 + Critic-Revise Loops + Voting]
+    L2 --> S3S4Check{"Signals S3 and S4<br/>High Grounding & Completeness<br/>OR Policy Stay?"}
+    S3S4Check -->|"Pass (Complete)"| R2["Early Exit: Return L2 + Multi-Hop Trace<br/>Calls: ~4-6 • Cost: Medium"]
+    S3S4Check -->|"Fail (Escalate)"| L3["LEVEL 3: Full Agentic Synthesis<br/>Broadened k=10 + Critic-Revise Loops + Voting"]
 
-    L3 --> R3[Terminal Exit: Majority Consensus Answer\nCalls: ~11 | Cost: Full Agentic]
+    L3 --> R3["Terminal Exit: Majority Consensus Answer<br/>Calls: ~11 • Cost: Full Agentic"]
 
     subgraph BudgetGuard ["Production Safeguard: Hard Budget Guard"]
-        BG{Cumulative Calls ≥ 15?} -->|Yes| BTerm[Force Terminate: Return Best Candidate\nstatus=budget_exhausted]
+        BG{"Cumulative Calls reaches 15?"} -->|"Yes (Limit Reached)"| BTerm["Force Terminate: Return Best Candidate<br/>status=budget_exhausted"]
     end
 ```
 
@@ -277,15 +278,15 @@ To maintain rigorous scientific honesty, several evaluation boundaries must be s
 
 In accordance with rigorous ML evaluation standards, we evaluated the system across 8 advanced research dimensions:
 
-1. **Continuous Budget Dial ($\lambda$) & Theoretical Oracle:** Predicts expected F1 gain vs. cost trade-off across $\lambda \in [0, 10000]$. Theoretical Oracle establishes a 99.4% F1 upper bound at ash.201/1k queries, revealing an empirical headroom gap of only 6.9% F1 at $\lambda=0$.
-2. **Risk-Controlled Escalation via Split Conformal Prediction:** Calibrates nonconformity scores on dev data to bound early-exit error rate under nominal $\alpha$. Evaluates Expected Calibration Error (ECE) for feedback signals ($ ECE = 0.3258, $ ECE = 0.2300) and reports an honest negative result regarding non-exchangeability across multi-hop reasoning graphs.
-3. **Cross-Dataset Generalization (HotpotQA $\to$ 2WikiMultiHopQA):** Zero-shot transfer evaluates policy transferability under complex relational and genealogical chains (71.2% F1, hBc22.2\%$ domain transfer delta), diagnosing bridge entity reasoning shifts.
-4. **Lightweight Zero-Cost Heuristic Signals:** Replaces LLM-as-a-judge with retrieval score margin ($\Delta_{\text{score}}$) and lexical unigram overlap ({\text{overlap}}$) proxies, slashing inference cost by **63.4%** (ash.070/1k queries) and accelerating p50 latency to **94.5 ms** (2.7x speedup) with 72.8% F1.
+1. **Continuous Budget Dial ($\lambda$) & Theoretical Oracle:** Predicts expected F1 gain vs. cost trade-off across $\lambda \in [0, 10000]$. Theoretical Oracle establishes a 99.4% F1 upper bound at \$0.201/1k queries, revealing an empirical headroom gap of only 6.9% F1 at $\lambda=0$.
+2. **Risk-Controlled Escalation via Split Conformal Prediction:** Calibrates nonconformity scores on dev data to bound early-exit error rate under nominal $\alpha$. Evaluates Expected Calibration Error (ECE) for feedback signals ($S_1\text{ ECE} = 0.3258, S_3\text{ ECE} = 0.2300$) and reports an honest negative result regarding non-exchangeability across multi-hop reasoning graphs.
+3. **Cross-Dataset Generalization (HotpotQA $\to$ 2WikiMultiHopQA):** Zero-shot transfer evaluates policy transferability under complex relational and genealogical chains (71.2% F1, $-22.2\%$ domain transfer delta), diagnosing bridge entity reasoning shifts.
+4. **Lightweight Zero-Cost Heuristic Signals:** Replaces LLM-as-a-judge with retrieval score margin ($\Delta_{\text{score}}$) and lexical unigram overlap ($S_{\text{overlap}}$) proxies, slashing inference cost by **63.4%** (\$0.070/1k queries) and accelerating p50 latency to **94.5 ms** (2.7x speedup) with 72.8% F1.
 5. **Simulated Multi-Agent Consensus Protocol (100 Synthetic Rater Samples):** Evaluated across factual correctness and context faithfulness using prompt/agent perturbation raters, yielding substantial inter-agent agreement (Fleiss' $\kappa = 0.473$ correctness, $\kappa = 0.411$ faithfulness) and high automated judge calibration (89.0% agreement, Cohen's $\kappa = 0.715$).
 6. **Selective Answering & Empirical Risk-Coverage Curve:** Confidence-based abstention reducing error from **38.5%** at 100% coverage to **17.0%** at 50% coverage ($\text{AURC} = 0.1901$).
 7. **Empirical Adversarial Attack Probing (150 Probes):** Evaluated against counterfactual distractors, indirect prompt injections (OWASP LLM01), and cross-document contradictions. FeedbackRAG achieves an **88.0% macro defense rate** (vs. 24.7% for single-pass RAG).
 8. **Failure Taxonomy Breakdown (30 Case Studies):**
-   - **Retrieval Miss (33.3%, 10 cases):** Hybrid search failed to rank the second-hop bridge entity in the top-$.
+   - **Retrieval Miss (33.3%, 10 cases):** Hybrid search failed to rank the second-hop bridge entity in the top-5.
    - **Decomposition Failure (26.7%, 8 cases):** Sub-query planner failed to preserve dependent clauses.
    - **Grader Misclassification (23.3%, 7 cases):** Borderline relevant context misclassified as irrelevant.
    - **Reasoning Error (16.7%, 5 cases):** Correct context present, but comparative deduction failed.
@@ -324,17 +325,17 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 2. Run the Verification Test Suite (64 Tests)
+### 2. Run the Verification Test Suite (96 Tests)
 ```bash
 pytest -v --tb=short tests/
 ```
-All 34 tests should pass in under 5 seconds:
+All 96 regression tests pass in under 7 seconds:
 ```
-tests/test_api.py::test_health_endpoint PASSED                           [  2%]
-tests/test_api.py::test_query_and_feedback_flow PASSED                   [  5%]
+tests/test_advanced_research.py::test_budget_dial_utility_escalation PASSED [  1%]
+tests/test_api.py::test_health_endpoint PASSED                           [ 11%]
 ...
 tests/test_verification_feedbackrag.py::test_i6_cached_rerun_zero_calls PASSED [100%]
-============================== 34 passed in 4.38s ==============================
+============================== 96 passed in 6.84s ==============================
 ```
 
 ### 3. Launch Interactive Streamlit UI
@@ -379,12 +380,12 @@ Expected output:
   [PASS] All numeric fields (em, f1, calls, latency_ms) present, finite, and within valid bounds
 
 --- Verifying Table 3 (Regime A: Simulated State-Machine Benchmark) ---
-  [PASS] Always-L0 (Direct LLM)                 | EM: 40.2% | F1: 49.4% | Calls: 3.00 | Cost: bash.000030
-  [PASS] Always-L1 (Vanilla Hybrid RAG)         | EM: 73.4% | F1: 73.4% | Calls: 3.00 | Cost: bash.000094
-  [PASS] Always-L2 (Iterative Multi-Hop RAG)    | EM: 80.2% | F1: 80.2% | Calls: 4.00 | Cost: bash.000086
-  [PASS] Always-L3 (Full Agentic RAG)           | EM: 80.2% | F1: 80.2% | Calls: 10.20 | Cost: bash.000433
-  [PASS] FeedbackRAG (Heuristic Thresholds)     | EM: 93.4% | F1: 93.4% | Calls: 7.99 | Cost: bash.000172
-  [PASS] FeedbackRAG (Learned Policy)           | EM: 93.4% | F1: 93.4% | Calls: 6.72 | Cost: bash.000149
+  [PASS] Always-L0 (Direct LLM)                 | EM: 40.2% | F1: 49.4% | Calls: 3.00 | Cost: $0.000030
+  [PASS] Always-L1 (Vanilla Hybrid RAG)         | EM: 73.4% | F1: 73.4% | Calls: 3.00 | Cost: $0.000094
+  [PASS] Always-L2 (Iterative Multi-Hop RAG)    | EM: 80.2% | F1: 80.2% | Calls: 4.00 | Cost: $0.000086
+  [PASS] Always-L3 (Full Agentic RAG)           | EM: 80.2% | F1: 80.2% | Calls: 10.20 | Cost: $0.000433
+  [PASS] FeedbackRAG (Heuristic Thresholds)     | EM: 93.4% | F1: 93.4% | Calls: 7.99 | Cost: $0.000172
+  [PASS] FeedbackRAG (Learned Policy)           | EM: 93.4% | F1: 93.4% | Calls: 6.72 | Cost: $0.000149
 
 --- Verifying Table 4 (Regime B: Live Neural Model Validation) ---
   [PASS] Qwen 7B Always-L0 (Direct Parametric)  | EM: 66.7% | F1: 88.3% | Calls: 1.00
