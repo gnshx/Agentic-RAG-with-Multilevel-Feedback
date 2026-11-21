@@ -71,11 +71,11 @@ flowchart TD
     S1Check -->|"Pass (Consensus)"| R0["Early Exit: Return Direct Answer<br/>Calls: 3 • Cost: Minimal"]
     S1Check -->|"Fail (Escalate)"| L1["LEVEL 1: Single-Pass Hybrid RAG<br/>BM25 + Dense RRF Fusion, k=5"]
 
-    L1 --> S2S3Check{"Signals S2 and S3<br/>Sufficient Retrieval & Grounding<br/>OR Policy Stay?"}
+    L1 --> S2S3Check{"Signals S2 and S3<br/>Sufficient Retrieval and Grounding<br/>OR Policy Stay?"}
     S2S3Check -->|"Pass (Grounded)"| R1["Early Exit: Return L1 + Citations<br/>Calls: ~3 • Cost: Low"]
     S2S3Check -->|"Fail (Escalate)"| L2["LEVEL 2: Iterative Multi-Hop RAG<br/>Sub-Query Decomposition + Bridge Rerank"]
 
-    L2 --> S3S4Check{"Signals S3 and S4<br/>High Grounding & Completeness<br/>OR Policy Stay?"}
+    L2 --> S3S4Check{"Signals S3 and S4<br/>High Grounding and Completeness<br/>OR Policy Stay?"}
     S3S4Check -->|"Pass (Complete)"| R2["Early Exit: Return L2 + Multi-Hop Trace<br/>Calls: ~4-6 • Cost: Medium"]
     S3S4Check -->|"Fail (Escalate)"| L3["LEVEL 3: Full Agentic Synthesis<br/>Broadened k=10 + Critic-Revise Loops + Voting"]
 
