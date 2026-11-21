@@ -1,0 +1,128 @@
+{
+  "llama3.2:3b": {
+    "Always-L0": {
+      "em": 46.7,
+      "f1": 71.3,
+      "avg_lat_ms": 654.2,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 33.3,
+      "f1": 40.0,
+      "avg_lat_ms": 442.6,
+      "avg_calls": 1.0
+    },
+    "FeedbackRAG": {
+      "em": 46.7,
+      "f1": 69.1,
+      "avg_lat_ms": 389.1,
+      "avg_calls": 2.27
+    },
+    "escalation_rate": "2/15 (13.3%)"
+  },
+  "mistral:latest": {
+    "Always-L0": {
+      "em": 66.7,
+      "f1": 86.7,
+      "avg_lat_ms": 312.0,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 60.0,
+      "f1": 67.8,
+      "avg_lat_ms": 224.5,
+      "avg_calls": 1.0
+    },
+    "FeedbackRAG": {
+      "em": 66.7,
+      "f1": 86.7,
+      "avg_lat_ms": 142.0,
+      "avg_calls": 2.0
+    },
+    "escalation_rate": "0/15 (0.0%)"
+  },
+  "llama3.1:latest": {
+    "Always-L0": {
+      "em": 60.0,
+      "f1": 71.1,
+      "avg_lat_ms": 606.5,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 6.7,
+      "f1": 6.7,
+      "avg_lat_ms": 474.5,
+      "avg_calls": 1.0
+    },
+    "FeedbackRAG": {
+      "em": 53.3,
+      "f1": 64.4,
+      "avg_lat_ms": 393.4,
+      "avg_calls": 2.13
+    },
+    "escalation_rate": "1/15 (6.7%)"
+  },
+  "qwen3:8b": {
+    "Always-L0": {
+      "em": 60.0,
+      "f1": 69.5,
+      "avg_lat_ms": 2104.7,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 0.0,
+      "f1": 0.5,
+      "avg_lat_ms": 1925.2,
+      "avg_calls": 1.0
+    },
+    "FeedbackRAG": {
+      "em": 60.0,
+      "f1": 68.9,
+      "avg_lat_ms": 1738.6,
+      "avg_calls": 2.53
+    },
+    "escalation_rate": "4/15 (26.7%)"
+  },
+  "qwen3:14b": {
+    "Always-L0": {
+      "em": 80.0,
+      "f1": 80.3,
+      "avg_lat_ms": 2662.7,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 0.0,
+      "f1": 0.7,
+      "avg_lat_ms": 2716.3,
+      "avg_calls": 1.0
+    },
+    "FeedbackRAG": {
+      "em": 80.0,
+      "f1": 80.0,
+      "avg_lat_ms": 2600.7,
+      "avg_calls": 2.4
+    },
+    "escalation_rate": "3/15 (20.0%)"
+  },
+  "llama3.1:70b": {
+    "Always-L0": {
+      "em": 73.3,
+      "f1": 86.7,
+      "avg_lat_ms": 1902.4,
+      "avg_calls": 1.0
+    },
+    "Always-L1": {
+      "em": 6.7,
+      "f1": 15.6,
+      "avg_lat_ms": 2076.9,
+      "avg_calls": 1.0
+    },
+    "FeedbackRAG": {
+      "em": 66.7,
+      "f1": 80.0,
+      "avg_lat_ms": 971.0,
+      "avg_calls": 2.13
+    },
+    "escalation_rate": "1/15 (6.7%)"
+  }
+}
