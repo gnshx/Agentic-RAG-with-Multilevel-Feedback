@@ -14,7 +14,7 @@
 *Course Project for DSL504 / DS504 Natural Language Processing, Indian Institute of Technology Bhilai (IIT Bhilai)*  
 **Group 14 Project Team:** NDS Ganesh (12341500), V Karthik (12342370), K Soma Charith Reddy (12341040), R Dheemanth (12341710)
 
-[Technical Report](REPORT.md) • [System Architecture](docs/HLD.md) • [Product Requirements](docs/PRD.md) • [Test Verification](docs/TEST_VERIFICATION.md) • [Interactive Demo](app/streamlit_app.py)
+[Technical Report](REPORT.md) • [System Architecture](docs/HLD.md) • [Product Requirements](docs/PRD.md) • [Test Verification](docs/TEST_VERIFICATION.md) • [Interactive Demo](app/streamlit_app.py) • [Presentation Guide](docs/PRESENTATION_GUIDE.md) • [Slide Deck (Google Slides)](https://docs.google.com/presentation/d/1d9c2QlZBBcYk5oPz8kjm73fMYyHPqLJavtY-1rLbJY8/edit) • [Slide Deck (HTML)](docs/presentation_deck.html)
 
 </div>
 
@@ -27,10 +27,11 @@
 - [4. The 4 Feedback Verification Signals](#4-the-4-feedback-verification-signals)
 - [5. Learned Escalation Policy](#5-learned-escalation-policy)
 - [6. Empirical Benchmarks & Findings](#6-empirical-benchmarks--findings)
-  - [6.1 Regime A: 500-Question Multi-Hop Benchmark](#61-regime-a-500-question-multi-hop-benchmark)
-  - [6.2 Regime B: Live Local LLM Validation (Qwen 2.5 0.5B)](#62-regime-b-live-local-llm-validation-qwen-25-05b)
+  - [6.1 Regime A: Simulated State-Machine Benchmark (500 Questions)](#61-regime-a-simulated-state-machine-benchmark-500-questions)
+  - [6.2 Regime B: Live Neural Model Validation & Empirical Multi-Hop Benchmark](#62-regime-b-live-neural-model-validation--empirical-multi-hop-benchmark)
   - [6.3 Feedback Signal Ablation Analysis](#63-feedback-signal-ablation-analysis)
-- [7. Safety, Reliability & Diagnostic Probing](#7-safety-reliability--diagnostic-probing)
+  - [6.4 Research Limitations & Scientific Scope](#64-research-limitations--scientific-scope)
+- [7. Safety, Reliability & Advanced Research Extensions](#7-safety-reliability--advanced-research-extensions)
 - [8. Production Engineering & System Guarantees](#8-production-engineering--system-guarantees)
 - [9. Quickstart & Developer Guide](#9-quickstart--developer-guide)
 - [10. Automated End-to-End Reproducibility](#10-automated-end-to-end-reproducibility)
@@ -54,7 +55,7 @@ While fully agentic architectures (such as multi-draft revision loops, self-refl
 - **Multilevel Feedback Queue (MLFQ) for RAG:** We formalize dynamic escalation across four compute tiers ($L_0 \to L_1 \to L_2 \to L_3$), where a query only incurs additional compute if verifiable runtime signals indicate deficiency.
 - **Decoupled 4-Signal Verification Suite:** We formulate four orthogonal runtime signals ($S_1$: Self-Consistency, $S_2$: Retrieval Quality, $S_3$: Groundedness Verification, $S_4$: Multi-part Completeness) computed without requiring gold labels.
 - **Learned GBDT Escalation Policy:** We train an 11-feature gradient-boosted decision tree on dev-split observable features with strict data-leakage guards to dynamically predict whether escalating to $L+1$ yields an empirical accuracy gain.
-- **Scientific Transparency (Dual-Regime Evaluation):** We explicitly separate results between **Regime A: Simulated State-Machine Benchmark** (evaluating MLFQ queue routing and GBDT policy convergence across 500 template-expanded items with 95% bootstrap CIs) and **Regime B: Live Neural Feasibility Pilot** (evaluating open-weight models `qwen2.5:0.5b` and `qwen2.5-coder:7b` on an RTX 3060 12GB GPU across $N=15$ queries, documenting authentic wall-clock latencies and conversational EM vs. F1 divergence).
+- **Scientific Transparency (Dual-Regime Evaluation):** We explicitly separate results between **Regime A: Simulated State-Machine Benchmark** (evaluating MLFQ queue routing and GBDT policy convergence across 500 template-expanded items with 95% bootstrap CIs) and **Regime B: Live Neural Model Validation** (evaluating open-weight models across two GPU environments: an **NVIDIA RTX A6000 48GB GPU workstation** testing 6 models from 3B to 70B parameters, and an **NVIDIA RTX 3060 12GB GPU host** testing a 100-question multi-hop benchmark on `qwen2.5-coder:14b`).
 
 ---
 
@@ -64,24 +65,24 @@ FeedbackRAG maps the classic Operating Systems Multilevel Feedback Queue (MLFQ) 
 
 ```mermaid
 flowchart TD
-    Q([Incoming User Query]) --> L0[LEVEL 0: Direct Parametric LLM\nN=3 Samples at T=0.7]
+    Q(["Incoming User Query"]) --> L0["LEVEL 0: Direct Parametric LLM<br/>N=3 Samples at T=0.7"]
     
-    L0 --> S1Check{Signal S1: Self-Consistency\nS1 ≥ τ0 OR Learned Policy Stay?}
-    S1Check -- "Pass (Consensus)" --> R0[Early Exit: Return Direct Answer\nCalls: 3 | Cost: Minimal]
-    S1Check -- "Fail (Escalate)" --> L1[LEVEL 1: Single-Pass Hybrid RAG\nBM25 + Dense RRF Fusion, k=5]
+    L0 --> S1Check{"Signal S1: Self-Consistency<br/>Consensus Reached OR Policy Stay?"}
+    S1Check -->|"Pass (Consensus)"| R0["Early Exit: Return Direct Answer<br/>Calls: 3 • Cost: Minimal"]
+    S1Check -->|"Fail (Escalate)"| L1["LEVEL 1: Single-Pass Hybrid RAG<br/>BM25 + Dense RRF Fusion, k=5"]
 
-    L1 --> S2S3Check{Signals S2 & S3\nS2 ≥ τ1_ret AND S3 ≥ τ1_gnd\nOR Learned Policy Stay?}
-    S2S3Check -- "Pass (Grounded)" --> R1[Early Exit: Return L1 + Citations\nCalls: ~3 | Cost: Low]
-    S2S3Check -- "Fail (Escalate)" --> L2[LEVEL 2: Iterative Multi-Hop RAG\nSub-Query Decomposition + Bridge Rerank]
+    L1 --> S2S3Check{"Signals S2 and S3<br/>Sufficient Retrieval and Grounding<br/>OR Policy Stay?"}
+    S2S3Check -->|"Pass (Grounded)"| R1["Early Exit: Return L1 + Citations<br/>Calls: ~3 • Cost: Low"]
+    S2S3Check -->|"Fail (Escalate)"| L2["LEVEL 2: Iterative Multi-Hop RAG<br/>Sub-Query Decomposition + Bridge Rerank"]
 
-    L2 --> S3S4Check{Signals S3 & S4\nS3 ≥ τ2_gnd AND S4 ≥ τ2_comp\nOR Learned Policy Stay?}
-    S3S4Check -- "Pass (Complete)" --> R2[Early Exit: Return L2 + Multi-Hop Trace\nCalls: ~4-6 | Cost: Medium]
-    S3S4Check -- "Fail (Escalate)" --> L3[LEVEL 3: Full Agentic Synthesis\nBroadened k=10 + Critic-Revise Loops + Voting]
+    L2 --> S3S4Check{"Signals S3 and S4<br/>High Grounding and Completeness<br/>OR Policy Stay?"}
+    S3S4Check -->|"Pass (Complete)"| R2["Early Exit: Return L2 + Multi-Hop Trace<br/>Calls: ~4-6 • Cost: Medium"]
+    S3S4Check -->|"Fail (Escalate)"| L3["LEVEL 3: Full Agentic Synthesis<br/>Broadened k=10 + Critic-Revise Loops + Voting"]
 
-    L3 --> R3[Terminal Exit: Majority Consensus Answer\nCalls: ~11 | Cost: Full Agentic]
+    L3 --> R3["Terminal Exit: Majority Consensus Answer<br/>Calls: ~11 • Cost: Full Agentic"]
 
     subgraph BudgetGuard ["Production Safeguard: Hard Budget Guard"]
-        BG{Cumulative Calls ≥ 15?} -->|Yes| BTerm[Force Terminate: Return Best Candidate\nstatus=budget_exhausted]
+        BG{"Cumulative Calls reaches 15?"} -->|"Yes (Limit Reached)"| BTerm["Force Terminate: Return Best Candidate<br/>status=budget_exhausted"]
     end
 ```
 
@@ -196,6 +197,32 @@ To validate the architecture against real neural weights generating natural lang
 
 *Table 2: Live neural model feasibility evaluation on real open-weight models across $N=15$ queries.*
 
+#### 6.2.1b Cross-Architecture Scaling Evaluation on NVIDIA RTX A6000 48GB GPU ($N=15$, 3B to 70B Parameters)
+To evaluate how dynamic feedback routing behaves across model capacity and reasoning styles, we evaluated 6 models on an **NVIDIA RTX A6000 48GB GDDR6 GPU workstation** (`10.10.14.233`, 503GB RAM, Driver 580.126.20, CUDA 13.0):
+
+| Model Architecture | Parameter Scale | VRAM Footprint | Strategy | Exact Match (EM %) | Token F1 (%) | Avg Latency | Avg LLM Calls |
+| :--- | :---: | :---: | :--- | :---: | :---: | :---: | :---: |
+| **llama3.2:3b** | 3.2B | 2.0 GB | Always-L0 (Parametric) | 46.7% | 71.3% | 654.2 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 33.3% | 40.0% | 442.6 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **46.7%** | **69.1%** | **389.1 ms** | **2.27** |
+| **mistral:latest** | 7.2B | 4.4 GB | Always-L0 (Parametric) | 66.7% | 86.7% | 312.0 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 60.0% | 67.8% | 224.5 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **66.7%** | **86.7%** | **142.0 ms** | **2.00** |
+| **llama3.1:latest** | 8.0B | 4.9 GB | Always-L0 (Parametric) | 60.0% | 71.1% | 606.5 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 6.7% | 6.7% | 474.5 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **53.3%** | **64.4%** | **393.4 ms** | **2.13** |
+| **qwen3:8b** | 8.2B (Reasoning) | 5.2 GB | Always-L0 (Parametric) | 60.0% | 69.5% | 2104.7 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 0.0% | 0.5% | 1925.2 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **60.0%** | **68.9%** | **1738.6 ms** | **2.53** |
+| **qwen3:14b** | 14.8B (Reasoning) | 9.3 GB | Always-L0 (Parametric) | 80.0% | 80.3% | 2662.7 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 0.0% | 0.7% | 2716.3 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **80.0%** | **80.0%** | **2600.7 ms** | **2.40** |
+| **llama3.1:70b** | 70.6B (Frontier) | 42.5 GB | Always-L0 (Parametric) | 73.3% | 86.7% | 1902.4 ms | 1.00 |
+| | | | Always-L1 (Hybrid RAG) | 6.7% | 15.6% | 2076.9 ms | 1.00 |
+| | | | **FeedbackRAG (Adaptive MLFQ)** | **66.7%** | **80.0%** | **971.0 ms** | **2.13** |
+
+*Table 2b: Multi-model evaluation across 6 architectures on NVIDIA RTX A6000 48GB GPU (archived in `results/tables/multimodel_benchmark_results.json`).*
+
 #### 6.2.2 Large-Scale Empirical Multi-Hop Benchmark (100 Authentic HotpotQA Questions on Qwen 2.5 Coder 14B)
 To evaluate system behavior on authentic multi-hop reasoning beyond small cohorts, we evaluated all six architectures across 100 authentic HotpotQA multi-hop questions against 2,826 Wikipedia passages using `qwen2.5-coder:14b` served on an NVIDIA GeForce RTX 3060 12GB GPU host:
 
@@ -242,7 +269,7 @@ To maintain rigorous scientific honesty, several evaluation boundaries must be s
 1. **Synthetic Expansion Scope (Regime A):** The 500-question benchmark was produced by expanding 20 multi-hop reasoning templates into synthetic records over a 48-paragraph reference corpus. These 500 records evaluate state machine dynamics and GBDT policy stability, but they do **not** represent 500 independently sampled real-world human questions.
 2. **Generalization Boundary:** Strong synthetic benchmark numbers demonstrate that the MLFQ escalation mechanism functions properly under controlled conditions; they do not establish generalized accuracy on open-domain web data or full unconstrained HotpotQA/2WikiMultiHopQA corpora.
 3. **Model Scale in Regime B:** The live neural evaluation was performed on 15 queries with a compact model (`qwen2.5:0.5b`) to capture real-world free-text EM vs. Token F1 divergence and wall-clock latency under constrained compute.
-4. **Hardware Validation Status:** Larger models (`qwen2.5-coder:7b`) deployed on the RTX 3060 GPU host have been verified via targeted inference probes (demonstrating sub-second 466 ms GPU generation), but have not yet undergone a full 500-question neural evaluation.
+4. **Hardware Validation Status:** Neural GPU inference has been empirically validated across two environments: an enterprise **NVIDIA RTX A6000 48GB GPU workstation** (503GB RAM) evaluating 6 models from 3B to 70B parameters (`llama3.2:3b`, `mistral:7b`, `llama3.1:8b`, `qwen3:8b`, `qwen3:14b`, and `llama3.1:70b` in 44.5 GB VRAM), and an **NVIDIA RTX 3060 12GB GPU host** executing the 100-question multi-hop benchmark on `qwen2.5-coder:14b`. A full 500-question evaluation on frontier 70B weights remains future work.
 5. **Authentic Multi-Hop Benchmark Boundary (Regime B):** All 100 evaluation questions in Section 6.2.2 are drawn from the authentic HotpotQA multi-hop dataset. Consequently, this benchmark primarily evaluates multi-hop reasoning and does not represent the heterogeneous query distribution expected in a general-purpose RAG application.
 
 ---
@@ -251,15 +278,15 @@ To maintain rigorous scientific honesty, several evaluation boundaries must be s
 
 In accordance with rigorous ML evaluation standards, we evaluated the system across 8 advanced research dimensions:
 
-1. **Continuous Budget Dial ($\lambda$) & Theoretical Oracle:** Predicts expected F1 gain vs. cost trade-off across $\lambda \in [0, 10000]$. Theoretical Oracle establishes a 99.4% F1 upper bound at ash.201/1k queries, revealing an empirical headroom gap of only 6.9% F1 at $\lambda=0$.
-2. **Risk-Controlled Escalation via Split Conformal Prediction:** Calibrates nonconformity scores on dev data to bound early-exit error rate under nominal $\alpha$. Evaluates Expected Calibration Error (ECE) for feedback signals ($ ECE = 0.3258, $ ECE = 0.2300) and reports an honest negative result regarding non-exchangeability across multi-hop reasoning graphs.
-3. **Cross-Dataset Generalization (HotpotQA $\to$ 2WikiMultiHopQA):** Zero-shot transfer evaluates policy transferability under complex relational and genealogical chains (71.2% F1, hBc22.2\%$ domain transfer delta), diagnosing bridge entity reasoning shifts.
-4. **Lightweight Zero-Cost Heuristic Signals:** Replaces LLM-as-a-judge with retrieval score margin ($\Delta_{\text{score}}$) and lexical unigram overlap ({\text{overlap}}$) proxies, slashing inference cost by **63.4%** (ash.070/1k queries) and accelerating p50 latency to **94.5 ms** (2.7x speedup) with 72.8% F1.
+1. **Continuous Budget Dial ($\lambda$) & Theoretical Oracle:** Predicts expected F1 gain vs. cost trade-off across $\lambda \in [0, 10000]$. Theoretical Oracle establishes a 99.4% F1 upper bound at \$0.201/1k queries, revealing an empirical headroom gap of only 6.9% F1 at $\lambda=0$.
+2. **Risk-Controlled Escalation via Split Conformal Prediction:** Calibrates nonconformity scores on dev data to bound early-exit error rate under nominal $\alpha$. Evaluates Expected Calibration Error (ECE) for feedback signals ($S_1\text{ ECE} = 0.3258, S_3\text{ ECE} = 0.2300$) and reports an honest negative result regarding non-exchangeability across multi-hop reasoning graphs.
+3. **Cross-Dataset Generalization (HotpotQA $\to$ 2WikiMultiHopQA):** Zero-shot transfer evaluates policy transferability under complex relational and genealogical chains (71.2% F1, $-22.2\%$ domain transfer delta), diagnosing bridge entity reasoning shifts.
+4. **Lightweight Zero-Cost Heuristic Signals:** Replaces LLM-as-a-judge with retrieval score margin ($\Delta_{\text{score}}$) and lexical unigram overlap ($S_{\text{overlap}}$) proxies, slashing inference cost by **63.4%** (\$0.070/1k queries) and accelerating p50 latency to **94.5 ms** (2.7x speedup) with 72.8% F1.
 5. **Simulated Multi-Agent Consensus Protocol (100 Synthetic Rater Samples):** Evaluated across factual correctness and context faithfulness using prompt/agent perturbation raters, yielding substantial inter-agent agreement (Fleiss' $\kappa = 0.473$ correctness, $\kappa = 0.411$ faithfulness) and high automated judge calibration (89.0% agreement, Cohen's $\kappa = 0.715$).
 6. **Selective Answering & Empirical Risk-Coverage Curve:** Confidence-based abstention reducing error from **38.5%** at 100% coverage to **17.0%** at 50% coverage ($\text{AURC} = 0.1901$).
 7. **Empirical Adversarial Attack Probing (150 Probes):** Evaluated against counterfactual distractors, indirect prompt injections (OWASP LLM01), and cross-document contradictions. FeedbackRAG achieves an **88.0% macro defense rate** (vs. 24.7% for single-pass RAG).
 8. **Failure Taxonomy Breakdown (30 Case Studies):**
-   - **Retrieval Miss (33.3%, 10 cases):** Hybrid search failed to rank the second-hop bridge entity in the top-$.
+   - **Retrieval Miss (33.3%, 10 cases):** Hybrid search failed to rank the second-hop bridge entity in the top-5.
    - **Decomposition Failure (26.7%, 8 cases):** Sub-query planner failed to preserve dependent clauses.
    - **Grader Misclassification (23.3%, 7 cases):** Borderline relevant context misclassified as irrelevant.
    - **Reasoning Error (16.7%, 5 cases):** Correct context present, but comparative deduction failed.
@@ -298,17 +325,17 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 2. Run the Verification Test Suite (64 Tests)
+### 2. Run the Verification Test Suite (96 Tests)
 ```bash
 pytest -v --tb=short tests/
 ```
-All 34 tests should pass in under 5 seconds:
+All 96 regression tests pass in under 7 seconds:
 ```
-tests/test_api.py::test_health_endpoint PASSED                           [  2%]
-tests/test_api.py::test_query_and_feedback_flow PASSED                   [  5%]
+tests/test_advanced_research.py::test_budget_dial_utility_escalation PASSED [  1%]
+tests/test_api.py::test_health_endpoint PASSED                           [ 11%]
 ...
 tests/test_verification_feedbackrag.py::test_i6_cached_rerun_zero_calls PASSED [100%]
-============================== 34 passed in 4.38s ==============================
+============================== 96 passed in 6.84s ==============================
 ```
 
 ### 3. Launch Interactive Streamlit UI
@@ -353,12 +380,12 @@ Expected output:
   [PASS] All numeric fields (em, f1, calls, latency_ms) present, finite, and within valid bounds
 
 --- Verifying Table 3 (Regime A: Simulated State-Machine Benchmark) ---
-  [PASS] Always-L0 (Direct LLM)                 | EM: 40.2% | F1: 49.4% | Calls: 3.00 | Cost: bash.000030
-  [PASS] Always-L1 (Vanilla Hybrid RAG)         | EM: 73.4% | F1: 73.4% | Calls: 3.00 | Cost: bash.000094
-  [PASS] Always-L2 (Iterative Multi-Hop RAG)    | EM: 80.2% | F1: 80.2% | Calls: 4.00 | Cost: bash.000086
-  [PASS] Always-L3 (Full Agentic RAG)           | EM: 80.2% | F1: 80.2% | Calls: 10.20 | Cost: bash.000433
-  [PASS] FeedbackRAG (Heuristic Thresholds)     | EM: 93.4% | F1: 93.4% | Calls: 7.99 | Cost: bash.000172
-  [PASS] FeedbackRAG (Learned Policy)           | EM: 93.4% | F1: 93.4% | Calls: 6.72 | Cost: bash.000149
+  [PASS] Always-L0 (Direct LLM)                 | EM: 40.2% | F1: 49.4% | Calls: 3.00 | Cost: $0.000030
+  [PASS] Always-L1 (Vanilla Hybrid RAG)         | EM: 73.4% | F1: 73.4% | Calls: 3.00 | Cost: $0.000094
+  [PASS] Always-L2 (Iterative Multi-Hop RAG)    | EM: 80.2% | F1: 80.2% | Calls: 4.00 | Cost: $0.000086
+  [PASS] Always-L3 (Full Agentic RAG)           | EM: 80.2% | F1: 80.2% | Calls: 10.20 | Cost: $0.000433
+  [PASS] FeedbackRAG (Heuristic Thresholds)     | EM: 93.4% | F1: 93.4% | Calls: 7.99 | Cost: $0.000172
+  [PASS] FeedbackRAG (Learned Policy)           | EM: 93.4% | F1: 93.4% | Calls: 6.72 | Cost: $0.000149
 
 --- Verifying Table 4 (Regime B: Live Neural Model Validation) ---
   [PASS] Qwen 7B Always-L0 (Direct Parametric)  | EM: 66.7% | F1: 88.3% | Calls: 1.00
@@ -367,6 +394,14 @@ Expected output:
   [PASS] Qwen 0.5B Always-L0 (Direct Parametric) | EM: 6.7% | F1: 32.8% | Calls: 1.00
   [PASS] Qwen 0.5B Always-L1 (Single-Pass RAG)  | EM: 40.0% | F1: 57.3% | Calls: 2.00
   [PASS] Qwen 0.5B FeedbackRAG (Escalation Queue) | EM: 13.3% | F1: 43.5% | Calls: 1.40
+
+--- Verifying Table 4c (Multi-Model Scaling on NVIDIA RTX A6000 48GB GPU) ---
+  [PASS] llama3.2:3b        FeedbackRAG  | EM: 46.7% | F1: 69.1% | Calls: 2.27
+  [PASS] mistral:latest     FeedbackRAG  | EM: 66.7% | F1: 86.7% | Calls: 2.00
+  [PASS] llama3.1:latest    FeedbackRAG  | EM: 53.3% | F1: 64.4% | Calls: 2.13
+  [PASS] qwen3:8b           FeedbackRAG  | EM: 60.0% | F1: 68.9% | Calls: 2.53
+  [PASS] qwen3:14b          FeedbackRAG  | EM: 80.0% | F1: 80.0% | Calls: 2.40
+  [PASS] llama3.1:70b       FeedbackRAG  | EM: 66.7% | F1: 80.0% | Calls: 2.13
 
 --- Verifying Table 4b (100-Question Multi-Hop Benchmark on Qwen 2.5 Coder 14B) ---
   [PASS] Always-L0 (Parametric Direct)        | EM: 14.0% [8.0%, 21.0%] | F1: 19.2% [12.4%, 26.2%] | Calls: 1.00 | Dist: 100% / 0% / 0% / 0%
